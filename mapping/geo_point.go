@@ -2,6 +2,8 @@ package mapping
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/geo-point.html#geo-point-params
 type GeopointParams struct {
+	// Type is type of this property. Automatically filled if zero.
+	Type esType `json:"type,omitempty"`
 	// IgnoreMalformed indicates whether it should ignore malformed value rather than rejecting whole document.
 	// Default(nil) is false.
 	IgnoreMalformed *bool `json:"ignore_malformed,omitempty"`
@@ -24,4 +26,8 @@ type GeopointParams struct {
 	// If a value is set for this field on the input document, then the document will be rejected with an error.
 	// Scripts can only be configured on long and double field types.
 	Script *Script `json:"script,omitempty"`
+}
+
+func (p *GeopointParams) FillType() {
+	p.Type = Geopoint
 }

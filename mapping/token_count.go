@@ -2,6 +2,8 @@ package mapping
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/token-count.html#token-count-params
 type TokenCountParams struct {
+	// Type is type of this property. Automatically filled if zero.
+	Type                     esType  `json:"type"`
 	Analyzer                 *string `json:"analyzer,omitempty"`
 	EnablePositionIncrements *bool   `json:"enable_position_increments,omitempty"`
 	// Default(nil) is true.
@@ -15,4 +17,8 @@ type TokenCountParams struct {
 	// Store indicates whether the field value should be stored and retrievable separately from the _source field.
 	// Default is false.
 	Store *bool `json:"store,omitempty"`
+}
+
+func (p *TokenCountParams) FillType() {
+	p.Type = TokenCount
 }

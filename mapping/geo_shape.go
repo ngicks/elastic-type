@@ -2,6 +2,8 @@ package mapping
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/geo-shape.html#geo-shape-mapping-options
 type GeoshapeParams struct {
+	// Type is type of this property. Automatically filled if zero.
+	Type esType `json:"type,omitempty"`
 	// Defaults to "RIGHT".
 	Orientation *orientation `json:"orientation,omitempty"`
 	// IgnoreMalformed indicates whether it should ignore malformed value rather than rejecting whole document.
@@ -12,6 +14,10 @@ type GeoshapeParams struct {
 	// If true, automatically close an unclosed polygon loop.
 	// Default(nil) is false.
 	Coerce *bool `json:"coerce,omitempty"`
+}
+
+func (p *GeoshapeParams) FillType() {
+	p.Type = Geoshape
 }
 
 type orientation string

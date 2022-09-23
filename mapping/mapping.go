@@ -1,8 +1,18 @@
 package mapping
 
-type Properties map[string]Params
+type Properties map[string]any
 
-type Params struct {
+func (p *Properties) FillType() {
+	for _, v := range *p {
+		if filler, ok := v.(FillTyper); ok {
+			filler.FillType()
+		}
+	}
+}
+
+type FillTyper interface {
+	// FillType fills Type field if it is zero value.
+	FillType()
 }
 
 type onScriptError string

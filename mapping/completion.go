@@ -2,6 +2,8 @@ package mapping
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/completion.html#_parameters_for_completion_fields
 type CompletionParams struct {
+	// Type is type of this property. Automatically filled if zero.
+	Type esType `json:"type,omitempty"`
 	// Defaults to simple.
 	Analyzer *string `json:"analyzer,omitempty"`
 	// Defaults to value of analyzer.
@@ -12,4 +14,8 @@ type CompletionParams struct {
 	PreservePositionIncrements *bool `json:"preserve_position_increments,omitempty"`
 	// Defaults to 50 UTF-16 code points.
 	MaxInputLength uint `json:"max_input_length,omitempty"`
+}
+
+func (p *CompletionParams) FillType() {
+	p.Type = Completion
 }

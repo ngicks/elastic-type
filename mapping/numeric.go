@@ -4,6 +4,9 @@ package mapping
 //
 // see https://www.elastic.co/guide/en/elasticsearch/reference/8.4/number.html#number-params
 type NumericParams struct {
+	// Type is type of this property. Automatically filled if zero.
+	// Default is Integer.
+	Type esType `json:"type,omitempty"`
 	// Coerce indicates whether it should try to convert other json value to number.
 	// Default(nil) is true.
 	// This is not applicable for unsigned_long.
@@ -45,8 +48,16 @@ type NumericParams struct {
 	TimeSeriesDimension *bool `json:"time_series_dimension,omitempty"`
 }
 
+func (p *NumericParams) FillType() {
+	p.Type = Integer
+}
+
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/number.html#scaled-float-params
-type ScalingFloatParams struct {
+type ScaledFloatParams struct {
 	NumericParams
 	ScalingFactor uint `json:"scaling_factor"`
+}
+
+func (p *ScaledFloatParams) FillType() {
+	p.Type = ScaledFloat
 }

@@ -2,6 +2,8 @@ package mapping
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/text.html#text-params
 type TextParams struct {
+	// Type is type of this property. Automatically filled if zero.
+	Type esType `json:"type,omitempty"`
 	// Defaults to default index analyzer or "standard".
 	Analyzer *string `json:"analyzer,omitempty"`
 	// Defaults to false.
@@ -36,6 +38,10 @@ type TextParams struct {
 	TermVector *termVector `json:"term_vector,omitempty"`
 	// Meta is metadata about the field.
 	Meta *Meta `json:"meta,omitempty"`
+}
+
+func (p *TextParams) FillType() {
+	p.Type = Text
 }
 
 type FielddataFrequencyFilter struct {

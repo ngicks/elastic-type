@@ -1,7 +1,9 @@
 package mapping
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/flattened.html#flattened-params
-type FlattenParams struct {
+type FlattenedParams struct {
+	// Type is type of this property. Automatically filled if zero.
+	Type esType `json:"type,omitempty"`
 	// Defaults to 20.
 	DepthLimit *int `json:"depth_limit,omitempty"`
 	// DocValues indicates whether it should save field on disk in a column-stride fashion,
@@ -23,6 +25,10 @@ type FlattenParams struct {
 	Similarity *string `json:"similarity,omitempty"`
 	// Defaults to false.
 	SplitQueriesOnWhitespace *bool `json:"split_queries_on_whitespace,omitempty"`
+}
+
+func (p *FlattenedParams) FillType() {
+	p.Type = Flattened
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/index-options.html

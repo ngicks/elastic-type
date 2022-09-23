@@ -2,13 +2,19 @@ package mapping
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/dense-vector.html#dense-vector-params
 type DenseVectorParams struct {
-	Dims int `json:"dims"`
+	// Type is type of this property. Automatically filled if zero.
+	Type esType `json:"type,omitempty"`
+	Dims int    `json:"dims"`
 	// If true, you can search this field using the kNN search API.
 	// Defaults to false.
 	Index *bool `json:"index,omitempty"`
 	// Required if Index is true.
 	Similarity   *denseVectorSimilarity  `json:"similarity,omitempty"`
 	IndexOptions *DenseVectorIndexOption `json:"index_options,omitempty"`
+}
+
+func (p *DenseVectorParams) FillType() {
+	p.Type = DenseVector
 }
 
 type denseVectorSimilarity string

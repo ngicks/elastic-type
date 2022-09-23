@@ -1,5 +1,6 @@
 package mapping
 
+// https://www.elastic.co/guide/en/elasticsearch/reference/8.4/binary.html#binary-params
 type BinaryParams struct {
 	// DocValues indicates whether it should save field on disk in a column-stride fashion,
 	// so that it can later be used for sorting, aggregations, or scripting.

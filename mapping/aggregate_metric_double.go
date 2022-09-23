@@ -1,5 +1,11 @@
 package mapping
 
+// https://www.elastic.co/guide/en/elasticsearch/reference/8.4/aggregate-metric-double.html#aggregate-metric-double-params
+type AggregateMetricDoubleParams struct {
+	Metrics       []aggregateMetricDoubleAggregation `json:"metrics"`
+	DefaultMetric aggregateMetricDoubleAggregation   `json:"default_metric"`
+}
+
 type aggregateMetricDoubleAggregation string
 
 const (
@@ -8,8 +14,3 @@ const (
 	Sum        aggregateMetricDoubleAggregation = "sum"         // aggregation returns the sum of the values of all sum sub-fields.
 	ValueCount aggregateMetricDoubleAggregation = "value_count" // aggregation returns the sum of the values of all value_count sub-fields.
 )
-
-type AggregateMetricDoubleParams struct {
-	Metrics       []aggregateMetricDoubleAggregation `json:"metrics"`
-	DefaultMetric aggregateMetricDoubleAggregation   `json:"default_metric"`
-}

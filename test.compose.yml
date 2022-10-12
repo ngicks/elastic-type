@@ -1,0 +1,41 @@
+services:
+  elasticsaerch:
+    image: elasticsearch:8.4.3
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ports:
+      - target: 9200
+        host_ip: 127.0.0.1
+        published: 9200
+        protocol: tcp
+        mode: host
+      - target: 9300
+        host_ip: 127.0.0.1
+        published: 9300
+        protocol: tcp
+        mode: host
+    healthcheck:
+      test: curl -s http://localhost:9200/_cluster/health?wait_for_status=green > /dev/null || exit 1
+      interval: 5s
+      timeout: 30s
+      retries: 10
+    networks:
+      - appinternal
+  app:
+    image: golang:bullseye
+    tty: true
+    entrypoint: /bin/bash
+    working_dir: /root/project
+    volumes:
+      - type: bind
+        source: "."
+        target: "/root/project"
+    networks:
+      - appinternal
+    depends_on:
+      elasticsaerch:
+        condition: service_healthy
+
+networks:
+  appinternal: {}

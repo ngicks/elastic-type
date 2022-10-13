@@ -53,7 +53,7 @@ func (t EpochSecond) MarshalJSON() ([]byte, error) {
 }
 
 func (t *EpochSecond) UnmarshalJSON(data []byte) error {
-	bb, err := UnmarshalEsTime(data, nil, time.UnixMilli)
+	bb, err := UnmarshalEsTime(data, nil, ParseUnixSec)
 	if err != nil {
 		return err
 	}

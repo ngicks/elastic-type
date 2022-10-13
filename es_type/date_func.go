@@ -12,6 +12,10 @@ type (
 	NumParser = func(value int64) time.Time
 )
 
+func ParseUnixSec(v int64) time.Time {
+	return time.Unix(v, 0)
+}
+
 func UnmarshalEsTime(data []byte, strParser StrParser, numParser NumParser) (time.Time, error) {
 	str := string(data)
 	if strParser != nil && strings.HasPrefix(str, `"`) && strings.HasSuffix(str, `"`) {

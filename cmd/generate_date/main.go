@@ -129,9 +129,10 @@ func preflightParse(formats []string) *flextime.LayoutSet {
 }
 
 var importTmpl = template.Must(template.New("n").Parse(`import (
-	"encoding/json"
 	{{- if .PreferEpoch}}
 	"strconv"
+	{{- else}}
+	"encoding/json"
 	{{- end}}
 	"time"
 
@@ -154,7 +155,12 @@ var tyTmpl = template.Must(template.New("v").Parse(`
 type {{.TyName}} time.Time
 
 func (t {{.TyName}}) MarshalJSON() ([]byte, error) {
+{{- if .PreferEpoch}}
+	return []byte(t.String()), nil
+{{else}}
 	return json.Marshal(t.String())
+{{- end -}}
+
 }
 
 

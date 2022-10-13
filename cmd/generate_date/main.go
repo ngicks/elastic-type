@@ -177,7 +177,7 @@ func (t *{{.TyName}}) UnmarshalJSON(data []byte) error {
 		{{- if $.NumFormatIsMillis}}
 			time.UnixMilli
 		{{- else}}
-			time.Unix
+		func(v int64) time.Time { return time.Unix(v, 0) }
 		{{- end}}
 	{{- else}}
 		nil

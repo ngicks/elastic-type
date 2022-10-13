@@ -56,9 +56,9 @@ func TestStrictDateOptionalTimeEpochMillis(t *testing.T) {
 // generate_date:start
 
 func FuzzDateOptionalTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.DateOptionalTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.DateOptionalTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -82,9 +82,9 @@ func FuzzDateOptionalTime(f *testing.F) {
 }
 
 func FuzzStrictDateOptionalTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateOptionalTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateOptionalTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -108,9 +108,9 @@ func FuzzStrictDateOptionalTime(f *testing.F) {
 }
 
 func FuzzStrictDateOptionalTimeNanos(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateOptionalTimeNanos(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateOptionalTimeNanos(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -134,9 +134,9 @@ func FuzzStrictDateOptionalTimeNanos(f *testing.F) {
 }
 
 func FuzzBasicDate(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicDate(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicDate(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -160,9 +160,9 @@ func FuzzBasicDate(f *testing.F) {
 }
 
 func FuzzBasicDateTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicDateTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicDateTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -186,9 +186,9 @@ func FuzzBasicDateTime(f *testing.F) {
 }
 
 func FuzzBasicDateTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicDateTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicDateTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -212,9 +212,9 @@ func FuzzBasicDateTimeNoMillis(f *testing.F) {
 }
 
 func FuzzBasicOrdinalDate(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicOrdinalDate(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicOrdinalDate(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -238,9 +238,9 @@ func FuzzBasicOrdinalDate(f *testing.F) {
 }
 
 func FuzzBasicOrdinalDateTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicOrdinalDateTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicOrdinalDateTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -264,9 +264,9 @@ func FuzzBasicOrdinalDateTime(f *testing.F) {
 }
 
 func FuzzBasicOrdinalDateTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicOrdinalDateTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicOrdinalDateTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -290,9 +290,9 @@ func FuzzBasicOrdinalDateTimeNoMillis(f *testing.F) {
 }
 
 func FuzzBasicTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -316,9 +316,9 @@ func FuzzBasicTime(f *testing.F) {
 }
 
 func FuzzBasicTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -342,9 +342,9 @@ func FuzzBasicTimeNoMillis(f *testing.F) {
 }
 
 func FuzzBasicTTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicTTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicTTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -368,9 +368,9 @@ func FuzzBasicTTime(f *testing.F) {
 }
 
 func FuzzBasicTTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicTTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicTTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -394,9 +394,9 @@ func FuzzBasicTTimeNoMillis(f *testing.F) {
 }
 
 func FuzzBasicWeekDate(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicWeekDate(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicWeekDate(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -420,9 +420,9 @@ func FuzzBasicWeekDate(f *testing.F) {
 }
 
 func FuzzStrictBasicWeekDate(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictBasicWeekDate(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictBasicWeekDate(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -446,9 +446,9 @@ func FuzzStrictBasicWeekDate(f *testing.F) {
 }
 
 func FuzzBasicWeekDateTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicWeekDateTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicWeekDateTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -472,9 +472,9 @@ func FuzzBasicWeekDateTime(f *testing.F) {
 }
 
 func FuzzStrictBasicWeekDateTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictBasicWeekDateTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictBasicWeekDateTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -498,9 +498,9 @@ func FuzzStrictBasicWeekDateTime(f *testing.F) {
 }
 
 func FuzzBasicWeekDateTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.BasicWeekDateTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.BasicWeekDateTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -524,9 +524,9 @@ func FuzzBasicWeekDateTimeNoMillis(f *testing.F) {
 }
 
 func FuzzStrictBasicWeekDateTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictBasicWeekDateTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictBasicWeekDateTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -550,9 +550,9 @@ func FuzzStrictBasicWeekDateTimeNoMillis(f *testing.F) {
 }
 
 func FuzzDate(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.Date(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.Date(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -576,9 +576,9 @@ func FuzzDate(f *testing.F) {
 }
 
 func FuzzStrictDate(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDate(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDate(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -602,9 +602,9 @@ func FuzzStrictDate(f *testing.F) {
 }
 
 func FuzzDateHour(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.DateHour(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.DateHour(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -628,9 +628,9 @@ func FuzzDateHour(f *testing.F) {
 }
 
 func FuzzStrictDateHour(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateHour(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateHour(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -654,9 +654,9 @@ func FuzzStrictDateHour(f *testing.F) {
 }
 
 func FuzzDateHourMinute(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.DateHourMinute(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.DateHourMinute(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -680,9 +680,9 @@ func FuzzDateHourMinute(f *testing.F) {
 }
 
 func FuzzStrictDateHourMinute(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateHourMinute(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateHourMinute(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -706,9 +706,9 @@ func FuzzStrictDateHourMinute(f *testing.F) {
 }
 
 func FuzzDateHourMinuteSecond(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.DateHourMinuteSecond(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.DateHourMinuteSecond(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -732,9 +732,9 @@ func FuzzDateHourMinuteSecond(f *testing.F) {
 }
 
 func FuzzStrictDateHourMinuteSecond(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateHourMinuteSecond(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateHourMinuteSecond(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -758,9 +758,9 @@ func FuzzStrictDateHourMinuteSecond(f *testing.F) {
 }
 
 func FuzzDateHourMinuteSecondFraction(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.DateHourMinuteSecondFraction(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.DateHourMinuteSecondFraction(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -784,9 +784,9 @@ func FuzzDateHourMinuteSecondFraction(f *testing.F) {
 }
 
 func FuzzStrictDateHourMinuteSecondFraction(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateHourMinuteSecondFraction(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateHourMinuteSecondFraction(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -810,9 +810,9 @@ func FuzzStrictDateHourMinuteSecondFraction(f *testing.F) {
 }
 
 func FuzzDateHourMinuteSecondMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.DateHourMinuteSecondMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.DateHourMinuteSecondMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -836,9 +836,9 @@ func FuzzDateHourMinuteSecondMillis(f *testing.F) {
 }
 
 func FuzzStrictDateHourMinuteSecondMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateHourMinuteSecondMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateHourMinuteSecondMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -862,9 +862,9 @@ func FuzzStrictDateHourMinuteSecondMillis(f *testing.F) {
 }
 
 func FuzzDateTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.DateTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.DateTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -888,9 +888,9 @@ func FuzzDateTime(f *testing.F) {
 }
 
 func FuzzStrictDateTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -914,9 +914,9 @@ func FuzzStrictDateTime(f *testing.F) {
 }
 
 func FuzzDateTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.DateTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.DateTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -940,9 +940,9 @@ func FuzzDateTimeNoMillis(f *testing.F) {
 }
 
 func FuzzStrictDateTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictDateTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictDateTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -966,9 +966,9 @@ func FuzzStrictDateTimeNoMillis(f *testing.F) {
 }
 
 func FuzzHour(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.Hour(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.Hour(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -992,9 +992,9 @@ func FuzzHour(f *testing.F) {
 }
 
 func FuzzStrictHour(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictHour(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictHour(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1018,9 +1018,9 @@ func FuzzStrictHour(f *testing.F) {
 }
 
 func FuzzHourMinute(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.HourMinute(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.HourMinute(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1044,9 +1044,9 @@ func FuzzHourMinute(f *testing.F) {
 }
 
 func FuzzStrictHourMinute(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictHourMinute(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictHourMinute(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1070,9 +1070,9 @@ func FuzzStrictHourMinute(f *testing.F) {
 }
 
 func FuzzHourMinuteSecond(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.HourMinuteSecond(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.HourMinuteSecond(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1096,9 +1096,9 @@ func FuzzHourMinuteSecond(f *testing.F) {
 }
 
 func FuzzStrictHourMinuteSecond(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictHourMinuteSecond(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictHourMinuteSecond(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1122,9 +1122,9 @@ func FuzzStrictHourMinuteSecond(f *testing.F) {
 }
 
 func FuzzHourMinuteSecondFraction(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.HourMinuteSecondFraction(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.HourMinuteSecondFraction(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1148,9 +1148,9 @@ func FuzzHourMinuteSecondFraction(f *testing.F) {
 }
 
 func FuzzStrictHourMinuteSecondFraction(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictHourMinuteSecondFraction(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictHourMinuteSecondFraction(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1174,9 +1174,9 @@ func FuzzStrictHourMinuteSecondFraction(f *testing.F) {
 }
 
 func FuzzHourMinuteSecondMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.HourMinuteSecondMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.HourMinuteSecondMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1200,9 +1200,9 @@ func FuzzHourMinuteSecondMillis(f *testing.F) {
 }
 
 func FuzzStrictHourMinuteSecondMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictHourMinuteSecondMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictHourMinuteSecondMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1226,9 +1226,9 @@ func FuzzStrictHourMinuteSecondMillis(f *testing.F) {
 }
 
 func FuzzOrdinalDate(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.OrdinalDate(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.OrdinalDate(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1252,9 +1252,9 @@ func FuzzOrdinalDate(f *testing.F) {
 }
 
 func FuzzStrictOrdinalDate(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictOrdinalDate(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictOrdinalDate(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1278,9 +1278,9 @@ func FuzzStrictOrdinalDate(f *testing.F) {
 }
 
 func FuzzOrdinalDateTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.OrdinalDateTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.OrdinalDateTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1304,9 +1304,9 @@ func FuzzOrdinalDateTime(f *testing.F) {
 }
 
 func FuzzStrictOrdinalDateTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictOrdinalDateTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictOrdinalDateTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1330,9 +1330,9 @@ func FuzzStrictOrdinalDateTime(f *testing.F) {
 }
 
 func FuzzOrdinalDateTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.OrdinalDateTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.OrdinalDateTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1356,9 +1356,9 @@ func FuzzOrdinalDateTimeNoMillis(f *testing.F) {
 }
 
 func FuzzStrictOrdinalDateTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictOrdinalDateTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictOrdinalDateTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1382,9 +1382,9 @@ func FuzzStrictOrdinalDateTimeNoMillis(f *testing.F) {
 }
 
 func FuzzTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.Time(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.Time(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1408,9 +1408,9 @@ func FuzzTime(f *testing.F) {
 }
 
 func FuzzStrictTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1434,9 +1434,9 @@ func FuzzStrictTime(f *testing.F) {
 }
 
 func FuzzTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.TimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.TimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1460,9 +1460,9 @@ func FuzzTimeNoMillis(f *testing.F) {
 }
 
 func FuzzStrictTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1486,9 +1486,9 @@ func FuzzStrictTimeNoMillis(f *testing.F) {
 }
 
 func FuzzTTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.TTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.TTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1512,9 +1512,9 @@ func FuzzTTime(f *testing.F) {
 }
 
 func FuzzStrictTTime(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictTTime(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictTTime(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1538,9 +1538,9 @@ func FuzzStrictTTime(f *testing.F) {
 }
 
 func FuzzTTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.TTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.TTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1564,9 +1564,9 @@ func FuzzTTimeNoMillis(f *testing.F) {
 }
 
 func FuzzStrictTTimeNoMillis(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictTTimeNoMillis(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictTTimeNoMillis(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1590,9 +1590,9 @@ func FuzzStrictTTimeNoMillis(f *testing.F) {
 }
 
 func FuzzYear(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.Year(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.Year(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1616,9 +1616,9 @@ func FuzzYear(f *testing.F) {
 }
 
 func FuzzStrictYear(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictYear(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictYear(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1642,9 +1642,9 @@ func FuzzStrictYear(f *testing.F) {
 }
 
 func FuzzYearMonth(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.YearMonth(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.YearMonth(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1668,9 +1668,9 @@ func FuzzYearMonth(f *testing.F) {
 }
 
 func FuzzStrictYearMonth(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictYearMonth(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictYearMonth(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1694,9 +1694,9 @@ func FuzzStrictYearMonth(f *testing.F) {
 }
 
 func FuzzYearMonthDay(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.YearMonthDay(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.YearMonthDay(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
@@ -1720,9 +1720,9 @@ func FuzzYearMonthDay(f *testing.F) {
 }
 
 func FuzzStrictYearMonthDay(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := estype.StrictYearMonthDay(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := estype.StrictYearMonthDay(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {

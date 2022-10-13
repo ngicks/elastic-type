@@ -114,9 +114,9 @@ type testTmplParam struct {
 
 var testTmpl = template.Must(template.New("n").Parse(`
 func Fuzz{{.TyName}}(f *testing.F) {
-	f.Add(int64(1666282966123))
-	f.Fuzz(func(t *testing.T, tValue int64) {
-		tt := {{.PackageName}}.{{.TyName}}(time.UnixMilli(tValue))
+	f.Add(int64(1666282966123), int64(218964189023))
+	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
+		tt := {{.PackageName}}.{{.TyName}}(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {

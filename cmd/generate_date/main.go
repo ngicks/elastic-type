@@ -160,11 +160,10 @@ func (t {{.TyName}}) MarshalJSON() ([]byte, error) {
 
 var parser{{.TyName}} = flextime.NewFlextime(
 {{range $index, $format := .StrFormats}}
-	{{- if eq $index 0 -}}
-	typeparamcommon.Must(flextime.NewLayoutSet(` + "`" + `{{$format}}` + "`" + `))
+	{{- if eq $index 0 }}	typeparamcommon.Must(flextime.NewLayoutSet(` + "`" + `{{$format}}` + "`" + `))
 	{{- else -}}
 	.
-	AddLayout(typeparamcommon.Must(flextime.NewLayoutSet(` + "`" + `{{$format}}` + "`" + `)))
+		AddLayout(typeparamcommon.Must(flextime.NewLayoutSet(` + "`" + `{{$format}}` + "`" + `)))
 	{{- end -}}
 {{- end -}},
 )
@@ -175,7 +174,7 @@ func (t *{{.TyName}}) UnmarshalJSON(data []byte) error {
 		parser{{.TyName}}.Parse, 
 	{{- if .HasNumFormat}}
 		{{- if $.NumFormatIsMillis}}
-			time.UnixMilli
+		time.UnixMilli
 		{{- else}}
 		func(v int64) time.Time { return time.Unix(v, 0) }
 		{{- end}}

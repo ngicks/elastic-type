@@ -16,7 +16,7 @@ func ParseUnixSec(v int64) time.Time {
 	return time.Unix(v, 0)
 }
 
-func UnmarshalEsTime(data []byte, strParser StrParser, numParser NumParser) (time.Time, error) {
+func UnmarshalEsTime(data []byte, strParser StrParser, numParser NumParser, typeNames ...string) (time.Time, error) {
 	str := string(data)
 	if strParser != nil && strings.HasPrefix(str, `"`) && strings.HasSuffix(str, `"`) {
 		return strParser(str[1 : len(str)-1])
@@ -32,8 +32,12 @@ func UnmarshalEsTime(data []byte, strParser StrParser, numParser NumParser) (tim
 		return time.Time{}, err
 	}
 
+	var typeName string
+	if len(typeNames) >= 1 {
+		typeName = typeNames[0]
+	}
 	return time.Time{}, &InvalidTypeError{
-		Type:            "StrictDateOptionalTimeEpochMillis",
+		Type:            typeName,
 		SupposedTValues: []any{"time formatted as string", "unix epoch number that convertible to int64"},
 		InputValue:      v,
 	}

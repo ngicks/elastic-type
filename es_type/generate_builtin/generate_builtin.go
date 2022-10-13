@@ -89,7 +89,12 @@ func (t {{.TyName}}) MarshalJSON() ([]byte, error) {
 }
 
 func (t *{{.TyName}}) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.{{.FormatName}}].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.{{.FormatName}}].Parse,
+		nil,
+		` + "`" + `{{.TyName}}` + "`" + `,
+	)
 	if err != nil {
 		return err
 	}

@@ -53,7 +53,7 @@ func (t EpochSecond) MarshalJSON() ([]byte, error) {
 }
 
 func (t *EpochSecond) UnmarshalJSON(data []byte) error {
-	bb, err := UnmarshalEsTime(data, nil, ParseUnixSec)
+	bb, err := UnmarshalEsTime(data, nil, ParseUnixSec, `UnixMilli`)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,12 @@ func (t DateOptionalTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateOptionalTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.DateOptionalTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.DateOptionalTime].Parse,
+		nil,
+		`DateOptionalTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -93,7 +98,12 @@ func (t StrictDateOptionalTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateOptionalTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateOptionalTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateOptionalTime].Parse,
+		nil,
+		`StrictDateOptionalTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -112,7 +122,12 @@ func (t StrictDateOptionalTimeNanos) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateOptionalTimeNanos) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateOptionalTimeNanos].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateOptionalTimeNanos].Parse,
+		nil,
+		`StrictDateOptionalTimeNanos`,
+	)
 	if err != nil {
 		return err
 	}
@@ -131,7 +146,12 @@ func (t BasicDate) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicDate) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicDate].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicDate].Parse,
+		nil,
+		`BasicDate`,
+	)
 	if err != nil {
 		return err
 	}
@@ -150,7 +170,12 @@ func (t BasicDateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicDateTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicDateTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicDateTime].Parse,
+		nil,
+		`BasicDateTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -169,7 +194,12 @@ func (t BasicDateTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicDateTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicDateTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicDateTimeNoMillis].Parse,
+		nil,
+		`BasicDateTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -188,7 +218,12 @@ func (t BasicOrdinalDate) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicOrdinalDate) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicOrdinalDate].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicOrdinalDate].Parse,
+		nil,
+		`BasicOrdinalDate`,
+	)
 	if err != nil {
 		return err
 	}
@@ -207,7 +242,12 @@ func (t BasicOrdinalDateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicOrdinalDateTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicOrdinalDateTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicOrdinalDateTime].Parse,
+		nil,
+		`BasicOrdinalDateTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -226,7 +266,12 @@ func (t BasicOrdinalDateTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicOrdinalDateTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicOrdinalDateTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicOrdinalDateTimeNoMillis].Parse,
+		nil,
+		`BasicOrdinalDateTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -245,7 +290,12 @@ func (t BasicTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicTime].Parse,
+		nil,
+		`BasicTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -264,7 +314,12 @@ func (t BasicTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicTimeNoMillis].Parse,
+		nil,
+		`BasicTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -283,7 +338,12 @@ func (t BasicTTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicTTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicTTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicTTime].Parse,
+		nil,
+		`BasicTTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -302,7 +362,12 @@ func (t BasicTTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicTTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicTTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicTTimeNoMillis].Parse,
+		nil,
+		`BasicTTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -321,7 +386,12 @@ func (t BasicWeekDate) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicWeekDate) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicWeekDate].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicWeekDate].Parse,
+		nil,
+		`BasicWeekDate`,
+	)
 	if err != nil {
 		return err
 	}
@@ -340,7 +410,12 @@ func (t StrictBasicWeekDate) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictBasicWeekDate) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictBasicWeekDate].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictBasicWeekDate].Parse,
+		nil,
+		`StrictBasicWeekDate`,
+	)
 	if err != nil {
 		return err
 	}
@@ -359,7 +434,12 @@ func (t BasicWeekDateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicWeekDateTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicWeekDateTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicWeekDateTime].Parse,
+		nil,
+		`BasicWeekDateTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -378,7 +458,12 @@ func (t StrictBasicWeekDateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictBasicWeekDateTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictBasicWeekDateTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictBasicWeekDateTime].Parse,
+		nil,
+		`StrictBasicWeekDateTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -397,7 +482,12 @@ func (t BasicWeekDateTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *BasicWeekDateTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.BasicWeekDateTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.BasicWeekDateTimeNoMillis].Parse,
+		nil,
+		`BasicWeekDateTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -416,7 +506,12 @@ func (t StrictBasicWeekDateTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictBasicWeekDateTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictBasicWeekDateTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictBasicWeekDateTimeNoMillis].Parse,
+		nil,
+		`StrictBasicWeekDateTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -435,7 +530,12 @@ func (t Date) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Date) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.Date].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.Date].Parse,
+		nil,
+		`Date`,
+	)
 	if err != nil {
 		return err
 	}
@@ -454,7 +554,12 @@ func (t StrictDate) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDate) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDate].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDate].Parse,
+		nil,
+		`StrictDate`,
+	)
 	if err != nil {
 		return err
 	}
@@ -473,7 +578,12 @@ func (t DateHour) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateHour) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.DateHour].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.DateHour].Parse,
+		nil,
+		`DateHour`,
+	)
 	if err != nil {
 		return err
 	}
@@ -492,7 +602,12 @@ func (t StrictDateHour) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateHour) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateHour].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateHour].Parse,
+		nil,
+		`StrictDateHour`,
+	)
 	if err != nil {
 		return err
 	}
@@ -511,7 +626,12 @@ func (t DateHourMinute) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateHourMinute) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.DateHourMinute].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.DateHourMinute].Parse,
+		nil,
+		`DateHourMinute`,
+	)
 	if err != nil {
 		return err
 	}
@@ -530,7 +650,12 @@ func (t StrictDateHourMinute) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateHourMinute) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateHourMinute].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateHourMinute].Parse,
+		nil,
+		`StrictDateHourMinute`,
+	)
 	if err != nil {
 		return err
 	}
@@ -549,7 +674,12 @@ func (t DateHourMinuteSecond) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateHourMinuteSecond) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.DateHourMinuteSecond].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.DateHourMinuteSecond].Parse,
+		nil,
+		`DateHourMinuteSecond`,
+	)
 	if err != nil {
 		return err
 	}
@@ -568,7 +698,12 @@ func (t StrictDateHourMinuteSecond) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateHourMinuteSecond) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateHourMinuteSecond].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateHourMinuteSecond].Parse,
+		nil,
+		`StrictDateHourMinuteSecond`,
+	)
 	if err != nil {
 		return err
 	}
@@ -587,7 +722,12 @@ func (t DateHourMinuteSecondFraction) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateHourMinuteSecondFraction) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.DateHourMinuteSecondFraction].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.DateHourMinuteSecondFraction].Parse,
+		nil,
+		`DateHourMinuteSecondFraction`,
+	)
 	if err != nil {
 		return err
 	}
@@ -606,7 +746,12 @@ func (t StrictDateHourMinuteSecondFraction) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateHourMinuteSecondFraction) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateHourMinuteSecondFraction].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateHourMinuteSecondFraction].Parse,
+		nil,
+		`StrictDateHourMinuteSecondFraction`,
+	)
 	if err != nil {
 		return err
 	}
@@ -625,7 +770,12 @@ func (t DateHourMinuteSecondMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateHourMinuteSecondMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.DateHourMinuteSecondMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.DateHourMinuteSecondMillis].Parse,
+		nil,
+		`DateHourMinuteSecondMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -644,7 +794,12 @@ func (t StrictDateHourMinuteSecondMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateHourMinuteSecondMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateHourMinuteSecondMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateHourMinuteSecondMillis].Parse,
+		nil,
+		`StrictDateHourMinuteSecondMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -663,7 +818,12 @@ func (t DateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.DateTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.DateTime].Parse,
+		nil,
+		`DateTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -682,7 +842,12 @@ func (t StrictDateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateTime].Parse,
+		nil,
+		`StrictDateTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -701,7 +866,12 @@ func (t DateTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.DateTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.DateTimeNoMillis].Parse,
+		nil,
+		`DateTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -720,7 +890,12 @@ func (t StrictDateTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictDateTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictDateTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateTimeNoMillis].Parse,
+		nil,
+		`StrictDateTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -739,7 +914,12 @@ func (t Hour) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Hour) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.Hour].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.Hour].Parse,
+		nil,
+		`Hour`,
+	)
 	if err != nil {
 		return err
 	}
@@ -758,7 +938,12 @@ func (t StrictHour) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictHour) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictHour].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictHour].Parse,
+		nil,
+		`StrictHour`,
+	)
 	if err != nil {
 		return err
 	}
@@ -777,7 +962,12 @@ func (t HourMinute) MarshalJSON() ([]byte, error) {
 }
 
 func (t *HourMinute) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.HourMinute].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.HourMinute].Parse,
+		nil,
+		`HourMinute`,
+	)
 	if err != nil {
 		return err
 	}
@@ -796,7 +986,12 @@ func (t StrictHourMinute) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictHourMinute) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictHourMinute].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictHourMinute].Parse,
+		nil,
+		`StrictHourMinute`,
+	)
 	if err != nil {
 		return err
 	}
@@ -815,7 +1010,12 @@ func (t HourMinuteSecond) MarshalJSON() ([]byte, error) {
 }
 
 func (t *HourMinuteSecond) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.HourMinuteSecond].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.HourMinuteSecond].Parse,
+		nil,
+		`HourMinuteSecond`,
+	)
 	if err != nil {
 		return err
 	}
@@ -834,7 +1034,12 @@ func (t StrictHourMinuteSecond) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictHourMinuteSecond) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictHourMinuteSecond].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictHourMinuteSecond].Parse,
+		nil,
+		`StrictHourMinuteSecond`,
+	)
 	if err != nil {
 		return err
 	}
@@ -853,7 +1058,12 @@ func (t HourMinuteSecondFraction) MarshalJSON() ([]byte, error) {
 }
 
 func (t *HourMinuteSecondFraction) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.HourMinuteSecondFraction].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.HourMinuteSecondFraction].Parse,
+		nil,
+		`HourMinuteSecondFraction`,
+	)
 	if err != nil {
 		return err
 	}
@@ -872,7 +1082,12 @@ func (t StrictHourMinuteSecondFraction) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictHourMinuteSecondFraction) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictHourMinuteSecondFraction].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictHourMinuteSecondFraction].Parse,
+		nil,
+		`StrictHourMinuteSecondFraction`,
+	)
 	if err != nil {
 		return err
 	}
@@ -891,7 +1106,12 @@ func (t HourMinuteSecondMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *HourMinuteSecondMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.HourMinuteSecondMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.HourMinuteSecondMillis].Parse,
+		nil,
+		`HourMinuteSecondMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -910,7 +1130,12 @@ func (t StrictHourMinuteSecondMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictHourMinuteSecondMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictHourMinuteSecondMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictHourMinuteSecondMillis].Parse,
+		nil,
+		`StrictHourMinuteSecondMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -929,7 +1154,12 @@ func (t OrdinalDate) MarshalJSON() ([]byte, error) {
 }
 
 func (t *OrdinalDate) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.OrdinalDate].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.OrdinalDate].Parse,
+		nil,
+		`OrdinalDate`,
+	)
 	if err != nil {
 		return err
 	}
@@ -948,7 +1178,12 @@ func (t StrictOrdinalDate) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictOrdinalDate) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictOrdinalDate].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictOrdinalDate].Parse,
+		nil,
+		`StrictOrdinalDate`,
+	)
 	if err != nil {
 		return err
 	}
@@ -967,7 +1202,12 @@ func (t OrdinalDateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *OrdinalDateTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.OrdinalDateTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.OrdinalDateTime].Parse,
+		nil,
+		`OrdinalDateTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -986,7 +1226,12 @@ func (t StrictOrdinalDateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictOrdinalDateTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictOrdinalDateTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictOrdinalDateTime].Parse,
+		nil,
+		`StrictOrdinalDateTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1005,7 +1250,12 @@ func (t OrdinalDateTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *OrdinalDateTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.OrdinalDateTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.OrdinalDateTimeNoMillis].Parse,
+		nil,
+		`OrdinalDateTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1024,7 +1274,12 @@ func (t StrictOrdinalDateTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictOrdinalDateTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictOrdinalDateTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictOrdinalDateTimeNoMillis].Parse,
+		nil,
+		`StrictOrdinalDateTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1043,7 +1298,12 @@ func (t Time) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Time) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.Time].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.Time].Parse,
+		nil,
+		`Time`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1062,7 +1322,12 @@ func (t StrictTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictTime].Parse,
+		nil,
+		`StrictTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1081,7 +1346,12 @@ func (t TimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.TimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.TimeNoMillis].Parse,
+		nil,
+		`TimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1100,7 +1370,12 @@ func (t StrictTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictTimeNoMillis].Parse,
+		nil,
+		`StrictTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1119,7 +1394,12 @@ func (t TTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.TTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.TTime].Parse,
+		nil,
+		`TTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1138,7 +1418,12 @@ func (t StrictTTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictTTime) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictTTime].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictTTime].Parse,
+		nil,
+		`StrictTTime`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1157,7 +1442,12 @@ func (t TTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.TTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.TTimeNoMillis].Parse,
+		nil,
+		`TTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1176,7 +1466,12 @@ func (t StrictTTimeNoMillis) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictTTimeNoMillis) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictTTimeNoMillis].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictTTimeNoMillis].Parse,
+		nil,
+		`StrictTTimeNoMillis`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1195,7 +1490,12 @@ func (t Year) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Year) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.Year].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.Year].Parse,
+		nil,
+		`Year`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1214,7 +1514,12 @@ func (t StrictYear) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictYear) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictYear].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictYear].Parse,
+		nil,
+		`StrictYear`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1233,7 +1538,12 @@ func (t YearMonth) MarshalJSON() ([]byte, error) {
 }
 
 func (t *YearMonth) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.YearMonth].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.YearMonth].Parse,
+		nil,
+		`YearMonth`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1252,7 +1562,12 @@ func (t StrictYearMonth) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictYearMonth) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictYearMonth].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictYearMonth].Parse,
+		nil,
+		`StrictYearMonth`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1271,7 +1586,12 @@ func (t YearMonthDay) MarshalJSON() ([]byte, error) {
 }
 
 func (t *YearMonthDay) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.YearMonthDay].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.YearMonthDay].Parse,
+		nil,
+		`YearMonthDay`,
+	)
 	if err != nil {
 		return err
 	}
@@ -1290,7 +1610,12 @@ func (t StrictYearMonthDay) MarshalJSON() ([]byte, error) {
 }
 
 func (t *StrictYearMonthDay) UnmarshalJSON(data []byte) error {
-	tt, err := UnmarshalEsTime(data, builtinformat.Formatters[builtinformat.StrictYearMonthDay].Parse, nil)
+	tt, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictYearMonthDay].Parse,
+		nil,
+		`StrictYearMonthDay`,
+	)
 	if err != nil {
 		return err
 	}

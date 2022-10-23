@@ -60,7 +60,7 @@ func (b *Binary) UnmarshalJSON(data []byte) error {
 }
 
 // String returns base64 encoded string
-func (b Binary) String() string {
+func (b *Binary) String() string {
 	if b.encoded == "" {
 		b.encoded = base64.StdEncoding.EncodeToString(b.decoded)
 	}
@@ -68,7 +68,7 @@ func (b Binary) String() string {
 }
 
 // Bytes returns decoded []byte.
-func (b Binary) Bytes() []byte {
+func (b *Binary) Bytes() []byte {
 	if b.decoded == nil {
 		// Validity is checked in constructor function or Unmarshal method.
 		b.decoded, _ = base64.StdEncoding.DecodeString(b.encoded)

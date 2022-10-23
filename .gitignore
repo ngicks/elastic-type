@@ -1,3 +1,7 @@
+# coverage report
+
+/cover.html
+
 # Binaries for programs and plugins
 *.exe
 *.exe~

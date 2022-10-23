@@ -63,7 +63,7 @@ func main() {
 		panic("dupe entry in date formats")
 	}
 
-	layoutset := preflightParse(safeFormats)
+	layoutset := parseFormats(safeFormats)
 
 	var marshallingFormat string
 	if *preferdFormat == "" {
@@ -111,7 +111,7 @@ func main() {
 	}
 }
 
-func preflightParse(formats []string) *flextime.LayoutSet {
+func parseFormats(formats []string) *flextime.LayoutSet {
 	first, formats := formats[0], formats[1:]
 
 	layoutSet, err := flextime.NewLayoutSet(first)

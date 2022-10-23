@@ -4,8 +4,14 @@ import (
 	"encoding/json"
 )
 
+// Boolean is elastic boolean type.
+// It can be unmarshalled from boolean literal or string literal of "true" / "false" or "" (empty string).
+// see: https://www.elastic.co/guide/en/elasticsearch/reference/8.4/boolean.html
+//
+// It marshals into boolean literal.
 type Boolean bool
 
+// MarshalJSON marshals this type into byte slice representing JSON boolean literal, true or false.
 func (b Boolean) MarshalJSON() ([]byte, error) {
 	return json.Marshal(bool(b))
 }
@@ -23,8 +29,15 @@ func (b Boolean) String() string {
 	return stringEsBoolean(bool(b))
 }
 
+// BooleanStr is elastic boolean type.
+// It can be unmarshalled from boolean literal of string literal of "true" / "false" or "" (empty string).
+// see: https://www.elastic.co/guide/en/elasticsearch/reference/8.4/boolean.html
+//
+// It marshals into string literal, "true" or "false".
 type BooleanStr bool
 
+// MarshalJSON marshals this type into byte slice representing JSON string literal, "true" or "false".
+// This never converts to an empty string.
 func (b BooleanStr) MarshalJSON() ([]byte, error) {
 	return json.Marshal(b.String())
 }
@@ -61,7 +74,6 @@ func unmarshalEsBoolean(data []byte) (bool, error) {
 	var v any
 	err := json.Unmarshal(data, &v)
 	if err != nil {
-		// this should not happen. validity is checked before it reaches this line.
 		return false, err
 	}
 

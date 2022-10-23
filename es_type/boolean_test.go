@@ -3,6 +3,7 @@ package estype_test
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 
 	estype "github.com/ngicks/elastic-type/es_type"
@@ -101,6 +102,8 @@ func testBooleanUnmarshal[T any](t *testing.T, testBool T) {
 	} {
 		err := json.Unmarshal([]byte(testCase), &testBool)
 		require.ErrorAs(t, err, &invalidTypeError)
+		// checking just that it does not panic
+		require.Condition(t, func() bool { return strings.HasPrefix(err.Error(), "invalid") })
 	}
 
 	err := json.Unmarshal([]byte(`{"A": kc;a123}`), &testBool)

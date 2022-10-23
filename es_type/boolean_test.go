@@ -55,8 +55,27 @@ func TestBoolean(t *testing.T) {
 }
 
 func TestBooleanInvalidInput(t *testing.T) {
+	type TestBool struct {
+		A estype.Boolean
+	}
+	type TestBoolStr struct {
+		A estype.BooleanStr
+	}
 	testBool := TestBool{}
+	testBoolStr := TestBoolStr{}
 
+	testBooleanUnmarshal(t, testBool)
+	testBooleanUnmarshal(t, testBoolStr)
+
+	var err error
+	var syntaxError *json.SyntaxError
+	err = testBool.A.UnmarshalJSON([]byte(`dawju9813`))
+	require.ErrorAs(t, err, &syntaxError)
+	err = testBoolStr.A.UnmarshalJSON([]byte(`dawju9813`))
+	require.ErrorAs(t, err, &syntaxError)
+}
+
+func testBooleanUnmarshal[T any](t *testing.T, testBool T) {
 	var invalidTypeError *estype.InvalidTypeError
 	for _, testCase := range []string{
 		`{"A": "foo"}`,
@@ -66,4 +85,22 @@ func TestBooleanInvalidInput(t *testing.T) {
 		err := json.Unmarshal([]byte(testCase), &testBool)
 		require.ErrorAs(t, err, &invalidTypeError)
 	}
+
+	err := json.Unmarshal([]byte(`{"A": kc;a123}`), &testBool)
+	var syntaxError *json.SyntaxError
+	require.ErrorAs(t, err, &syntaxError)
+}
+
+func TestBooleanString(t *testing.T) {
+	esBoolean := estype.Boolean(false)
+	esBooleanStr := estype.BooleanStr(false)
+
+	require.Equal(t, "false", esBoolean.String())
+	require.Equal(t, "false", esBooleanStr.String())
+
+	esBoolean = estype.Boolean(true)
+	esBooleanStr = estype.BooleanStr(true)
+
+	require.Equal(t, "true", esBoolean.String())
+	require.Equal(t, "true", esBooleanStr.String())
 }

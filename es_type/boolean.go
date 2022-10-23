@@ -54,7 +54,7 @@ func unmarshalEsBoolean(data []byte) (bool, error) {
 	switch string(data) {
 	case `true`, `"true"`:
 		return true, nil
-	case `false`, `"false"`:
+	case `false`, `"false"`, `""`:
 		return false, nil
 	}
 

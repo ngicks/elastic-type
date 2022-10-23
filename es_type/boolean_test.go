@@ -10,10 +10,10 @@ import (
 )
 
 type TestBool struct {
-	A    estype.Boolean
-	B    estype.Boolean
-	Astr estype.BooleanStr
-	Bstr estype.BooleanStr
+	A    *estype.Boolean
+	B    *estype.Boolean
+	Astr *estype.BooleanStr
+	Bstr *estype.BooleanStr
 }
 
 func TestBoolean(t *testing.T) {
@@ -38,10 +38,10 @@ func TestBoolean(t *testing.T) {
 		require.Equal(
 			t,
 			TestBool{
-				A:    estype.Boolean(testCase[0]),
-				B:    estype.Boolean(testCase[1]),
-				Astr: estype.BooleanStr(testCase[2]),
-				Bstr: estype.BooleanStr(testCase[3]),
+				A:    escape(estype.Boolean(testCase[0])),
+				B:    escape(estype.Boolean(testCase[1])),
+				Astr: escape(estype.BooleanStr(testCase[2])),
+				Bstr: escape(estype.BooleanStr(testCase[3])),
 			},
 			testBool,
 		)
@@ -52,6 +52,23 @@ func TestBoolean(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, testBool, testBool2)
 	}
+}
+
+func escape[T any](t T) *T {
+	return &t
+}
+
+func TestBooleanEmptyString(t *testing.T) {
+	type testUnmarshal struct {
+		Lit *estype.Boolean
+		Str *estype.BooleanStr
+	}
+	var testBool testUnmarshal
+	err := json.Unmarshal([]byte(`{"Lit": "",  "Str": ""}`), &testBool)
+	require.NoError(t, err)
+
+	require.Equal(t, estype.Boolean(false), *testBool.Lit)
+	require.Equal(t, estype.BooleanStr(false), *testBool.Str)
 }
 
 func TestBooleanInvalidInput(t *testing.T) {

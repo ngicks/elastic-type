@@ -26,11 +26,7 @@ func (b Boolean) String() string {
 type BooleanStr bool
 
 func (b BooleanStr) MarshalJSON() ([]byte, error) {
-	if b {
-		return json.Marshal("true")
-	} else {
-		return json.Marshal("false")
-	}
+	return json.Marshal(b.String())
 }
 
 func (b *BooleanStr) UnmarshalJSON(data []byte) error {

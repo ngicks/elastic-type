@@ -17,5 +17,7 @@ type CompletionParams struct {
 }
 
 func (p *CompletionParams) FillType() {
-	p.Type = Completion
+	if p.Type == "" {
+		p.Type = Completion
+	}
 }

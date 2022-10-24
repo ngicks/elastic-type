@@ -16,5 +16,7 @@ type PointParams struct {
 }
 
 func (p *PointParams) FillType() {
-	p.Type = Point
+	if p.Type == "" {
+		p.Type = Point
+	}
 }

@@ -14,7 +14,9 @@ type DenseVectorParams struct {
 }
 
 func (p *DenseVectorParams) FillType() {
-	p.Type = DenseVector
+	if p.Type == "" {
+		p.Type = DenseVector
+	}
 }
 
 type denseVectorSimilarity string

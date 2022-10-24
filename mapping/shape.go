@@ -16,5 +16,7 @@ type ShapeParams struct {
 }
 
 func (p *ShapeParams) FillType() {
-	p.Type = Shape
+	if p.Type == "" {
+		p.Type = Shape
+	}
 }

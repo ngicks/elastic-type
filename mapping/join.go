@@ -15,5 +15,7 @@ type JoinParams struct {
 }
 
 func (p *JoinParams) FillType() {
-	p.Type = Join
+	if p.Type == "" {
+		p.Type = Join
+	}
 }

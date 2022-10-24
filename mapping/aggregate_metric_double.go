@@ -9,7 +9,9 @@ type AggregateMetricDoubleParams struct {
 }
 
 func (p *AggregateMetricDoubleParams) FillType() {
-	p.Type = AggregateMetricDouble
+	if p.Type == "" {
+		p.Type = AggregateMetricDouble
+	}
 }
 
 type aggregateMetricDoubleAggregation string

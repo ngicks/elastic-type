@@ -29,5 +29,7 @@ type GeopointParams struct {
 }
 
 func (p *GeopointParams) FillType() {
-	p.Type = Geopoint
+	if p.Type == "" {
+		p.Type = Geopoint
+	}
 }

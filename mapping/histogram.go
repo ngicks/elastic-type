@@ -8,5 +8,7 @@ type HistogramParams struct {
 }
 
 func (p *HistogramParams) FillType() {
-	p.Type = Histogram
+	if p.Type == "" {
+		p.Type = Histogram
+	}
 }

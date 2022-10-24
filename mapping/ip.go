@@ -39,5 +39,7 @@ type IPParams struct {
 }
 
 func (p *IPParams) FillType() {
-	p.Type = IP
+	if p.Type == "" {
+		p.Type = IP
+	}
 }

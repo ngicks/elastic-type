@@ -14,5 +14,7 @@ type BinaryParams struct {
 }
 
 func (p *BinaryParams) FillType() {
-	p.Type = Binary
+	if p.Type == "" {
+		p.Type = Binary
+	}
 }

@@ -24,5 +24,7 @@ type RangeParams struct {
 }
 
 func (p *RangeParams) FillType() {
-	p.Type = Range
+	if p.Type == "" {
+		p.Type = Range
+	}
 }

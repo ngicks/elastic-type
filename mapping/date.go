@@ -44,5 +44,7 @@ type DateParams struct {
 }
 
 func (p *DateParams) FillType() {
-	p.Type = Date
+	if p.Type == "" {
+		p.Type = Date
+	}
 }

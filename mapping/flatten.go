@@ -28,7 +28,9 @@ type FlattenedParams struct {
 }
 
 func (p *FlattenedParams) FillType() {
-	p.Type = Flattened
+	if p.Type == "" {
+		p.Type = Flattened
+	}
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/index-options.html

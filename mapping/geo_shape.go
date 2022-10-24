@@ -17,7 +17,9 @@ type GeoshapeParams struct {
 }
 
 func (p *GeoshapeParams) FillType() {
-	p.Type = Geoshape
+	if p.Type == "" {
+		p.Type = Geoshape
+	}
 }
 
 type orientation string

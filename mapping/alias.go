@@ -8,5 +8,7 @@ type AliasParams struct {
 }
 
 func (p *AliasParams) FillType() {
-	p.Type = Alias
+	if p.Type == "" {
+		p.Type = Alias
+	}
 }

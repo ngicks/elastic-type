@@ -9,5 +9,7 @@ type VersionParams struct {
 }
 
 func (p *VersionParams) FillType() {
-	p.Type = Version
+	if p.Type == "" {
+		p.Type = Version
+	}
 }

@@ -49,7 +49,9 @@ type NumericParams struct {
 }
 
 func (p *NumericParams) FillType() {
-	p.Type = Integer
+	if p.Type == "" {
+		p.Type = Integer
+	}
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/number.html#scaled-float-params
@@ -59,5 +61,7 @@ type ScaledFloatParams struct {
 }
 
 func (p *ScaledFloatParams) FillType() {
-	p.Type = ScaledFloat
+	if p.Type == "" {
+		p.Type = ScaledFloat
+	}
 }

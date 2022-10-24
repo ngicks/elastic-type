@@ -8,5 +8,7 @@ type PercolatorParams struct {
 }
 
 func (p *PercolatorParams) FillType() {
-	p.Type = Percolator
+	if p.Type == "" {
+		p.Type = Percolator
+	}
 }

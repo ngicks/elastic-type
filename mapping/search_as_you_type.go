@@ -32,5 +32,7 @@ type SearchAsYouTypeParams struct {
 }
 
 func (p *SearchAsYouTypeParams) FillType() {
-	p.Type = SearchAsYouType
+	if p.Type == "" {
+		p.Type = SearchAsYouType
+	}
 }

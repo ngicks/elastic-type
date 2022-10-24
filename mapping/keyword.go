@@ -54,7 +54,9 @@ type KeywordParams struct {
 }
 
 func (p *KeywordParams) FillType() {
-	p.Type = Keyword
+	if p.Type == "" {
+		p.Type = Keyword
+	}
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/multi-fields.html
@@ -77,7 +79,9 @@ type ConstantKeywordParams struct {
 }
 
 func (p *ConstantKeywordParams) FillType() {
-	p.Type = ConstantKeyword
+	if p.Type == "" {
+		p.Type = ConstantKeyword
+	}
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/keyword.html#constant-keyword-field-type
@@ -93,5 +97,7 @@ type WildcardParams struct {
 }
 
 func (p *WildcardParams) FillType() {
-	p.Type = Wildcard
+	if p.Type == "" {
+		p.Type = Wildcard
+	}
 }

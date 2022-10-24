@@ -41,7 +41,9 @@ type TextParams struct {
 }
 
 func (p *TextParams) FillType() {
-	p.Type = Text
+	if p.Type == "" {
+		p.Type = Text
+	}
 }
 
 type FielddataFrequencyFilter struct {

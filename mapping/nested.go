@@ -15,5 +15,7 @@ type NestedParams struct {
 }
 
 func (p *NestedParams) FillType() {
-	p.Type = Nested
+	if p.Type == "" {
+		p.Type = Nested
+	}
 }

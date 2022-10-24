@@ -33,5 +33,7 @@ type BooleanParams struct {
 }
 
 func (p *BooleanParams) FillType() {
-	p.Type = Boolean
+	if p.Type == "" {
+		p.Type = Boolean
+	}
 }

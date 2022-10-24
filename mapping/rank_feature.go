@@ -12,5 +12,7 @@ type RankFeatureParams struct {
 }
 
 func (p *RankFeatureParams) FillType() {
-	p.Type = RankFeature
+	if p.Type == "" {
+		p.Type = RankFeature
+	}
 }

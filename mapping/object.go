@@ -16,5 +16,7 @@ type ObjectParams struct {
 
 func (p *ObjectParams) FillType() {
 	// The field is treated as object if type does not exist in property setting.
-	p.Type = ""
+	if p.Type == "" {
+		p.Type = ""
+	}
 }

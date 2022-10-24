@@ -20,5 +20,7 @@ type TokenCountParams struct {
 }
 
 func (p *TokenCountParams) FillType() {
-	p.Type = TokenCount
+	if p.Type == "" {
+		p.Type = TokenCount
+	}
 }

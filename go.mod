@@ -3,6 +3,7 @@ module github.com/ngicks/elastic-type
 go 1.19
 
 require (
+	github.com/google/go-cmp v0.5.9
 	github.com/ngicks/flextime v0.0.3
 	github.com/ngicks/type-param-common v0.0.15
 	github.com/stretchr/testify v1.8.0

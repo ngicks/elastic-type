@@ -33,7 +33,7 @@ func UnwrapValue[T any](val *[]T) []T {
 // see: https://www.elastic.co/guide/en/elasticsearch/reference/8.4/array.html
 type Field[T any] struct {
 	inner *[]T
-	// If true, it marshals into an array even when its inner value slice is of single element or empty.
+	// If true, it marshals into an array even when its inner value slice is of single element.
 	ShouldRetainArray bool
 }
 

@@ -17,7 +17,7 @@ func ParseUnixSec(v int64) time.Time {
 }
 
 func UnmarshalEsTime(data []byte, strParser StrParser, numParser NumParser, typeNames ...string) (time.Time, error) {
-	str := string(data)
+	str := strings.Trim(string(data), " ")
 	if strParser != nil && strings.HasPrefix(str, `"`) && strings.HasSuffix(str, `"`) {
 		return strParser(str[1 : len(str)-1])
 	}

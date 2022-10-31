@@ -2,6 +2,7 @@ package estype
 
 import (
 	"encoding/json"
+	"strings"
 )
 
 // Boolean is elastic boolean type.
@@ -64,7 +65,7 @@ func stringEsBoolean(b bool) string {
 }
 
 func unmarshalEsBoolean(data []byte) (bool, error) {
-	switch string(data) {
+	switch strings.Trim(string(data), " ") {
 	case `true`, `"true"`:
 		return true, nil
 	case `false`, `"false"`, `""`:

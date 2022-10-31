@@ -1,6 +1,9 @@
 package estype
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+)
 
 // IsEmpty determines if field would be treated as empty in Elastichsearch.
 // In its search context, null field is one of null, undefined (nonexistent), or an empty array.
@@ -99,6 +102,7 @@ func (f Field[T]) MarshalJSON() ([]byte, error) {
 }
 
 func (b *Field[T]) UnmarshalJSON(data []byte) error {
+	data = bytes.Trim(data, " ")
 	if data[0] == '[' {
 		return json.Unmarshal(data, b.inner)
 	}

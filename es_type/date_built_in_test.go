@@ -21,9 +21,8 @@ func init() {
 }
 
 type parseTestCase struct {
-	input     any // int64 or string
-	expected  time.Time
-	mustError bool
+	input    any // int64 or string
+	expected time.Time
 }
 
 func TestStrictDateOptionalTimeEpochMillis(t *testing.T) {
@@ -50,6 +49,24 @@ func TestStrictDateOptionalTimeEpochMillis(t *testing.T) {
 			testCase.expected,
 			timeVal,
 		)
+	}
+}
+
+func TestStrictDateOptionalTimeEpochMillisErr(t *testing.T) {
+	errorCases := []parseTestCase{
+		{
+			input: []string{"foobarbaz", "foooooo"},
+		},
+		{
+			input: "daonmelgoohnl39a891nzxca",
+		},
+	}
+
+	for _, testCase := range errorCases {
+		jsonValue, _ := json.Marshal(testCase.input)
+		var timeVal estype.StrictDateOptionalTimeEpochMillis
+		err := json.Unmarshal(jsonValue, &timeVal)
+		require.Error(t, err)
 	}
 }
 

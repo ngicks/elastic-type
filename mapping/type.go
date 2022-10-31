@@ -2,7 +2,6 @@ package mapping
 
 type esType string
 
-// Keyword
 const (
 	AggregateMetricDouble esType = "aggregate_metric_double"
 	Alias                 esType = "alias"

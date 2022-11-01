@@ -130,10 +130,6 @@ func (p *Property) UnmarshalJSON(data []byte) error {
 		var o PointParams
 		err = json.Unmarshal(data, &o)
 		p.Param = o
-	case Range:
-		var o RangeParams
-		err = json.Unmarshal(data, &o)
-		p.Param = o
 	case RankFeature, RankFeatures:
 		var o RankFeatureParams
 		err = json.Unmarshal(data, &o)

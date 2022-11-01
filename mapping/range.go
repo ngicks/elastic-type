@@ -5,7 +5,6 @@ package mapping
 //   - FloatRange
 //   - LongRange
 //   - DoubleRange
-//   - DateRange
 //   - IpRange
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/range.html#range-params
@@ -25,6 +24,17 @@ type RangeParams struct {
 
 func (p *RangeParams) FillType() {
 	if p.Type == "" {
-		p.Type = Range
+		p.Type = IntegerRange
+	}
+}
+
+type DateRangeParams struct {
+	Format string `json:"type,omitempty"`
+	RangeParams
+}
+
+func (p *DateRangeParams) FillType() {
+	if p.Type == "" {
+		p.Type = DateRange
 	}
 }

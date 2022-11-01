@@ -21,7 +21,6 @@ const (
 	Object                esType = "object" // Default value. nil is object.
 	Percolator            esType = "percolator"
 	Point                 esType = "point"
-	Range                 esType = "Range"
 	RankFeature           esType = "rank_feature"
 	RankFeatures          esType = "rank_features"
 	SearchAsYouType       esType = "search_as_you_type"

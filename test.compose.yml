@@ -1,5 +1,5 @@
 services:
-  elasticsaerch:
+  elasticsearch:
     image: elasticsearch:8.4.3
     environment:
       - xpack.security.enabled=false
@@ -34,7 +34,7 @@ services:
     networks:
       - appinternal
     depends_on:
-      elasticsaerch:
+      elasticsearch:
         condition: service_healthy
 
 networks:

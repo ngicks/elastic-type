@@ -27,6 +27,8 @@ services:
     tty: true
     entrypoint: /bin/bash
     working_dir: /root/project
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - type: bind
         source: "."

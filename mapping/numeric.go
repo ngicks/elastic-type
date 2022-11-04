@@ -57,7 +57,7 @@ func (p *NumericParams) FillType() {
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/number.html#scaled-float-params
 type ScaledFloatParams struct {
 	NumericParams
-	ScalingFactor uint `json:"scaling_factor"`
+	ScalingFactor float64 `json:"scaling_factor"`
 }
 
 func (p *ScaledFloatParams) FillType() {

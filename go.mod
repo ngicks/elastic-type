@@ -7,8 +7,9 @@ require (
 	github.com/google/go-cmp v0.5.9
 	github.com/mmcloughlin/geohash v0.10.0
 	github.com/ngicks/flextime v0.0.3
+	github.com/ngicks/gommon/pkg/randstr v0.0.0-20221106082638-0fa7a3f83454
 	github.com/ngicks/type-param-common v0.0.15
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 )
 
 require (
@@ -16,5 +17,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prataprc/goparsec v0.0.0-20211219142520-daac0e635e7e // indirect
+	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

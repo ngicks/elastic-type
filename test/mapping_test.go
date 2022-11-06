@@ -148,16 +148,16 @@ func TestMapping(t *testing.T) {
 	var mappingOfOurDefinedType mapping.MappingSettings
 	// error should not happen
 	_ = json.Unmarshal(bin, &mappingOfOurDefinedType)
-	anyMapEncdedThroughOurType := toAnyMap(mappingOfOurDefinedType)
+	anyMapEncodedThroughOurType := toAnyMap(mappingOfOurDefinedType)
 
 	var storedMapping map[string]any
 	_ = json.Unmarshal(bin, &storedMapping)
 
 	require.Conditionf(
 		func() bool {
-			return cmp.Equal(anyMapEncdedThroughOurType, storedMapping)
+			return cmp.Equal(anyMapEncodedThroughOurType, storedMapping)
 		},
 		"not equal: diff = %s",
-		cmp.Diff(storedMapping, anyMapEncdedThroughOurType),
+		cmp.Diff(storedMapping, anyMapEncodedThroughOurType),
 	)
 }

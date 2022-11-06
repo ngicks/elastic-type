@@ -36,9 +36,9 @@ func toAnyMap(v any) map[string]any {
 }
 
 func skipIfEsNotReachable(t *testing.T, esURL url.URL, preferFail bool) {
-	// We need to send a fetch request to some of Elasticsearch specific pathes
+	// We need to send a fetch request to some of Elasticsearch specific paths
 	// to ensure that there is a reachable instance.
-	// "_cluster/health" is just one of those pathes. It could be replaced with one of any else es specific pathes.
+	// "_cluster/health" is just one of those paths. It could be replaced with one of any else es specific paths.
 	esURL.Path = ""
 	esURL = *esURL.JoinPath("_cluster", "health")
 

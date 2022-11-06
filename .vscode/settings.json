@@ -3,5 +3,23 @@
   "gopls": {
     "formatting.gofumpt": true
   },
-  "go.testEnvFile": "${workspaceFolder}/test.env"
+  "go.testEnvFile": "${workspaceFolder}/test.env",
+  "cSpell.words": [
+    "Conditionf",
+    "estype",
+    "FillTyper",
+    "Freqs",
+    "Geopoint",
+    "Geoshape",
+    "gommon",
+    "hnsw",
+    "millis",
+    "nanos",
+    "ngicks",
+    "randstr",
+    "stretchr",
+    "typeparamcommon",
+    "Unmarshalled",
+    "unmarshals"
+  ]
 }

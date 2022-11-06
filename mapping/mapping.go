@@ -39,6 +39,10 @@ type Property struct {
 	Param any
 }
 
+func (p Property) MarshalJSON() ([]byte, error) {
+	return json.Marshal(p.Param)
+}
+
 func (p *Property) UnmarshalJSON(data []byte) error {
 	// TODO: use efficient way to retrieve type key from data.
 	type Ty struct {

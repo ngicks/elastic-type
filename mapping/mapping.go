@@ -4,10 +4,10 @@ import "encoding/json"
 
 // IndexSettings is main body for [Create index API.](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/indices-create-index.html)
 type IndexSettings struct {
-	// Aliases is irrevant for this package's goal.
+	// Aliases is irrelevant for this package's goal.
 	// But allowing it to be stored in here is maybe useful for some user.
 	Aliases any `json:"aliases,omitempty"`
-	// Settings is irrevant for this package's goal.
+	// Settings is irrelevant for this package's goal.
 	// But allowing it to be stored in here is maybe useful for some user.
 	Settings any       `json:"settings,omitempty"`
 	Mappings *Mappings `json:"mappings,omitempty"`

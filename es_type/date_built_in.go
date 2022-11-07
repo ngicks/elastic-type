@@ -27,6 +27,29 @@ func (t StrictDateOptionalTimeEpochMillis) String() string {
 	return time.Time(t).Format(builtinformat.FormatLayout[builtinformat.StrictDateOptionalTime])
 }
 
+type StrictDateOptionalTimeNanosEpochMillis time.Time
+
+func (t StrictDateOptionalTimeNanosEpochMillis) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.String())
+}
+
+func (t *StrictDateOptionalTimeNanosEpochMillis) UnmarshalJSON(data []byte) error {
+	bb, err := UnmarshalEsTime(
+		data,
+		builtinformat.Formatters[builtinformat.StrictDateOptionalTimeNanos].Parse,
+		time.UnixMilli,
+	)
+	if err != nil {
+		return err
+	}
+	*t = StrictDateOptionalTimeNanosEpochMillis(bb)
+	return nil
+}
+
+func (t StrictDateOptionalTimeNanosEpochMillis) String() string {
+	return time.Time(t).Format(builtinformat.FormatLayout[builtinformat.StrictDateOptionalTimeNanos])
+}
+
 type EpochMillis time.Time
 
 func (t EpochMillis) MarshalJSON() ([]byte, error) {

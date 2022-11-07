@@ -30,7 +30,7 @@ func UnwrapValue[T any](val *[]T) []T {
 	return *val
 }
 
-// Field is an Elastichsearch field helper type.
+// Field is an Elasticsearch field helper type.
 // A Field value can be null, undefined, T or an array of T.
 // It also can be a nested array but is not supported by this struct.
 // see: https://www.elastic.co/guide/en/elasticsearch/reference/8.4/array.html
@@ -38,6 +38,20 @@ type Field[T any] struct {
 	inner *[]T
 	// If true, it marshals into an array even when its inner value slice is of single element.
 	ShouldRetainArray bool
+}
+
+func NewField[T any](v []T, shouldRetainArray bool) Field[T] {
+	return Field[T]{
+		inner:             &v,
+		ShouldRetainArray: shouldRetainArray,
+	}
+}
+
+func NewFieldSingleValue[T any](v T, shouldRetainArray bool) Field[T] {
+	return Field[T]{
+		inner:             &[]T{v},
+		ShouldRetainArray: shouldRetainArray,
+	}
 }
 
 func (f Field[T]) IsNull() bool {

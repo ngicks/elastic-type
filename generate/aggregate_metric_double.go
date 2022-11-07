@@ -5,11 +5,13 @@ import (
 	"html/template"
 
 	"github.com/ngicks/elastic-type/mapping"
+	"github.com/ngicks/type-param-common/slice"
 )
 
-func GenerateAggregateMetricDoubleParams(agg mapping.AggregateMetricDoubleParams, tyeNamePrefix string) (tyName string, tyDef string) {
-	buf := bytes.NewBuffer(make([]byte, 0))
+func AggregateMetricDoubleParams(agg mapping.AggregateMetricDoubleParams, currentPointer slice.Deque[string]) GeneratedType {
+	fieldName, _ := currentPointer.PopBack()
 
+	buf := bytes.NewBuffer(make([]byte, 0))
 	var min, max, sum, valueCount bool
 
 	for _, v := range agg.Metrics {
@@ -26,7 +28,7 @@ func GenerateAggregateMetricDoubleParams(agg mapping.AggregateMetricDoubleParams
 	}
 
 	err := aggregateMetricDoubleType.Execute(buf, aggregateMetricDoubleTypeParam{
-		Prefix:     tyeNamePrefix,
+		Prefix:     capitalize(fieldName),
 		Min:        min,
 		Max:        max,
 		Sum:        sum,
@@ -36,7 +38,10 @@ func GenerateAggregateMetricDoubleParams(agg mapping.AggregateMetricDoubleParams
 		panic(err)
 	}
 
-	return tyeNamePrefix + "AggregateMetricDouble", buf.String()
+	return GeneratedType{
+		TyName: capitalize(fieldName) + "Agg",
+		TyDef:  buf.String(),
+	}
 }
 
 type aggregateMetricDoubleTypeParam struct {

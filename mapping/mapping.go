@@ -39,6 +39,10 @@ type Property struct {
 	Param any
 }
 
+func (p Property) IsObject() bool {
+	return p.Type == Object || p.Type == ""
+}
+
 func (p Property) MarshalJSON() ([]byte, error) {
 	return json.Marshal(p.Param)
 }

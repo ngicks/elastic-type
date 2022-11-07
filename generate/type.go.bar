@@ -6,16 +6,9 @@ import (
 	"github.com/ngicks/elastic-type/mapping"
 )
 
-// prefix including dot
-const estypePrefix = "estype."
-
-const anyMap = "map[string]interface{}"
-
-var estypeImport = []string{`estype "github.com/ngicks/elastic-type/es_type"`}
-
 type GenerationOption struct {
 	PreferStringBoolean bool
-	PreferedDateFormat  string
+	PreferredDateFormat string
 	PreferEpochDate     bool
 }
 
@@ -28,12 +21,11 @@ func GenerateFieldType(prop mapping.Property, tyNamePrefix string, opt Generatio
 		if prop.Type != "" && prop.Type != mapping.Object {
 			panic(fmt.Sprintf("unknown: %s", prop.Type))
 		}
-		// TODO: do recursive type generation.
-		tyName = anyMap
-		imports = nil
+
+		tyName, tyDef, imports = Object(*prop.Param.(*mapping.ObjectParams), tyNamePrefix, opt)
 	case mapping.AggregateMetricDouble:
 		tyName, tyDef = GenerateAggregateMetricDoubleParams(
-			prop.Param.(mapping.AggregateMetricDoubleParams),
+			*prop.Param.(*mapping.AggregateMetricDoubleParams),
 			tyNamePrefix,
 		)
 		imports = nil
@@ -56,9 +48,9 @@ func GenerateFieldType(prop mapping.Property, tyNamePrefix string, opt Generatio
 	case mapping.Date, mapping.DateNanoseconds:
 		// validity must be checked in caller. err is ignored here.
 		tyName, tyDef, imports, _ = DateFromParam(
-			prop.Param.(mapping.DateParams),
+			*prop.Param.(*mapping.DateParams),
 			tyNamePrefix+"DateTime",
-			opt.PreferedDateFormat,
+			opt.PreferredDateFormat,
 			opt.PreferEpochDate,
 		)
 	case mapping.DenseVector:

@@ -8,10 +8,15 @@ type GeneratedType struct {
 	Imports []string
 }
 
+type Options map[string]Option
+
 type Option struct {
-	IsRequired  bool
-	IsSingle    bool
-	ChildOption map[string]Option
+	IsRequired                     bool
+	IsSingle                       bool
+	PreferStringBoolean            bool
+	PreferredTimeMarshallingFormat string
+	PreferTimeEpochMarshalling     bool
+	ChildOption                    Options
 }
 
 // Generate generates Go struct types from an Elasticsearch mapping.
@@ -31,6 +36,8 @@ type Option struct {
 // The Elasticsearch (or Apache Lucene) does not place any assumption that your data fields.
 // opts here is meta data which will be used to build that assumption, like optional|required or single|many, by our own.
 // Keys of opts must be mapping property names. ChildOption for types which can not be nested will be simply ignored.
-func Generate(props mapping.Properties, opts map[string]Option) (highLevelTy, rawTy GeneratedType, err error) {
-	panic("not implemented")
+//
+// Always len(highLevenTy) == len(rawTy).
+func Generate(props mapping.Properties, tyName string, opts Options) (highLevelTy, rawTy []GeneratedType, err error) {
+	return object(props, opts, []string{tyName})
 }

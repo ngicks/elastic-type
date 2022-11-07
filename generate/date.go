@@ -17,25 +17,33 @@ import (
 //
 // If tyName is empty, generated type name is EsDateTime.
 // If marshallingFormat is empty, longest format will be used as marshaller.
-// If preferEpochMarshalling is true, generated type marshals into epoch millis or second. string otherwize.
+// If preferEpochMarshalling is true, generated type marshals into epoch millis or second. string otherwise.
 //
 // Currently prop is used only for Formats. Future update may use other fields.
 func DateFromParam(
 	prop mapping.DateParams,
-	tyName string,
 	marshallingFormat string,
-	preferEpochMarhsalling bool,
-) (generatedTyName string, tyDef string, imports []string, err error) {
-	var formats string
+	preferEpochMarshalling bool,
+	currentCursor slice.Deque[string],
+) (GeneratedType, error) {
 	if prop.Format == nil {
-		// must be sync with
-		return estypePrefix + "StrictDateOptionalTimeEpochMillis", "", estypeImport, nil
-	} else {
-		formats = *prop.Format
+		var tyName string
+		if prop.Type == mapping.Date {
+			// must be sync with ../es_type/date_built-in.go
+			tyName = estypePrefix + "StrictDateOptionalTimeEpochMillis"
+		} else {
+			tyName = estypePrefix + "StrictDateOptionalTimeNanosEpochMillis"
+		}
+		return GeneratedType{
+			TyName:  tyName,
+			Imports: estypeImport,
+		}, nil
 	}
+
+	formats := *prop.Format
 	layouts, hasNumFormat, isMillis, err := ParseFormatsString(formats)
 	if err != nil {
-		return "", "", nil, err
+		return GeneratedType{}, err
 	}
 
 	if marshallingFormat == "" {
@@ -43,11 +51,11 @@ func DateFromParam(
 	} else {
 		converted, err := flextime.ReplaceTimeToken(marshallingFormat)
 		if err != nil {
-			return "", "", nil, err
+			return GeneratedType{}, err
 		}
 		if !slice.Has(layouts.Layout(), converted) {
-			return "", "", nil, fmt.Errorf(
-				"prefered formated %s is not one of formats %+v",
+			return GeneratedType{}, fmt.Errorf(
+				"preferred format %s is not one of formats %+v",
 				marshallingFormat,
 				layouts.Layout(),
 			)
@@ -55,53 +63,50 @@ func DateFromParam(
 		marshallingFormat = converted
 	}
 
+	fieldName, _ := currentCursor.PopBack()
 	// TODO: check if format is only one and is one of elasticsearch built-in formats.
 	// If so, don't generate type. Use estype.<Type> instead.
-	generatedTyName, tyDef, imports = DateUnchecked(DateGenerationParam{
-		TyName:            typeName(tyName),
+	gen := DateUnchecked(DateGenerationParam{
+		TyName:            capitalize(fieldName) + "DateTime",
 		StrFormats:        layouts.Layout(),
 		MarshallingFormat: marshallingFormat,
 		HasNumFormat:      hasNumFormat,
 		NumFormatIsMillis: isMillis,
-		PreferEpoch:       preferEpochMarhsalling,
+		PreferEpoch:       preferEpochMarshalling,
 	})
-	return
+
+	return gen, nil
 }
 
-func typeName(n string) string {
-	if n == "" {
-		return "EsDateTime"
-	} else {
-		return n
-	}
-}
-
-func DateUnchecked(params DateGenerationParam) (tyName string, tyDef string, imports []string) {
+func DateUnchecked(params DateGenerationParam) GeneratedType {
 	buf := bytes.NewBuffer(make([]byte, 0))
 	err := dateTypeTmpl.Execute(buf, params)
 	if err != nil {
 		panic(err)
 	}
 
-	tyName = params.TyName
-	tyDef = buf.String()
-	imports = generateIpmorts(params.PreferEpoch)
-
-	return tyName, tyDef, imports
+	return GeneratedType{
+		TyName:  params.TyName,
+		TyDef:   buf.String(),
+		Imports: generateImports(params.PreferEpoch),
+	}
 }
 
 // DateTest generates test for a type which is result of generate.Date().
 // tyNamePrefix must be same of passed to generate.Date().
 // pkgName must be package name containing that generated type.
-func DateTest(tyNamePrefix string, pkgName string) (tyName string, tyDef string) {
+func DateTest(tyName string, pkgName string) GeneratedType {
 	buf := bytes.NewBuffer(make([]byte, 0))
 
 	_ = dateTestTmpl.Execute(buf, DateTestTmplParam{
-		TyName:      typeName(tyNamePrefix),
+		TyName:      capitalize(tyName),
 		PackageName: pkgName,
 	})
 
-	return tyName, buf.String()
+	return GeneratedType{
+		TyName: tyName,
+		TyDef:  buf.String(),
+	}
 }
 
 func ParseFormatsString(formats string) (layouts *flextime.LayoutSet, hasNumFormat, isMillis bool, err error) {
@@ -159,7 +164,7 @@ func excludeNumFormats(formats []string) (strFormats []string, hasNumFormat, isM
 	return formatSet.Values().Collect(), hasNumFormat, isMillis, hasDupe
 }
 
-func generateIpmorts(preferEpoch bool) []string {
+func generateImports(preferEpoch bool) []string {
 	imports := make([]string, 0)
 	if preferEpoch {
 		imports = append(imports, `"strconv"`)

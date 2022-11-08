@@ -178,16 +178,16 @@ var funcMap = template.FuncMap{
 
 var objectRawTemplate = template.Must(template.New("objectRawTemplate").Funcs(funcMap).Parse(`
 type {{.TyName}}Raw struct {
-{{range $propName, $typeName := .RawFields}}
-	{{toPascalCase $propName}}    estype.Field[{{$typeName}}]   ` + "`" + `json:"{{$propName}}"` + "`" + `
-{{end}}
-}
+{{range $propName, $typeName := .RawFields}}` +
+	`    {{toPascalCase $propName}}    estype.Field[{{$typeName}}]   ` + "`" + `json:"{{$propName}}"` + "`" +
+	`
+{{end}}}
 `))
 
 var objectTemplate = template.Must(template.New("objectTemplate").Funcs(funcMap).Parse(`
 type {{.TyName}} struct {
-{{range $propName, $typeNameOpt := .HighLevelFields}}
-	{{toPascalCase $propName}}   {{ if not $typeNameOpt.Option.IsRequired -}}*{{ end }}{{ if not $typeNameOpt.Option.IsSingle }}[]{{ end }}{{$typeNameOpt.TyName}}   ` + "`" + `json:"{{$propName}}"` + "`" + `
-{{end}}
-}
+{{range $propName, $typeNameOpt := .HighLevelFields}}` +
+	`    {{toPascalCase $propName}}   {{ if not $typeNameOpt.Option.IsRequired -}}*{{ end }}{{ if not $typeNameOpt.Option.IsSingle }}[]{{ end }}{{$typeNameOpt.TyName}}   ` + "`" + `json:"{{$propName}}"` + "`" +
+	`
+{{end }}}
 `))

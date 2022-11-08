@@ -3,7 +3,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/dense-vector.html#dense-vector-params
 type DenseVectorParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	Dims int    `json:"dims"`
 	// If true, you can search this field using the kNN search API.
 	// Defaults to false.

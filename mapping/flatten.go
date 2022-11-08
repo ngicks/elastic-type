@@ -3,7 +3,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/flattened.html#flattened-params
 type FlattenedParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// Defaults to 20.
 	DepthLimit *int `json:"depth_limit,omitempty"`
 	// DocValues indicates whether it should save field on disk in a column-stride fashion,

@@ -6,7 +6,7 @@ package mapping
 type NumericParams struct {
 	// Type is type of this property. Automatically filled if zero.
 	// Default is Integer.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// Coerce indicates whether it should try to convert other json value to number.
 	// Default(nil) is true.
 	// This is not applicable for unsigned_long.

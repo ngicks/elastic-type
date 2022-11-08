@@ -1,63 +1,63 @@
 package mapping
 
-type esType string
+type EsType string
 
 const (
-	AggregateMetricDouble esType = "aggregate_metric_double"
-	Alias                 esType = "alias"
-	Binary                esType = "binary" // Base64-encoded string
-	Boolean               esType = "boolean"
-	Completion            esType = "completion"
-	Date                  esType = "date"
-	DateNanoseconds       esType = "date_nanos"
-	DenseVector           esType = "dense_vector"
-	Flattened             esType = "flattened"
-	Geopoint              esType = "geo_point"
-	Geoshape              esType = "geo_shape"
-	Histogram             esType = "histogram"
-	IP                    esType = "ip"
-	Join                  esType = "join"
-	Nested                esType = "nested"
-	Object                esType = "object" // Default value. nil is object.
-	Percolator            esType = "percolator"
-	Point                 esType = "point"
-	RankFeature           esType = "rank_feature"
-	RankFeatures          esType = "rank_features"
-	SearchAsYouType       esType = "search_as_you_type"
-	Shape                 esType = "shape"
-	TokenCount            esType = "token_count"
-	Version               esType = "version"
+	AggregateMetricDouble EsType = "aggregate_metric_double"
+	Alias                 EsType = "alias"
+	Binary                EsType = "binary" // Base64-encoded string
+	Boolean               EsType = "boolean"
+	Completion            EsType = "completion"
+	Date                  EsType = "date"
+	DateNanoseconds       EsType = "date_nanos"
+	DenseVector           EsType = "dense_vector"
+	Flattened             EsType = "flattened"
+	Geopoint              EsType = "geo_point"
+	Geoshape              EsType = "geo_shape"
+	Histogram             EsType = "histogram"
+	IP                    EsType = "ip"
+	Join                  EsType = "join"
+	Nested                EsType = "nested"
+	Object                EsType = "object" // Default value. nil is object.
+	Percolator            EsType = "percolator"
+	Point                 EsType = "point"
+	RankFeature           EsType = "rank_feature"
+	RankFeatures          EsType = "rank_features"
+	SearchAsYouType       EsType = "search_as_you_type"
+	Shape                 EsType = "shape"
+	TokenCount            EsType = "token_count"
+	Version               EsType = "version"
 )
 
 // Text field types
 const (
-	Keyword         esType = "keyword"
-	ConstantKeyword esType = "constant_keyword"
-	Wildcard        esType = "wildcard"
-	Text            esType = "text"
+	Keyword         EsType = "keyword"
+	ConstantKeyword EsType = "constant_keyword"
+	Wildcard        EsType = "wildcard"
+	Text            EsType = "text"
 )
 
 // Numerics field types
 // see https://www.elastic.co/guide/en/elasticsearch/reference/8.4/number.html
 const (
-	Long         esType = "long"
-	Integer      esType = "integer"
-	Short        esType = "short"
-	Byte         esType = "byte"
-	Double       esType = "double"
-	Float        esType = "float"
-	HalfFloat    esType = "half_float"
-	ScaledFloat  esType = "scaled_float"
-	UnsignedLong esType = "unsigned_long"
+	Long         EsType = "long"
+	Integer      EsType = "integer"
+	Short        EsType = "short"
+	Byte         EsType = "byte"
+	Double       EsType = "double"
+	Float        EsType = "float"
+	HalfFloat    EsType = "half_float"
+	ScaledFloat  EsType = "scaled_float"
+	UnsignedLong EsType = "unsigned_long"
 )
 
 // Range field types
 // see https://www.elastic.co/guide/en/elasticsearch/reference/8.4/range.html
 const (
-	IntegerRange esType = "integer_range"
-	FloatRange   esType = "float_range"
-	LongRange    esType = "long_range"
-	DoubleRange  esType = "double_range"
-	DateRange    esType = "date_range"
-	IpRange      esType = "ip_range"
+	IntegerRange EsType = "integer_range"
+	FloatRange   EsType = "float_range"
+	LongRange    EsType = "long_range"
+	DoubleRange  EsType = "double_range"
+	DateRange    EsType = "date_range"
+	IpRange      EsType = "ip_range"
 )

@@ -10,7 +10,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/range.html#range-params
 type RangeParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// Default(nil) is true.
 	Coerce *bool `json:"coerce,omitempty"`
 	// Index indicates whether the field should be quickly searchable.

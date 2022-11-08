@@ -6,7 +6,7 @@ package mapping
 type RankFeatureParams struct {
 	// Type is type of this property. Automatically filled if zero.
 	// Default is RankFeature.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// Defaults to true
 	PositiveScoreImpact *bool `json:"positive_score_impact,omitempty"`
 }

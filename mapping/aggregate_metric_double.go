@@ -3,7 +3,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/aggregate-metric-double.html#aggregate-metric-double-params
 type AggregateMetricDoubleParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type          esType                             `json:"type"`
+	Type          EsType                             `json:"type"`
 	Metrics       []aggregateMetricDoubleAggregation `json:"metrics"`
 	DefaultMetric aggregateMetricDoubleAggregation   `json:"default_metric"`
 }

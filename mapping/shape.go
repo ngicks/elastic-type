@@ -3,7 +3,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/shape.html#shape-mapping-options
 type ShapeParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// Defaults to "ccw".
 	Orientation *orientation `json:"orientation,omitempty"`
 	// IgnoreMalformed indicates whether it should ignore malformed value rather than rejecting whole document.

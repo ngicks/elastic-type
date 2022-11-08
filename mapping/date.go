@@ -6,7 +6,7 @@ package mapping
 type DateParams struct {
 	// Type is type of this property. Automatically filled if zero.
 	// Default is Date.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// DocValues indicates whether it should save field on disk in a column-stride fashion,
 	// so that it can later be used for sorting, aggregations, or scripting.
 	// Default(nil) is true.

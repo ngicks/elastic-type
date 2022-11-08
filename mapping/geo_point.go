@@ -3,7 +3,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/geo-point.html#geo-point-params
 type GeopointParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// IgnoreMalformed indicates whether it should ignore malformed value rather than rejecting whole document.
 	// Default(nil) is false.
 	IgnoreMalformed *bool `json:"ignore_malformed,omitempty"`

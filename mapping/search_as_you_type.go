@@ -4,7 +4,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/search-as-you-type.html#general-params
 type SearchAsYouTypeParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// Valid values are 2 (inclusive) to 4 (inclusive).
 	// Defaults to 3.
 	MaxShingleSize *int `json:"max_shingle_size,omitempty"`

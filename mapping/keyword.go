@@ -3,7 +3,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/keyword.html#keyword-params
 type KeywordParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// DocValues indicates whether it should save field on disk in a column-stride fashion,
 	// so that it can later be used for sorting, aggregations, or scripting.
 	// Default(nil) is true.
@@ -64,14 +64,14 @@ type Fields map[string]SubFieldType
 
 type SubFieldType struct {
 	// Type is text or keyword
-	Type     esType  `json:"type"`
+	Type     EsType  `json:"type"`
 	Analyzer *string `json:"analyzer,omitempty"`
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/keyword.html#constant-keyword-field-type
 type ConstantKeywordParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// Meta is metadata about the field.
 	Meta *Meta `json:"meta,omitempty"`
 	// If value is not set, first indexed value will be used.
@@ -87,7 +87,7 @@ func (p *ConstantKeywordParams) FillType() {
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/keyword.html#constant-keyword-field-type
 type WildcardParams struct {
 	// Type is type of this property. Automatically filled if zero.
-	Type esType `json:"type,omitempty"`
+	Type EsType `json:"type,omitempty"`
 	// NullValue is substituted value for any explicit null (nil).
 	// Defaults to null (nil), which means the field is treated as missing.
 	// Invariants: invalid to set NullValue to true if the script parameter is set.

@@ -19,7 +19,12 @@ var estypeImport = []string{`estype "github.com/ngicks/elastic-type/es_type"`}
 
 // Field generates a type for input property.
 // Input prop must be one that can not be nested (other than Object or Nested types).
-func Field(prop mapping.Property, currentPointer slice.Deque[string], opt Option) (rawTy GeneratedType, err error) {
+func Field(
+	prop mapping.Property,
+	currentPointer slice.Deque[string],
+	globalOpt GlobalOption,
+	opt FieldOption,
+) (rawTy GeneratedType, err error) {
 	switch prop.Type {
 	case mapping.AggregateMetricDouble:
 		gen := AggregateMetricDoubleParams(
@@ -41,7 +46,7 @@ func Field(prop mapping.Property, currentPointer slice.Deque[string], opt Option
 		}, nil
 	case mapping.Boolean:
 		var tyName string
-		if opt.PreferStringBoolean {
+		if opt.PreferStringBoolean.True() {
 			tyName = estypePrefix + "BooleanStr"
 		} else {
 			tyName = estypePrefix + "Boolean"
@@ -59,7 +64,7 @@ func Field(prop mapping.Property, currentPointer slice.Deque[string], opt Option
 		gen, err := DateFromParam(
 			*prop.Param.(*mapping.DateParams),
 			opt.PreferredTimeMarshallingFormat,
-			opt.PreferTimeEpochMarshalling,
+			opt.PreferTimeEpochMarshalling.True(),
 			currentPointer,
 		)
 		if err != nil {

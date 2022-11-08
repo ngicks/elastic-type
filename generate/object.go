@@ -9,13 +9,42 @@ import (
 	"github.com/ngicks/elastic-type/mapping"
 )
 
-func object(props mapping.Properties, opts Options, currentPointer []string) (highLevelTy, rawTy []GeneratedType, err error) {
+type tyNameWithOption struct {
+	TyName string
+	Option concreteFieldOption
+}
+
+type concreteFieldOption struct {
+	IsRequired                     bool
+	IsSingle                       bool
+	PreferStringBoolean            bool
+	PreferredTimeMarshallingFormat string
+	PreferTimeEpochMarshalling     bool
+}
+
+func fieldOptToConcrete(f FieldOption) concreteFieldOption {
+	return concreteFieldOption{
+		IsRequired:                     f.IsRequired.True(),
+		IsSingle:                       f.IsSingle.True(),
+		PreferStringBoolean:            f.PreferStringBoolean.True(),
+		PreferredTimeMarshallingFormat: f.PreferredTimeMarshallingFormat,
+		PreferTimeEpochMarshalling:     f.PreferTimeEpochMarshalling.True(),
+	}
+}
+
+func object(
+	props mapping.Properties,
+	globalOpt GlobalOption,
+	opts MapOption,
+	currentPointer []string,
+) (highLevelTy, rawTy []GeneratedType, err error) {
 	var subHighLevelTypes, subRawTypes []GeneratedType
-	highLevelFields := map[string]string{}
+	highLevelFields := map[string]tyNameWithOption{}
 	rawFields := map[string]string{}
 
 	for name, param := range props {
-		option := opts[name]
+		fieldOption := opts[name]
+		overlaidOption := globalOpt.Overlay(param, fieldOption)
 
 		if param.IsObject() || param.Type == mapping.Nested {
 			var subHighLevelTy, subRawTy []GeneratedType
@@ -24,13 +53,15 @@ func object(props mapping.Properties, opts Options, currentPointer []string) (hi
 			if param.IsObject() {
 				subHighLevelTy, subRawTy, err = Object(
 					*param.Param.(*mapping.ObjectParams),
-					option.ChildOption,
+					globalOpt,
+					fieldOption.ChildOption,
 					append(currentPointer, name),
 				)
 			} else {
 				subHighLevelTy, subRawTy, err = Nested(
 					*param.Param.(*mapping.NestedParams),
-					option.ChildOption,
+					globalOpt,
+					fieldOption.ChildOption,
 					append(currentPointer, name),
 				)
 			}
@@ -41,15 +72,27 @@ func object(props mapping.Properties, opts Options, currentPointer []string) (hi
 			subHighLevelTypes = append(subHighLevelTypes, subHighLevelTy...)
 			subRawTypes = append(subRawTypes, subRawTy...)
 
-			highLevelFields[name] = subHighLevelTy[0].TyName
+			subHighLevelTy[0].Option = overlaidOption
+			subRawTy[0].Option = overlaidOption
+
+			highLevelFields[name] = tyNameWithOption{
+				TyName: subHighLevelTy[0].TyName,
+				Option: fieldOptToConcrete(overlaidOption),
+			}
 			rawFields[name] = subRawTy[0].TyName
+
 		} else {
-			gen, err := Field(param, currentPointer, option)
+			gen, err := Field(param, currentPointer, globalOpt, fieldOption)
+			gen.Option = overlaidOption
+
 			if err != nil {
 				return nil, nil, err
 			}
 
-			highLevelFields[name] = gen.TyName
+			highLevelFields[name] = tyNameWithOption{
+				TyName: gen.TyName,
+				Option: fieldOptToConcrete(overlaidOption),
+			}
 			rawFields[name] = gen.TyName
 
 			subHighLevelTypes = append(subHighLevelTypes, gen)
@@ -93,8 +136,13 @@ func object(props mapping.Properties, opts Options, currentPointer []string) (hi
 		nil
 }
 
-func Object(p mapping.ObjectParams, opts Options, currentPointer []string) (highLevelTy, rawTy []GeneratedType, err error) {
-	return object(*p.Properties, opts, currentPointer)
+func Object(
+	p mapping.ObjectParams,
+	globalOpt GlobalOption,
+	opts MapOption,
+	currentPointer []string,
+) (highLevelTy, rawTy []GeneratedType, err error) {
+	return object(*p.Properties, globalOpt, opts, currentPointer)
 }
 
 var caseDelimiter = regexp.MustCompile("[_-]")
@@ -120,7 +168,7 @@ func toPascalCaseDelimiter(v string) string {
 
 type objectTemplateParam struct {
 	TyName          string
-	HighLevelFields map[string]string
+	HighLevelFields map[string]tyNameWithOption
 	RawFields       map[string]string
 }
 
@@ -138,8 +186,8 @@ type {{.TyName}}Raw struct {
 
 var objectTemplate = template.Must(template.New("objectTemplate").Funcs(funcMap).Parse(`
 type {{.TyName}} struct {
-{{range $propName, $typeName := .HighLevelFields}}
-	{{toPascalCase $propName}}    {{$typeName}}   ` + "`" + `json:"{{$propName}}"` + "`" + `
+{{range $propName, $typeNameOpt := .HighLevelFields}}
+	{{toPascalCase $propName}}   {{ if not $typeNameOpt.Option.IsRequired -}}*{{ end }}{{ if not $typeNameOpt.Option.IsSingle }}[]{{ end }}{{$typeNameOpt.TyName}}   ` + "`" + `json:"{{$propName}}"` + "`" + `
 {{end}}
 }
 `))

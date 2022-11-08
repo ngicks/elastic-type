@@ -54,10 +54,34 @@ func TestObjectGenerate(t *testing.T) {
 	highLevelTypes, rawTypes, err := generate.Generate(
 		settings.Mappings.Properties,
 		"sample",
-		generate.Options{},
+		generate.GlobalOption{
+			IsRequired: generate.True,
+		},
+		generate.MapOption{
+			"manager": {
+				IsSingle: generate.True,
+				ChildOption: generate.MapOption{
+					"age": generate.FieldOption{
+						IsSingle:   generate.True,
+						IsRequired: generate.False,
+					},
+					"name": {
+						IsSingle: generate.True,
+						ChildOption: generate.MapOption{
+							"first": {
+								IsSingle: generate.True,
+							},
+							"last": {
+								IsRequired: generate.False,
+							},
+						},
+					},
+				},
+			},
+		},
 	)
 
-	t.Logf("high level types: %s", highLevelTypes)
-	t.Logf("raw types: %s", rawTypes)
+	t.Logf("high level types: %v", highLevelTypes)
+	t.Logf("raw types: %v", rawTypes)
 	t.Logf("err: %v", err)
 }

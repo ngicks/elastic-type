@@ -5,6 +5,13 @@ import (
 	"encoding/json"
 )
 
+const (
+	StructTag = "esjson"
+	// If set to struct tag (`esjson:"single"`),
+	// marshal into always single value, even if the field has many values.
+	TagSingle = "single"
+)
+
 // IsEmpty determines if field would be treated as empty in Elastichsearch.
 // In its search context, null field is one of null, undefined (nonexistent), or an empty array.
 func IsEmpty[T any](val *[]T) bool {
@@ -54,6 +61,14 @@ func NewFieldSingleValue[T any](v T, shouldRetainArray bool) Field[T] {
 	}
 }
 
+func NewFieldNull[T any](shouldRetainArray bool) Field[T] {
+	f := Field[T]{
+		ShouldRetainArray: shouldRetainArray,
+	}
+	f.SetNull()
+	return f
+}
+
 func (f Field[T]) IsNull() bool {
 	return IsNull(f.inner)
 }
@@ -97,6 +112,30 @@ func (f Field[T]) ValueSingle() *T {
 	return nil
 }
 
+// ValueAny returns inner value in any type.
+// This can be used without any instantiation.
+//
+// If mustSingle is true, value can be a single T,
+// or if mustSingle is true and the inner value is empty []T,
+// return zero value of T.
+func (f Field[T]) ValueAny(mustSingle bool) any {
+	if f.IsUndefined() || f.IsNull() {
+		return nil
+	}
+
+	val := f.Unwrap()
+	if mustSingle {
+		if len(val) == 0 {
+			var zero T
+			return zero
+		} else {
+			return val[0]
+		}
+	} else {
+		return val
+	}
+}
+
 func (f Field[T]) Unwrap() []T {
 	return UnwrapValue(f.inner)
 }
@@ -105,6 +144,12 @@ func (f Field[T]) UnwrapSingle() T {
 	return (*f.inner)[0]
 }
 
+// MarshalJSON encodes f into a json format.
+//
+// If f only has a single element and ShouldRetainArray is false, T will be marshalled.
+// It marshalls as []T otherwise.
+//
+// For most cases, a struct that only contains Field[T] should be marshalled through MarshalFieldsJSON.
 func (f Field[T]) MarshalJSON() ([]byte, error) {
 	if f.IsUndefined() || f.IsNull() {
 		return []byte("null"), nil

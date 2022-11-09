@@ -5,7 +5,11 @@
   },
   "go.testEnvFile": "${workspaceFolder}/test.env",
   "cSpell.words": [
+    "builtinformat",
     "Conditionf",
+    "Deque",
+    "esfield",
+    "esjson",
     "estype",
     "FillTyper",
     "Freqs",
@@ -13,13 +17,20 @@
     "Geoshape",
     "gommon",
     "hnsw",
+    "Lucene",
     "millis",
     "nanos",
+    "netip",
     "ngicks",
     "randstr",
     "stretchr",
+    "struct",
+    "subobjects",
     "typeparamcommon",
+    "unexported",
+    "Uninstantiated",
     "Unmarshalled",
+    "Unmarshalling",
     "unmarshals"
   ]
 }

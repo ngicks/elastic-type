@@ -27,10 +27,7 @@ func Field(
 ) (rawTy GeneratedType, err error) {
 	switch prop.Type {
 	case mapping.AggregateMetricDouble:
-		gen := AggregateMetricDoubleParams(
-			*prop.Param.(*mapping.AggregateMetricDoubleParams),
-			currentPointer,
-		)
+		gen := AggregateMetricDoubleParams(*prop.Param.(*mapping.AggregateMetricDoubleParams))
 		return gen, nil
 	case mapping.Alias:
 		// FIXME: add special handling for this.

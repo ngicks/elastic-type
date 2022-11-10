@@ -2,10 +2,9 @@ package generate
 
 import (
 	"github.com/ngicks/elastic-type/mapping"
-	"github.com/ngicks/type-param-common/slice"
 )
 
-func AggregateMetricDoubleParams(agg mapping.AggregateMetricDoubleParams, currentPointer slice.Deque[string]) GeneratedType {
+func AggregateMetricDoubleParams(agg mapping.AggregateMetricDoubleParams) GeneratedType {
 	var min, max, sum, valueCount bool
 
 	for _, v := range agg.Metrics {

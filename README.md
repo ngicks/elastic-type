@@ -31,6 +31,7 @@ For example:
 - [x] geopoint
 - [x] geoshape
 - [ ] join
+- [ ] ranges
 - [ ] rank_feature/rank_features
 - [ ] point
   - basically same as geopoint, but fewer supported data notations.

@@ -22,9 +22,9 @@ import (
 // Currently prop is used only for Formats. Future update may use other fields.
 func DateFromParam(
 	prop mapping.DateParams,
+	tyName string,
 	marshallingFormat string,
 	preferEpochMarshalling bool,
-	currentCursor slice.Deque[string],
 ) (GeneratedType, error) {
 	if prop.Format == nil {
 		var tyName string
@@ -63,11 +63,10 @@ func DateFromParam(
 		marshallingFormat = converted
 	}
 
-	fieldName, _ := currentCursor.PopBack()
 	// TODO: check if format is only one and is one of elasticsearch built-in formats.
 	// If so, don't generate type. Use estype.<Type> instead.
 	gen := DateUnchecked(DateGenerationParam{
-		TyName:            capitalize(fieldName) + "DateTime",
+		TyName:            capitalize(tyName),
 		StrFormats:        layouts.Layout(),
 		MarshallingFormat: marshallingFormat,
 		HasNumFormat:      hasNumFormat,

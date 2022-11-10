@@ -63,9 +63,9 @@ func Field(
 	case mapping.Date, mapping.DateNanoseconds:
 		gen, err := DateFromParam(
 			*prop.Param.(*mapping.DateParams),
+			globalOpt.TypeNameGenerator.Gen(currentPointer),
 			opt.PreferredTimeMarshallingFormat,
 			opt.PreferTimeEpochMarshalling.True(),
-			currentPointer,
 		)
 		if err != nil {
 			return GeneratedType{}, err

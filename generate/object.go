@@ -2,6 +2,7 @@ package generate
 
 import (
 	"bytes"
+	"fmt"
 	"regexp"
 	"strings"
 	"text/template"
@@ -142,6 +143,23 @@ func Object(
 	opts MapOption,
 	currentPointer []string,
 ) (highLevelTy, rawTy []GeneratedType, err error) {
+	// Ignore dynamic inheritance.
+	if p.Dynamic != nil && (*p.Dynamic == "true" || *p.Dynamic == true) {
+		// What should we do it Dynamic is "runtime"?
+		// TODO: research what will happen when dynamic == "runtime".
+		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(currentPointer))
+		return []GeneratedType{
+				{
+					TyName: tyName,
+					TyDef:  fmt.Sprintf("type %s map[string]any", tyName),
+				},
+			}, []GeneratedType{
+				{
+					TyName: tyName + "Raw",
+					TyDef:  fmt.Sprintf("type %s map[string]any", tyName+"Raw"),
+				},
+			}, nil
+	}
 	return object(*p.Properties, globalOpt, opts, currentPointer)
 }
 

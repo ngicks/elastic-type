@@ -1,6 +1,12 @@
 package generate
 
-import "github.com/ngicks/elastic-type/mapping"
+import (
+	"fmt"
+	"strconv"
+
+	"github.com/ngicks/elastic-type/mapping"
+	"github.com/ngicks/type-param-common/set"
+)
 
 type optStr string
 
@@ -31,12 +37,85 @@ func (s optStr) Overlay(other optStr) optStr {
 	}
 }
 
+type TypeNameGenerationRule func(currentPointer []string) string
+
+func FieldName() TypeNameGenerationRule {
+	return func(currentPointer []string) string {
+		return currentPointer[len(currentPointer)-1]
+	}
+}
+
+type Haser interface {
+	Has(string) bool
+}
+
+type TypeNameFallBackRule func(tyName string, currentPointer []string, usedTypeName Haser) string
+
+func UseOneUpperFieldName(shouldPanicOnOverlap bool) TypeNameFallBackRule {
+	return func(tyName string, currentPointer []string, usedTypeName Haser) string {
+		if len(currentPointer) < 2 {
+			panic("broken invariants: currentPointer must be len(c) >= 2")
+		}
+		tyName = capitalize(currentPointer[len(currentPointer)-2]) + tyName
+
+		if usedTypeName.Has(tyName) {
+			if shouldPanicOnOverlap {
+				panic(fmt.Errorf("overlapping name: %s", tyName))
+			}
+
+			old := tyName
+			var i int64 = 1
+			for {
+				tyName = old + strconv.FormatInt(i, 10)
+				if !usedTypeName.Has(tyName) {
+					break
+				}
+				i++
+			}
+		}
+
+		return tyName
+	}
+}
+
+type TypeNameGenerator struct {
+	Generate     TypeNameGenerationRule
+	FallBack     TypeNameFallBackRule
+	usedTypeName *set.Set[string]
+}
+
+func (g *TypeNameGenerator) lazyInit() {
+	if g.Generate == nil {
+		g.Generate = FieldName()
+	}
+	if g.FallBack == nil {
+		g.FallBack = UseOneUpperFieldName(false)
+	}
+	if g.usedTypeName == nil {
+		g.usedTypeName = set.New[string]()
+	}
+}
+
+func (g *TypeNameGenerator) Gen(currentPointer []string) string {
+	g.lazyInit()
+
+	tyName := g.Generate(currentPointer)
+
+	if g.usedTypeName.Has(tyName) {
+		tyName = g.FallBack(tyName, currentPointer, g.usedTypeName)
+	}
+
+	g.usedTypeName.Add(tyName)
+	return tyName
+}
+
 type GlobalOption struct {
-	IsRequired                 optStr     // prefer fields to be unmarshalled into non-pointer type T, instead of *T.
-	IsSingle                   optStr     // prefer fields to be unmarshalled into single value T, instead of []T.
-	PreferStringBoolean        optStr     // prefer Boolean types to marshal into "true" / "false".
-	PreferTimeEpochMarshalling optStr     // prefer Date types to marshal into epoch millis or epoch second.
-	TypeOption                 TypeOption // Default options for the type.
+	IsRequired                 optStr            // prefer fields to be unmarshalled into non-pointer type T, instead of *T.
+	IsSingle                   optStr            // prefer fields to be unmarshalled into single value T, instead of []T.
+	PreferStringBoolean        optStr            // prefer Boolean types to marshal into "true" / "false".
+	PreferTimeEpochMarshalling optStr            // prefer Date types to marshal into epoch millis or epoch second.
+	TypeOption                 TypeOption        // Default options for the type.
+	TypeNameGenerator          TypeNameGenerator // Defaults to FieldName().
 }
 
 // Overlay overlays options.

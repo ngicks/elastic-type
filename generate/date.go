@@ -13,13 +13,6 @@ import (
 	"github.com/ngicks/type-param-common/slice"
 )
 
-// DateFromParam generates type from given parameters.
-//
-// If tyName is empty, generated type name is EsDateTime.
-// If marshallingFormat is empty, longest format will be used as marshaller.
-// If preferEpochMarshalling is true, generated type marshals into epoch millis or second. string otherwise.
-//
-// Currently prop is used only for Formats. Future update may use other fields.
 func DateFromParam(
 	prop mapping.DateParams,
 	tyName string,

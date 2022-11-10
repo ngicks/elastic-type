@@ -34,7 +34,7 @@ func Field(
 		// Alias type needs knowledge about referenced field...
 		// Do nothing here?
 		return GeneratedType{
-			TyName: anyMap,
+			TyName: "any",
 		}, nil
 	case mapping.Binary:
 		return GeneratedType{

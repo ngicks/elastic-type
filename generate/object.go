@@ -7,6 +7,7 @@ import (
 	"strings"
 	"text/template"
 
+	estype "github.com/ngicks/elastic-type/es_type"
 	"github.com/ngicks/elastic-type/mapping"
 )
 
@@ -41,7 +42,7 @@ func object(
 ) (highLevelTy, rawTy []GeneratedType, err error) {
 	var subHighLevelTypes, subRawTypes []GeneratedType
 	highLevelFields := map[string]tyNameWithOption{}
-	rawFields := map[string]string{}
+	rawFields := map[string]tyNameWithOption{}
 
 	tyName := globalOpt.TypeNameGenerator.Gen(fieldNames)
 
@@ -82,7 +83,10 @@ func object(
 				TyName: subHighLevelTy[0].TyName,
 				Option: fieldOptToConcrete(overlaidOption),
 			}
-			rawFields[name] = subRawTy[0].TyName
+			rawFields[name] = tyNameWithOption{
+				TyName: subRawTy[0].TyName,
+				Option: fieldOptToConcrete(overlaidOption),
+			}
 
 		} else {
 			gen, err := Field(param, fieldNames, globalOpt, fieldOption)
@@ -96,7 +100,10 @@ func object(
 				TyName: gen.TyName,
 				Option: fieldOptToConcrete(overlaidOption),
 			}
-			rawFields[name] = gen.TyName
+			rawFields[name] = tyNameWithOption{
+				TyName: gen.TyName,
+				Option: fieldOptToConcrete(overlaidOption),
+			}
 
 			subHighLevelTypes = append(subHighLevelTypes, gen)
 			subRawTypes = append(subRawTypes, gen)
@@ -186,7 +193,7 @@ func toPascalCaseDelimiter(v string) string {
 type objectTemplateParam struct {
 	TyName          string
 	HighLevelFields map[string]tyNameWithOption
-	RawFields       map[string]string
+	RawFields       map[string]tyNameWithOption
 }
 
 var funcMap = template.FuncMap{
@@ -195,8 +202,12 @@ var funcMap = template.FuncMap{
 
 var objectRawTemplate = template.Must(template.New("objectRawTemplate").Funcs(funcMap).Parse(`
 type {{.TyName}}Raw struct {
-{{range $propName, $typeName := .RawFields}}` +
-	`    {{toPascalCase $propName}}    estype.Field[{{$typeName}}]   ` + "`" + `json:"{{$propName}}"` + "`" +
+{{range $propName, $typeNameOpt := .RawFields}}` +
+	// field name - field type
+	`    {{toPascalCase $propName}}    estype.Field[{{$typeNameOpt.TyName}}]   ` +
+	// struct tag
+	"`" + `json:"{{$propName}}"  {{- if $typeNameOpt.Option.IsSingle }}` +
+	` ` + estype.StructTag + `:" ` + estype.TagSingle + `"{{ end -}}` + "`" +
 	`
 {{end}}}
 `))

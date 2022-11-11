@@ -37,11 +37,11 @@ func (s optStr) Overlay(other optStr) optStr {
 	}
 }
 
-type TypeNameGenerationRule func(currentPointer []string) string
+type TypeNameGenerationRule func(fieldNames []string) string
 
 func FieldName() TypeNameGenerationRule {
-	return func(currentPointer []string) string {
-		return currentPointer[len(currentPointer)-1]
+	return func(fieldNames []string) string {
+		return fieldNames[len(fieldNames)-1]
 	}
 }
 
@@ -49,14 +49,14 @@ type Haser interface {
 	Has(string) bool
 }
 
-type TypeNameFallBackRule func(tyName string, currentPointer []string, usedTypeName Haser) string
+type TypeNameFallBackRule func(tyName string, fieldNames []string, usedTypeName Haser) string
 
 func UseOneUpperFieldName(shouldPanicOnOverlap bool) TypeNameFallBackRule {
-	return func(tyName string, currentPointer []string, usedTypeName Haser) string {
-		if len(currentPointer) < 2 {
-			panic("broken invariants: currentPointer must be len(c) >= 2")
+	return func(tyName string, fieldNames []string, usedTypeName Haser) string {
+		if len(fieldNames) < 2 {
+			panic("broken invariants: fieldNames must be len(c) >= 2")
 		}
-		tyName = capitalize(currentPointer[len(currentPointer)-2]) + tyName
+		tyName = capitalize(fieldNames[len(fieldNames)-2]) + capitalize(tyName)
 
 		if usedTypeName.Has(tyName) {
 			if shouldPanicOnOverlap {
@@ -96,13 +96,13 @@ func (g *TypeNameGenerator) lazyInit() {
 	}
 }
 
-func (g *TypeNameGenerator) Gen(currentPointer []string) string {
+func (g *TypeNameGenerator) Gen(fieldNames []string) string {
 	g.lazyInit()
 
-	tyName := g.Generate(currentPointer)
+	tyName := g.Generate(fieldNames)
 
 	if g.usedTypeName.Has(tyName) {
-		tyName = g.FallBack(tyName, currentPointer, g.usedTypeName)
+		tyName = g.FallBack(tyName, fieldNames, g.usedTypeName)
 	}
 
 	g.usedTypeName.Add(tyName)

@@ -37,7 +37,7 @@ func object(
 	props mapping.Properties,
 	globalOpt GlobalOption,
 	opts MapOption,
-	currentPointer []string,
+	fieldNames []string,
 ) (highLevelTy, rawTy []GeneratedType, err error) {
 	var subHighLevelTypes, subRawTypes []GeneratedType
 	highLevelFields := map[string]tyNameWithOption{}
@@ -56,14 +56,14 @@ func object(
 					*param.Param.(*mapping.ObjectParams),
 					globalOpt,
 					fieldOption.ChildOption,
-					append(currentPointer, name),
+					append(fieldNames, name),
 				)
 			} else {
 				subHighLevelTy, subRawTy, err = Nested(
 					*param.Param.(*mapping.NestedParams),
 					globalOpt,
 					fieldOption.ChildOption,
-					append(currentPointer, name),
+					append(fieldNames, name),
 				)
 			}
 			if err != nil {
@@ -83,7 +83,7 @@ func object(
 			rawFields[name] = subRawTy[0].TyName
 
 		} else {
-			gen, err := Field(param, currentPointer, globalOpt, fieldOption)
+			gen, err := Field(param, fieldNames, globalOpt, fieldOption)
 			gen.Option = overlaidOption
 
 			if err != nil {
@@ -101,7 +101,7 @@ func object(
 		}
 	}
 
-	fieldName := currentPointer[len(currentPointer)-1]
+	fieldName := fieldNames[len(fieldNames)-1]
 	tyName := toPascalCaseDelimiter(fieldName)
 
 	buf := bytes.NewBuffer(make([]byte, 0))
@@ -141,13 +141,13 @@ func Object(
 	p mapping.ObjectParams,
 	globalOpt GlobalOption,
 	opts MapOption,
-	currentPointer []string,
+	fieldNames []string,
 ) (highLevelTy, rawTy []GeneratedType, err error) {
 	// Ignore dynamic inheritance.
 	if p.Dynamic != nil && (*p.Dynamic == "true" || *p.Dynamic == true) {
-		// What should we do it Dynamic is "runtime"?
-		// TODO: research what will happen when dynamic == "runtime".
-		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(currentPointer))
+		// What should we do it when Dynamic is "runtime"?
+		// TODO: research what will happen then.
+		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(fieldNames))
 		return []GeneratedType{
 				{
 					TyName: tyName,
@@ -160,7 +160,7 @@ func Object(
 				},
 			}, nil
 	}
-	return object(*p.Properties, globalOpt, opts, currentPointer)
+	return object(*p.Properties, globalOpt, opts, fieldNames)
 }
 
 var caseDelimiter = regexp.MustCompile("[_-]")

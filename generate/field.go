@@ -21,7 +21,7 @@ var estypeImport = []string{`estype "github.com/ngicks/elastic-type/es_type"`}
 // Input prop must be one that can not be nested (other than Object or Nested types).
 func Field(
 	prop mapping.Property,
-	currentPointer slice.Deque[string],
+	fieldNames slice.Deque[string],
 	globalOpt GlobalOption,
 	opt FieldOption,
 ) (rawTy GeneratedType, err error) {
@@ -60,7 +60,7 @@ func Field(
 	case mapping.Date, mapping.DateNanoseconds:
 		gen, err := DateFromParam(
 			*prop.Param.(*mapping.DateParams),
-			globalOpt.TypeNameGenerator.Gen(currentPointer),
+			globalOpt.TypeNameGenerator.Gen(fieldNames),
 			opt.PreferredTimeMarshallingFormat,
 			opt.PreferTimeEpochMarshalling.True(),
 		)

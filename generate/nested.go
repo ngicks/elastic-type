@@ -10,11 +10,11 @@ func Nested(
 	p mapping.NestedParams,
 	globalOpt GlobalOption,
 	opts MapOption,
-	currentPointer []string,
+	fieldNames []string,
 ) (highLevelTy, rawTy []GeneratedType, err error) {
 	// Ignore dynamic inheritance.
 	if p.Dynamic != nil && (*p.Dynamic == "true" || *p.Dynamic == true) {
-		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(currentPointer))
+		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(fieldNames))
 		return []GeneratedType{
 				{
 					TyName: tyName,
@@ -27,5 +27,5 @@ func Nested(
 				},
 			}, nil
 	}
-	return object(*p.Properties, globalOpt, opts, currentPointer)
+	return object(*p.Properties, globalOpt, opts, fieldNames)
 }

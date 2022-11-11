@@ -45,11 +45,17 @@ Code generator. It generates go code from an es mapping.
 
 #### MVPs
 
-- [x] High level / Raw types
-  - The high level type is a plain go struct type, which is similar to what you define every day. That probably can not be unmarshalled from / marshalled into a json to store.
+- [x] Generate high level / raw types
+  - The high level type is a plain go struct type, which is similar to what you define every day. That probably can not be unmarshalled from / marshalled into a json to be stored in the Elasticsearch.
   - The raw type is strictly compliant to Elasticsearch json format. All fields can be `undefined`, `null`, T or an array of T.
     - Which is achieved in help of `estype.Field[T]`
-- [ ] High / Raw conversion code
+- [ ] Generate raw level types marshaller code.
+- [ ] Generate high level / raw conversion code.
+
+#### Optionally we would do
+
+- [ ] Remove overlapping type definition.
+  - If two type definitions are exactly same, then use same type.
 
 ### mapping
 

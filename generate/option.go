@@ -78,9 +78,18 @@ func UseOneUpperFieldName(shouldPanicOnOverlap bool) TypeNameFallBackRule {
 	}
 }
 
+type TypeNamePostProcessRule func(string) string
+
+func PascalCaseUnderscoreHyphen() TypeNamePostProcessRule {
+	return func(s string) string {
+		return toPascalCaseDelimiter(s)
+	}
+}
+
 type TypeNameGenerator struct {
 	Generate     TypeNameGenerationRule
 	FallBack     TypeNameFallBackRule
+	PostProcess  TypeNamePostProcessRule
 	usedTypeName *set.Set[string]
 }
 
@@ -90,6 +99,9 @@ func (g *TypeNameGenerator) lazyInit() {
 	}
 	if g.FallBack == nil {
 		g.FallBack = UseOneUpperFieldName(false)
+	}
+	if g.PostProcess == nil {
+		g.PostProcess = PascalCaseUnderscoreHyphen()
 	}
 	if g.usedTypeName == nil {
 		g.usedTypeName = set.New[string]()
@@ -106,7 +118,7 @@ func (g *TypeNameGenerator) Gen(fieldNames []string) string {
 	}
 
 	g.usedTypeName.Add(tyName)
-	return tyName
+	return g.PostProcess(tyName)
 }
 
 type GlobalOption struct {

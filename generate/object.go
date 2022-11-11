@@ -43,6 +43,8 @@ func object(
 	highLevelFields := map[string]tyNameWithOption{}
 	rawFields := map[string]string{}
 
+	tyName := globalOpt.TypeNameGenerator.Gen(fieldNames)
+
 	for name, param := range props {
 		fieldOption := opts[name]
 		overlaidOption := globalOpt.Overlay(param, fieldOption)
@@ -100,9 +102,6 @@ func object(
 			subRawTypes = append(subRawTypes, gen)
 		}
 	}
-
-	fieldName := fieldNames[len(fieldNames)-1]
-	tyName := toPascalCaseDelimiter(fieldName)
 
 	buf := bytes.NewBuffer(make([]byte, 0))
 	param := objectTemplateParam{

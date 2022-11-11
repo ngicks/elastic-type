@@ -35,5 +35,6 @@
     "Unmarshalled",
     "Unmarshalling",
     "unmarshals"
-  ]
+  ],
+  "go.formatTool": "gofumpt"
 }

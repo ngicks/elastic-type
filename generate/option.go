@@ -1,6 +1,7 @@
 package generate
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -9,6 +10,21 @@ import (
 )
 
 type optStr string
+
+func (s *optStr) UnmarshalJSON(data []byte) error {
+	var str string
+	err := json.Unmarshal(data, &str)
+	if err != nil {
+		return err
+	}
+	switch optStr(str) {
+	case None, True, False:
+		*s = optStr(str)
+	default:
+		*s = ""
+	}
+	return nil
+}
 
 const (
 	Inherit optStr = ""

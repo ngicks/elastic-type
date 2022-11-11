@@ -99,7 +99,7 @@ func WriteFile(highLevelTyPath, rawTyePath string, highLevelTy, rawTy []Generate
 		}
 		defer file.Close()
 
-		_, err = io.Copy(file, strings.NewReader(fmt.Sprintf("package %s", packageName)))
+		_, err = io.Copy(file, strings.NewReader(fmt.Sprintf("package %s\n\n", packageName)))
 		if err != nil {
 			return err
 		}

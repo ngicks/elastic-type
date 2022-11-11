@@ -1,0 +1,19 @@
+{
+  "object_example": {
+    "mappings": {
+      "properties": {
+        "manager": {
+          "properties": {
+            "age": { "type": "integer" },
+            "name": {
+              "properties": {
+                "first": { "type": "text" },
+                "last": { "type": "text" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

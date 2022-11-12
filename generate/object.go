@@ -89,7 +89,7 @@ func object(
 			}
 
 		} else {
-			gen, err := Field(param, fieldNames, globalOpt, fieldOption)
+			gen, err := Field(param, append(fieldNames, name), globalOpt, fieldOption)
 			gen.Option = overlaidOption
 
 			if err != nil {

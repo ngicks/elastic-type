@@ -18,6 +18,7 @@
     "Gofumpt",
     "goimports",
     "gommon",
+    "gopls",
     "Haser",
     "hnsw",
     "Lucene",

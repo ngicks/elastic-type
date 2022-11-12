@@ -60,13 +60,7 @@ func (p *KeywordParams) FillType() {
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/multi-fields.html
-type Fields map[string]SubFieldType
-
-type SubFieldType struct {
-	// Type is text or keyword
-	Type     EsType  `json:"type"`
-	Analyzer *string `json:"analyzer,omitempty"`
-}
+type Fields map[string]Property
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.4/keyword.html#constant-keyword-field-type
 type ConstantKeywordParams struct {

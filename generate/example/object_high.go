@@ -1,15 +1,15 @@
 package example
 
 type ObjectExample struct {
-	Manager *[]Manager `json:"manager"`
+	Manager *[]ObjectExampleManager `json:"manager"`
 }
 
-type Manager struct {
-	Age  *[]int32 `json:"age"`
-	Name *[]Name  `json:"name"`
+type ObjectExampleManager struct {
+	Age  int32             `json:"age"`
+	Name ObjectExampleName `json:"name"`
 }
 
-type Name struct {
-	First *[]string `json:"first"`
-	Last  *[]string `json:"last"`
+type ObjectExampleName struct {
+	First string   `json:"first"`
+	Last  []string `json:"last"`
 }

@@ -1,0 +1,24 @@
+{
+  "manager": {
+    "ChildOption": {
+      "age": {
+        "IsRequired": true,
+        "IsSingle": true
+      },
+      "name": {
+        "IsRequired": true,
+        "IsSingle": true,
+        "ChildOption": {
+          "first": {
+            "IsRequired": true,
+            "IsSingle": true
+          },
+          "last": {
+            "IsRequired": true,
+            "IsSingle": false
+          }
+        }
+      }
+    }
+  }
+}

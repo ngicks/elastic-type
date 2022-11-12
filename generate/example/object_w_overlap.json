@@ -1,0 +1,31 @@
+{
+  "object_w_overlap": {
+    "mappings": {
+      "properties": {
+        "manager": {
+          "properties": {
+            "age": { "type": "integer" },
+            "name": {
+              "properties": {
+                "first": { "type": "text" },
+                "last": { "type": "text" }
+              }
+            }
+          }
+        },
+        "subordinate": {
+          "type": "nested",
+          "properties": {
+            "age": { "type": "integer" },
+            "name": {
+              "properties": {
+                "first": { "type": "text" },
+                "last": { "type": "text" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

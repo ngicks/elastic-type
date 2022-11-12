@@ -213,7 +213,7 @@ type {{.TyName}}Raw struct {
 	`    {{toPascalCase $propName}}    estype.Field[{{$typeNameOpt.TyName}}]   ` +
 	// struct tag
 	"`" + `json:"{{$propName}}"  {{- if $typeNameOpt.Option.IsSingle }}` +
-	` ` + estype.StructTag + `:" ` + estype.TagSingle + `"{{ end -}}` + "`" +
+	` ` + estype.StructTag + `:"` + estype.TagSingle + `"{{ end -}}` + "`" +
 	`
 {{end}}}
 `))

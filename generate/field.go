@@ -89,7 +89,7 @@ func Field(
 	case mapping.IP:
 		return GeneratedType{
 			TyName:  "netip.Addr",
-			Imports: []string{"net/netip"},
+			Imports: []string{`"net/netip"`},
 		}, nil
 	case mapping.Histogram, mapping.Join, mapping.Percolator, mapping.Point:
 		// TODO: implement
@@ -157,7 +157,9 @@ func Field(
 		case mapping.Float:
 			tyName = "float32"
 		case mapping.HalfFloat:
-			tyName = "float16"
+			// there is not float16 type in built-in types.
+			// TODO: use float16 package?
+			tyName = "float32"
 		case mapping.UnsignedLong:
 			tyName = "uint64"
 		}

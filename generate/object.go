@@ -106,6 +106,7 @@ func object(
 			}
 
 			subHighLevelTypes = append(subHighLevelTypes, gen)
+			subRawTypes = append(subRawTypes, GeneratedType{Imports: gen.Imports})
 		}
 	}
 

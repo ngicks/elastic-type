@@ -11,42 +11,56 @@ import (
 	"github.com/ngicks/type-param-common/set"
 )
 
-var formatters = []string{
-	"gofumpt",
-	"goimports",
+var possibleFormatters = [][][]string{
+	// It is really slower when using gopls. The combo of goimports and gofumpt is preferred here.
+	{{"goimports", "-w"}, {"gofumpt", "-w"}},
+	{{"gopls", "imports", "-w"}, {"gopls", "format", "-w"}},
 }
 
-func systemHas(formatter string) bool {
-	cmd := exec.Command("gofumpt", "--help")
-	if cmd.Err != nil {
-		return false
+type applyFormat = func(srcPath string) error
+
+var formatCommands []applyFormat
+
+func initializeFormatterCommands() {
+	if formatCommands != nil {
+		return
 	}
-	_, err := cmd.Output()
-	return err == nil
-}
 
-func applyFormatter(srcPath string, formatter string) (stdout []byte, err error) {
-	return exec.Command(formatter, "-w", srcPath).Output()
-}
-
-func formatter() (func(srcPath string) error, error) {
-	for _, v := range formatters {
-		if systemHas(v) {
-			return func(srcPath string) error {
-				_, err := applyFormatter(srcPath, v)
-				return err
-			}, nil
+	for _, commands := range possibleFormatters {
+		systemHasAll := false
+		for _, command := range commands {
+			_, err := exec.LookPath(command[0])
+			systemHasAll = err == nil
+		}
+		if systemHasAll {
+			formatCommands = append(formatCommands, buildFormatCommand(commands))
 		}
 	}
+}
 
-	return nil, fmt.Errorf("formatters not available: %+v", formatters)
+func buildFormatCommand(commands [][]string) applyFormat {
+	return func(srcPath string) error {
+		for _, command := range commands {
+			name := command[0]
+			args := command[1:]
+			err := exec.Command(name, append(args, srcPath)...).Run()
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
 }
 
 func WriteFile(highLevelTyPath, rawTyePath string, highLevelTy, rawTy []GeneratedType, packageName string) error {
-	var err error
-	formatter, err := formatter()
-	if err != nil {
-		return err
+	initializeFormatterCommands()
+
+	if len(formatCommands) == 0 {
+		return fmt.Errorf(
+			"no formatter available. "+
+				"There must be at least an available formatters combination. %v",
+			possibleFormatters,
+		)
 	}
 
 	highImports := extractImports(highLevelTy)
@@ -55,9 +69,9 @@ func WriteFile(highLevelTyPath, rawTyePath string, highLevelTy, rawTy []Generate
 	rawImports := extractImports(rawTy)
 	rawDef := extractDef(rawTy)
 
-	var file *os.File
-
 	writeFile := func(outPath, imports, def string) error {
+		var file *os.File
+		var err error
 		file, err = os.Create(outPath)
 		if err != nil {
 			return err
@@ -79,6 +93,7 @@ func WriteFile(highLevelTyPath, rawTyePath string, highLevelTy, rawTy []Generate
 		return nil
 	}
 
+	var err error
 	err = writeFile(highLevelTyPath, highImports, highDef)
 	if err != nil {
 		return err
@@ -88,6 +103,7 @@ func WriteFile(highLevelTyPath, rawTyePath string, highLevelTy, rawTy []Generate
 		return err
 	}
 
+	formatter := formatCommands[0]
 	err = formatter(highLevelTyPath)
 	if err != nil {
 		return err

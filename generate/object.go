@@ -172,6 +172,12 @@ func Object(
 var caseDelimiter = regexp.MustCompile("[_-]")
 
 func capitalize(v string) string {
+	if length := len(v); length == 0 {
+		return v
+	} else if length == 1 {
+		return strings.ToUpper(v)
+	}
+
 	head, rest := v[:1], v[1:]
 	return strings.ToUpper(head) + rest
 }

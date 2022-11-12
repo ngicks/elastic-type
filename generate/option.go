@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/ngicks/elastic-type/mapping"
+	"github.com/ngicks/type-param-common/iterator"
 	"github.com/ngicks/type-param-common/set"
 )
 
@@ -118,10 +119,20 @@ func PascalCaseUnderscoreHyphen() TypeNamePostProcessRule {
 	}
 }
 
+func Prefix(p string, skip int) TypeNamePostProcessRule {
+	return func(s string) string {
+		if skip > 0 {
+			skip--
+			return s
+		}
+		return p + s
+	}
+}
+
 type TypeNameGenerator struct {
 	Generate     TypeNameGenerationRule
 	FallBack     TypeNameFallBackRule
-	PostProcess  TypeNamePostProcessRule
+	PostProcess  []TypeNamePostProcessRule
 	usedTypeName *set.Set[string]
 }
 
@@ -133,7 +144,7 @@ func (g *TypeNameGenerator) lazyInit() {
 		g.FallBack = UseOneUpperFieldName(false)
 	}
 	if g.PostProcess == nil {
-		g.PostProcess = PascalCaseUnderscoreHyphen()
+		g.PostProcess = []TypeNamePostProcessRule{PascalCaseUnderscoreHyphen()}
 	}
 	if g.usedTypeName == nil {
 		g.usedTypeName = set.New[string]()
@@ -150,7 +161,13 @@ func (g *TypeNameGenerator) Gen(fieldNames []string) string {
 	}
 
 	g.usedTypeName.Add(tyName)
-	return g.PostProcess(tyName)
+	return iterator.Fold[TypeNamePostProcessRule](
+		iterator.FromSlice(g.PostProcess),
+		func(str string, p TypeNamePostProcessRule) string {
+			return p(capitalize(str))
+		},
+		tyName,
+	)
 }
 
 type GlobalOption struct {

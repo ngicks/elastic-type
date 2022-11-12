@@ -1,6 +1,7 @@
 package generate
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -12,18 +13,33 @@ import (
 type optStr string
 
 func (s *optStr) UnmarshalJSON(data []byte) error {
-	var str string
-	err := json.Unmarshal(data, &str)
-	if err != nil {
-		return err
+	data = bytes.Trim(data, " ")
+	if data[0] == '"' {
+		var str string
+		err := json.Unmarshal(data, &str)
+		if err != nil {
+			return err
+		}
+		switch optStr(str) {
+		case None, True, False:
+			*s = optStr(str)
+		default:
+			*s = ""
+		}
+		return nil
 	}
-	switch optStr(str) {
-	case None, True, False:
-		*s = optStr(str)
-	default:
-		*s = ""
+	switch string(data) {
+	case "true":
+		*s = True
+		return nil
+	case "false":
+		*s = False
+		return nil
+	case "":
+		*s = None
+		return nil
 	}
-	return nil
+	return fmt.Errorf("unknown: %s", string(data))
 }
 
 const (

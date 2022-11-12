@@ -39,7 +39,7 @@ func AggregateMetricDoubleParams(agg mapping.AggregateMetricDoubleParams) Genera
 	}
 
 	return GeneratedType{
-		TyName:  "AggregateMetricDouble" + suffix,
+		TyName:  "estype.AggregateMetricDouble" + suffix,
 		Imports: estypeImport,
 	}
 }

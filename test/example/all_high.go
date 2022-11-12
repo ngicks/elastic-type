@@ -2,6 +2,7 @@ package example
 
 import (
 	"encoding/json"
+	"net/netip"
 	"time"
 
 	estype "github.com/ngicks/elastic-type/es_type"
@@ -10,15 +11,69 @@ import (
 )
 
 type All struct {
-	Agg         *[]estype.AggregateMetricDouble `json:"agg"`
-	Alias       *[]any                          `json:"alias"`
-	Blob        *[]estype.Binary                `json:"blob"`
-	Bool        *[]estype.Boolean               `json:"bool"`
-	Comp        *[]string                       `json:"comp"`
-	Date        *[]AllDate                      `json:"date"`
-	DateNano    *[]AllDateNano                  `json:"dateNano"`
-	DenseVector *[]float64                      `json:"dense_vector"`
-	Flattened   *[]map[string]interface{}       `json:"flattened"`
+	Agg             *[]estype.AggregateMetricDouble `json:"agg"`
+	Alias           *[]any                          `json:"alias"`
+	Blob            *[]estype.Binary                `json:"blob"`
+	Bool            *[]estype.Boolean               `json:"bool"`
+	Byte            *[]int8                         `json:"byte"`
+	Comp            *[]string                       `json:"comp"`
+	ConstantKwd     *[]string                       `json:"constant_kwd"`
+	Date            *[]AllDate                      `json:"date"`
+	DateNano        *[]AllDateNano                  `json:"dateNano"`
+	DateRange       *[]map[string]interface{}       `json:"date_range"`
+	DenseVector     *[]float64                      `json:"dense_vector"`
+	Double          *[]float64                      `json:"double"`
+	DoubleRange     *[]map[string]interface{}       `json:"double_range"`
+	Flattened       *[]map[string]interface{}       `json:"flattened"`
+	Float           *[]float32                      `json:"float"`
+	FloatRange      *[]map[string]interface{}       `json:"float_range"`
+	Geopoint        *[]estype.Geopoint              `json:"geopoint"`
+	Geoshape        *[]estype.Geoshape              `json:"geoshape"`
+	HalfFloat       *[]float32                      `json:"half_float"`
+	Histogram       *[]map[string]interface{}       `json:"histogram"`
+	Integer         *[]int32                        `json:"integer"`
+	IntegerRange    *[]map[string]interface{}       `json:"integer_range"`
+	IpAddr          *[]netip.Addr                   `json:"ip_addr"`
+	IpRange         *[]map[string]interface{}       `json:"ip_range"`
+	Join            *[]map[string]interface{}       `json:"join"`
+	Kwd             *[]string                       `json:"kwd"`
+	Long            *[]int64                        `json:"long"`
+	LongRange       *[]map[string]interface{}       `json:"long_range"`
+	Nested          *[]AllNested                    `json:"nested"`
+	Object          *[]AllObject                    `json:"object"`
+	Point           *[]map[string]interface{}       `json:"point"`
+	Query           *[]map[string]interface{}       `json:"query"`
+	RankFeature     *[]float64                      `json:"rank_feature"`
+	RankFeatures    *[]map[string]float64           `json:"rank_features"`
+	ScaledFloat     *[]float64                      `json:"scaled_float"`
+	SearchAsYouType *[]string                       `json:"search_as_you_type"`
+	Shape           *[]estype.Geoshape              `json:"shape"`
+	Short           *[]int16                        `json:"short"`
+	Text            *[]string                       `json:"text"`
+	TextWTokenCount *[]string                       `json:"text_w_token_count"`
+	UnsignedLong    *[]uint64                       `json:"unsigned_long"`
+	Version         *[]string                       `json:"version"`
+	Wildcard        *[]string                       `json:"wildcard"`
+}
+
+type AllObject struct {
+	Age  *[]int32   `json:"age"`
+	Name *[]AllName `json:"name"`
+}
+
+type AllName struct {
+	First *[]string `json:"first"`
+	Last  *[]string `json:"last"`
+}
+
+type AllNested struct {
+	Age  *[]int32         `json:"age"`
+	Name *[]AllNestedName `json:"name"`
+}
+
+type AllNestedName struct {
+	First *[]string `json:"first"`
+	Last  *[]string `json:"last"`
 }
 
 // AllDateNano represents elasticsearch date.

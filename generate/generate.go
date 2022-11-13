@@ -31,9 +31,14 @@ type GeneratedType struct {
 // Keys of opts must be mapping property names. ChildOption will be only used for Object or Nested, for other types simply ignored.
 //
 // Always len(highLevenTy) == len(rawTy).
-func Generate(props mapping.Properties, tyName string, globalOpt GlobalOption, opts MapOption) (highLevelTy, rawTy []GeneratedType, err error) {
+func Generate(
+	mapping mapping.Mappings,
+	tyName string,
+	globalOpt GlobalOption,
+	opts MapOption,
+) (highLevelTy, rawTy []GeneratedType, err error) {
 	if opts == nil {
 		opts = MapOption{}
 	}
-	return object(props, globalOpt, opts, []string{tyName})
+	return object(*mapping.Properties, globalOpt, opts, []string{tyName}, mapping.Dynamic)
 }

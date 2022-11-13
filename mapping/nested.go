@@ -6,7 +6,7 @@ type NestedParams struct {
 	Type EsType `json:"type,omitempty"`
 	// Dynamic can be bool(true/false/"true"/"false") or "strict".
 	// Defaults to true.
-	Dynamic    *any        `json:"dynamic,omitempty"`
+	Dynamic    Dynamic     `json:"dynamic,omitempty"`
 	Properties *Properties `json:"properties,omitempty"`
 	// Defaults to false.
 	IncludeInParent *bool `json:"include_in_parent,omitempty"`

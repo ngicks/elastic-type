@@ -11,9 +11,12 @@ func Nested(
 	globalOpt GlobalOption,
 	opts MapOption,
 	fieldNames []string,
+	dynamicContext mapping.Dynamic,
 ) (highLevelTy, rawTy []GeneratedType, err error) {
-	// Ignore dynamic inheritance.
-	if p.Dynamic != nil && (*p.Dynamic == "true" || *p.Dynamic == true) {
+	newDynamic := mapping.OverlayDynamic(dynamicContext, p.Dynamic)
+
+	// Ignore dynamic == "runtime" or dynamic == "false"
+	if mapping.DynamicIsTrue(newDynamic) {
 		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(fieldNames))
 		return []GeneratedType{
 				{
@@ -27,5 +30,5 @@ func Nested(
 				},
 			}, nil
 	}
-	return object(*p.Properties, globalOpt, opts, fieldNames)
+	return object(*p.Properties, globalOpt, opts, fieldNames, newDynamic)
 }

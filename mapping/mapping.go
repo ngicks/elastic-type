@@ -1,6 +1,9 @@
 package mapping
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+)
 
 // IndexSettings is main body for [Create index API.](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/indices-create-index.html)
 type IndexSettings struct {
@@ -20,9 +23,13 @@ type MappingSettings map[string]IndexSettings
 
 // Mappings is main body for [updating mapping](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/explicit-mapping.html#add-field-mapping),
 // or a part of [Create index API](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/indices-create-index.html).
-type Mappings struct {
-	Properties Properties `json:"properties"`
-}
+//
+// seeing these documents reveals that mappings key is actually the object field mapping type.
+//   - https://www.elastic.co/guide/en/elasticsearch/reference/8.4/dynamic.html
+//   - https://www.elastic.co/guide/en/elasticsearch/reference/8.4/enabled.html
+//   - https://www.elastic.co/guide/en/elasticsearch/reference/8.4/subobjects.html
+//   - https://www.elastic.co/guide/en/elasticsearch/reference/8.4/properties.html
+type Mappings = ObjectParams
 
 type Properties map[string]Property
 
@@ -174,3 +181,58 @@ const (
 	Continue onScriptError = "continue"
 	Fail     onScriptError = "fail"
 )
+
+type Dynamic = json.RawMessage
+
+func IsValidDynamic(d Dynamic) bool {
+	if d == nil {
+		// defaults to true.
+		return true
+	}
+
+	for _, dynamic := range validDynamic {
+		if dynamic == nil {
+			// bytes.Equal is just a string(a) == string(a).
+			// We now enforce that nil is not []byte(``)
+			continue
+		}
+		if bytes.Equal(d, dynamic) {
+			return true
+		}
+	}
+	return false
+}
+
+func OverlayDynamic(left, right Dynamic) Dynamic {
+	if len(right) != 0 && IsValidDynamic(right) {
+		return right
+	}
+	if IsValidDynamic(left) {
+		return left
+	}
+	return Empty
+}
+
+func DynamicIsTrue(d Dynamic) bool {
+	return string([]byte(d)) == string(TrueBool) || string([]byte(d)) == string(TrueStr)
+}
+
+var (
+	Empty     Dynamic = nil
+	TrueBool  Dynamic = []byte(`true`)
+	FalseBool Dynamic = []byte(`false`)
+	TrueStr   Dynamic = []byte(`"true"`)
+	FalseStr  Dynamic = []byte(`"false"`)
+	Runtime   Dynamic = []byte(`"runtime"`)
+	Strict    Dynamic = []byte(`"script"`)
+)
+
+var validDynamic = []Dynamic{
+	Empty,
+	TrueBool,
+	FalseBool,
+	TrueStr,
+	FalseStr,
+	Runtime,
+	Strict,
+}

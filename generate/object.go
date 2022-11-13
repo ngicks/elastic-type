@@ -39,6 +39,7 @@ func object(
 	globalOpt GlobalOption,
 	opts MapOption,
 	fieldNames []string,
+	dynamicContext mapping.Dynamic,
 ) (highLevelTy, rawTy []GeneratedType, err error) {
 	var subHighLevelTypes, subRawTypes []GeneratedType
 	highLevelFields := map[string]tyNameWithOption{}
@@ -60,6 +61,7 @@ func object(
 					globalOpt,
 					fieldOption.ChildOption,
 					append(fieldNames, name),
+					dynamicContext,
 				)
 			} else {
 				subHighLevelTy, subRawTy, err = Nested(
@@ -67,6 +69,7 @@ func object(
 					globalOpt,
 					fieldOption.ChildOption,
 					append(fieldNames, name),
+					dynamicContext,
 				)
 			}
 			if err != nil {
@@ -148,9 +151,12 @@ func Object(
 	globalOpt GlobalOption,
 	opts MapOption,
 	fieldNames []string,
+	dynamicContext mapping.Dynamic,
 ) (highLevelTy, rawTy []GeneratedType, err error) {
-	// Ignore dynamic inheritance.
-	if p.Dynamic != nil && (*p.Dynamic == "true" || *p.Dynamic == true) {
+	newDynamic := mapping.OverlayDynamic(dynamicContext, p.Dynamic)
+
+	// only when dynamic == true. ignore other cases (e.g. "runtime", false)
+	if mapping.DynamicIsTrue(newDynamic) {
 		// What should we do it when Dynamic is "runtime"?
 		// TODO: research what will happen then.
 		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(fieldNames))
@@ -166,7 +172,7 @@ func Object(
 				},
 			}, nil
 	}
-	return object(*p.Properties, globalOpt, opts, fieldNames)
+	return object(*p.Properties, globalOpt, opts, fieldNames, newDynamic)
 }
 
 var caseDelimiter = regexp.MustCompile("[_-]")

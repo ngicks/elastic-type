@@ -1,7 +1,7 @@
 {
-  "object_example": {
+  "object_dynamic_inheritance": {
+    "dynamic": "strict",
     "mappings": {
-      "dynamic": "strict",
       "properties": {
         "manager": {
           "properties": {
@@ -11,6 +11,14 @@
                 "first": { "type": "text" },
                 "last": { "type": "text" }
               }
+            }
+          }
+        },
+        "player": {
+          "dynamic": true,
+          "properties": {
+            "location": {
+              "type": "geo_point"
             }
           }
         }

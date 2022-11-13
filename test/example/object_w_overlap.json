@@ -1,6 +1,7 @@
 {
   "object_w_overlap": {
     "mappings": {
+      "dynamic": "strict",
       "properties": {
         "manager": {
           "properties": {

@@ -1,6 +1,7 @@
 {
   "all": {
     "mappings": {
+      "dynamic": "strict",
       "properties": {
         "agg": {
           "type": "aggregate_metric_double",

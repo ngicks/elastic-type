@@ -98,7 +98,7 @@ func main() {
 	}
 
 	high, raw, err := generate.Generate(
-		mappings.Properties,
+		mappings,
 		indexName,
 		globalOpt,
 		mapOpt,

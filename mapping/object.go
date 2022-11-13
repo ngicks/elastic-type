@@ -6,7 +6,7 @@ type ObjectParams struct {
 	Type EsType `json:"type,omitempty"`
 	// Dynamic can be bool(true/false/"true"/"false"), "runtime" or "strict".
 	// Defaults to true.
-	Dynamic *any `json:"dynamic,omitempty"`
+	Dynamic Dynamic `json:"dynamic,omitempty"`
 	// Defaults to true.
 	Enabled *bool `json:"enabled,omitempty"`
 	// Defaults to true.

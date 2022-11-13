@@ -11,7 +11,7 @@ import (
 type SampleFields struct {
 	A      estype.Field[string]
 	B      estype.Field[int]                `esjson:"pseudo,single"`   // contains a fake tag
-	C      estype.Field[estype.Binary]      `json:"c"`                 // has a json tag, no esfield tag
+	C      estype.Field[[]byte]             `json:"c"`                 // has a json tag, no esfield tag
 	D      estype.Field[estype.BooleanStr]  `json:"d" esjson:"single"` // has both
 	Nested estype.Field[NestedSampleFields] `esjson:"single"`          // nested
 }
@@ -41,7 +41,7 @@ func TestMarshalFieldsJSON_happy_path(t *testing.T) {
 			SampleFields{
 				A: estype.NewFieldSingleValue("foo", true),
 				B: estype.NewFieldSingleValue(123, true),
-				C: estype.NewFieldSingleValue(estype.BytesToBinary([]byte("baz")), true),
+				C: estype.NewFieldSingleValue([]byte("baz"), true),
 				D: estype.NewFieldSingleValue[estype.BooleanStr](true, true),
 			},
 			[]byte(`{"A":["foo"],"B":123,"c":["YmF6"],"d":"true"}`),

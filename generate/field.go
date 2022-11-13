@@ -38,8 +38,7 @@ func Field(
 		}, nil
 	case mapping.Binary:
 		return GeneratedType{
-			TyName:  estypePrefix + "Binary",
-			Imports: estypeImport,
+			TyName: "[]byte",
 		}, nil
 	case mapping.Boolean:
 		var tyName string

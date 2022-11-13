@@ -29,6 +29,8 @@ type SearchAsYouTypeParams struct {
 	Similarity *string `json:"similarity,omitempty"`
 	// Defaults to "no".
 	TermVector *termVector `json:"term_vector,omitempty"`
+	// Defaults to false
+	DocValues *bool `json:"doc_values,omitempty"`
 }
 
 func (p *SearchAsYouTypeParams) FillType() {

@@ -1,6 +1,7 @@
 package test_test
 
 import (
+	_ "embed"
 	"encoding/json"
 	"testing"
 
@@ -10,7 +11,8 @@ import (
 )
 
 var (
-	sampleMapping    = map[string]any{}
+	//go:embed example/all.json
+	allJSONBin       []byte
 	sampleMappingBin []byte
 	testSettings     = map[string]any{
 		"number_of_replicas": 0, // This prevents es from being yellow after creation of index. Only needed if es is single-node.
@@ -19,111 +21,26 @@ var (
 
 func init() {
 	// Comprehensive mapping setting with all fields populated with default or sensible value.
-	props := map[string]map[string]any{
-		"agg": {
-			"type":           "aggregate_metric_double",
-			"metrics":        []string{"min", "max", "sum", "value_count"},
-			"default_metric": "max",
-		},
-		"alias": {
-			"type": "alias",
-			"path": "blob",
-		},
-		"blob": {
-			"type":       "binary",
-			"doc_values": false,
-			"store":      false,
-		},
-		"bool": {
-			"type":            "boolean",
-			"doc_values":      true,
-			"index":           true,
-			"null_value":      nil,
-			"on_script_error": mapping.Continue,
-			"script": map[string]any{
-				"source": "emit(false)",
-			},
-			"store": false,
-			"meta":  map[string]any{},
-		},
-		"comp": {
-			"type":                         "completion",
-			"analyzer":                     "simple",
-			"search_analyzer":              "simple",
-			"preserve_separators":          true,
-			"preserve_position_increments": true,
-			"max_input_length":             255,
-		},
-		"date": {
-			"type":             "date",
-			"doc_values":       true,
-			"format":           "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis",
-			"locale":           "ja-jp",
-			"ignore_malformed": false,
-			"index":            true,
-			"null_value":       nil,
-			"on_script_error":  mapping.Fail,
-			"script": map[string]any{
-				"source": "emit(new Date().getTime())",
-				"lang":   "painless",
-			},
-			"store": false,
-			"meta": map[string]any{
-				"metric_type": "gauge",
-			},
-		},
-		"dateNano": {
-			"type":             "date",
-			"doc_values":       true,
-			"format":           "strict_date_optional_time_nanos||epoch_millis",
-			"locale":           "ja-jp",
-			"ignore_malformed": false,
-			"index":            true,
-			"null_value":       nil,
-			"on_script_error":  mapping.Fail,
-			"script": map[string]any{
-				"source": "emit(new Date().getTime())",
-				"lang":   "painless",
-			},
-			"store": false,
-			"meta": map[string]any{
-				"metric_type": "gauge",
-			},
-		},
-		"dense_vector": {
-			"type":       "dense_vector",
-			"dims":       3,
-			"index":      true,
-			"similarity": mapping.L2Norm,
-			"index_options": map[string]any{
-				"type":            "hnsw",
-				"m":               16,
-				"ef_construction": 100,
-			},
-		},
-		"flattened": {
-			"type":                        "flattened",
-			"depth_limit":                 20,
-			"doc_values":                  true,
-			"eager_global_ordinals":       false,
-			"ignore_above":                255,
-			"index":                       true,
-			"index_options":               mapping.Freqs,
-			"null_value":                  nil,
-			"similarity":                  "BM25",
-			"split_queries_on_whitespace": false,
-		},
-		// TODO: expand til the end...
-	}
-
-	sampleMapping = map[string]any{
-		"settings": testSettings,
-		"mappings": map[string]any{
-			"properties": props,
-		},
-	}
+	var allJSON map[string]map[string]any
 
 	var err error
+	err = json.Unmarshal(allJSONBin, &allJSON)
+	if err != nil {
+		panic(err)
+	}
+
+	getOne := func(v map[string]map[string]any) map[string]any {
+		for _, v := range v {
+			return v
+		}
+		return nil
+	}
+
+	sampleMapping := map[string]any{
+		"settings": testSettings,
+		"mappings": getOne(allJSON)["mappings"],
+	}
+
 	sampleMappingBin, err = json.MarshalIndent(sampleMapping, "", "     ")
 	if err != nil {
 		panic(err)
@@ -160,4 +77,7 @@ func TestMapping(t *testing.T) {
 		"not equal: diff = %s",
 		cmp.Diff(storedMapping, anyMapEncodedThroughOurType),
 	)
+
+	// Note that, I do not why. and I do not know it is documented.
+	// But it fills doc_values field if type is "search_as_you_type"
 }

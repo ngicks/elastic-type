@@ -61,6 +61,16 @@ func NewFieldSlice[T any](v []T, shouldRetainArray bool) Field[T] {
 	}
 }
 
+func NewFieldSinglePointer[T any](v *T, shouldRetainArray bool) Field[T] {
+	if v != nil {
+		return Field[T]{
+			inner:             &[]T{*v},
+			ShouldRetainArray: shouldRetainArray,
+		}
+	}
+	return NewFieldNull[T](shouldRetainArray)
+}
+
 func NewFieldSingleValue[T any](v T, shouldRetainArray bool) Field[T] {
 	return Field[T]{
 		inner:             &[]T{v},

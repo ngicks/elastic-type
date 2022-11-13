@@ -2,7 +2,6 @@ package generate
 
 import (
 	"bytes"
-	"fmt"
 	"regexp"
 	"sort"
 	"strings"
@@ -174,17 +173,22 @@ func Object(
 		// TODO: research what will happen then.
 		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(fieldNames))
 
-		buf := bytes.NewBuffer(make([]byte, 0))
-		err := objectRawMapTemplate.Execute(
-			buf,
-			struct {
-				TyName    string
-				RawTyName string
-			}{
-				TyName:    tyName,
-				RawTyName: tyName + "Raw",
-			},
-		)
+		params := struct {
+			TyName    string
+			RawTyName string
+		}{
+			TyName:    tyName,
+			RawTyName: tyName + "Raw",
+		}
+
+		highDef := bytes.NewBuffer(make([]byte, 0))
+		rawDef := bytes.NewBuffer(make([]byte, 0))
+		var err error
+		err = objectHighMapTemplate.Execute(highDef, params)
+		if err != nil {
+			panic(err)
+		}
+		err = objectRawMapTemplate.Execute(rawDef, params)
 		if err != nil {
 			panic(err)
 		}
@@ -192,17 +196,28 @@ func Object(
 		return []GeneratedType{
 				{
 					TyName: tyName,
-					TyDef:  fmt.Sprintf("type %s map[string][]any", tyName),
+					TyDef:  highDef.String(),
 				},
 			}, []GeneratedType{
 				{
 					TyName: tyName + "Raw",
-					TyDef:  buf.String(),
+					TyDef:  rawDef.String(),
 				},
 			}, nil
 	}
 	return object(*p.Properties, globalOpt, opts, fieldNames, newDynamic)
 }
+
+var objectHighMapTemplate = template.Must(template.New("objectHighMapTemplate").Parse(`
+type {{.TyName}} map[string][]any
+
+func (t {{.TyName}}) ToRaw() {{.RawTyName}} {
+	out := {{.RawTyName}}{}
+	for k, v := range t {
+		out[k] = estype.NewFieldSlice(v, false)
+	}
+	return out
+}`))
 
 var objectRawMapTemplate = template.Must(template.New("objectRawMapTemplate").Parse(`
 type {{.RawTyName}} map[string]estype.Field[any]
@@ -300,4 +315,30 @@ type {{.TyName}} struct {
 	`    {{toPascalCase $propName}}   {{ if not $typeNameOpt.Option.IsRequired -}}*{{ end }}{{ if not $typeNameOpt.Option.IsSingle }}[]{{ end }}{{$typeNameOpt.TyName}}   ` + "`" + `json:"{{$propName}}"` + "`" +
 	`
 {{end }}}
+
+func (t {{.TyName}}) ToRaw() {{.TyName}}Raw {
+	return {{.TyName}}Raw{
+{{range $propName, $typeNameOpt := .RawFields}}` +
+	// field name: value methods
+	`    {{toPascalCase $propName}}: 
+	{{- if $typeNameOpt.HasChild -}}
+		estype.MapField(
+	{{- end -}}	` +
+	`{{- if $typeNameOpt.Option.IsSingle -}}
+		{{- if $typeNameOpt.Option.IsRequired -}}estype.NewFieldSingleValue(t.{{toPascalCase $propName}}, false) {{/* T */}}
+		{{- else -}}estype.NewFieldSinglePointer(t.{{toPascalCase $propName}}, false) {{/* *T */}}
+		{{- end -}}
+	{{- else -}}
+		{{- if $typeNameOpt.Option.IsRequired -}}estype.NewFieldSlice(t.{{toPascalCase $propName}}, false) {{/* []T */}}
+		{{- else -}}estype.NewField(t.{{toPascalCase $propName}}, false) {{/* *[]T */}}
+		{{- end -}}
+	{{- end }}` + `			
+	{{- if $typeNameOpt.HasChild -}}, func(v {{with $rawField := index $.HighLevelFields $propName }}{{$rawField.TyName}}{{end}}) {{$typeNameOpt.TyName}} {
+			return v.ToRaw()
+		})
+	{{- end}},` +
+	`
+{{end}}		
+	}
+}
 `))

@@ -52,9 +52,78 @@ type AllRaw struct {
 	Wildcard        estype.Field[string]                       `json:"wildcard"`
 }
 
+func (r AllRaw) MarshalJSON() ([]byte, error) {
+	return estype.MarshalFieldsJSON(r)
+}
+
+func (t AllRaw) ToPlain() All {
+	return All{
+		Agg:          t.Agg.Value(),
+		Alias:        t.Alias.Value(),
+		Blob:         t.Blob.Value(),
+		Bool:         t.Bool.Value(),
+		Byte:         t.Byte.Value(),
+		Comp:         t.Comp.Value(),
+		ConstantKwd:  t.ConstantKwd.Value(),
+		Date:         t.Date.Value(),
+		DateNano:     t.DateNano.Value(),
+		DateRange:    t.DateRange.Value(),
+		DenseVector:  t.DenseVector.Value(),
+		Double:       t.Double.Value(),
+		DoubleRange:  t.DoubleRange.Value(),
+		Flattened:    t.Flattened.Value(),
+		Float:        t.Float.Value(),
+		FloatRange:   t.FloatRange.Value(),
+		Geopoint:     t.Geopoint.Value(),
+		Geoshape:     t.Geoshape.Value(),
+		HalfFloat:    t.HalfFloat.Value(),
+		Histogram:    t.Histogram.Value(),
+		Integer:      t.Integer.Value(),
+		IntegerRange: t.IntegerRange.Value(),
+		IpAddr:       t.IpAddr.Value(),
+		IpRange:      t.IpRange.Value(),
+		Join:         t.Join.Value(),
+		Kwd:          t.Kwd.Value(),
+		Long:         t.Long.Value(),
+		LongRange:    t.LongRange.Value(),
+		Nested: estype.MapField(t.Nested, func(v AllNestedRaw) AllNested {
+			return v.ToPlain()
+		}).Value(),
+		Object: estype.MapField(t.Object, func(v AllObjectRaw) AllObject {
+			return v.ToPlain()
+		}).Value(),
+		Point:           t.Point.Value(),
+		Query:           t.Query.Value(),
+		RankFeature:     t.RankFeature.Value(),
+		RankFeatures:    t.RankFeatures.Value(),
+		ScaledFloat:     t.ScaledFloat.Value(),
+		SearchAsYouType: t.SearchAsYouType.Value(),
+		Shape:           t.Shape.Value(),
+		Short:           t.Short.Value(),
+		Text:            t.Text.Value(),
+		TextWTokenCount: t.TextWTokenCount.Value(),
+		UnsignedLong:    t.UnsignedLong.Value(),
+		Version:         t.Version.Value(),
+		Wildcard:        t.Wildcard.Value(),
+	}
+}
+
 type AllNestedRaw struct {
 	Age  estype.Field[int32]      `json:"age"`
 	Name estype.Field[AllNameRaw] `json:"name"`
+}
+
+func (r AllNestedRaw) MarshalJSON() ([]byte, error) {
+	return estype.MarshalFieldsJSON(r)
+}
+
+func (t AllNestedRaw) ToPlain() AllNested {
+	return AllNested{
+		Age: t.Age.Value(),
+		Name: estype.MapField(t.Name, func(v AllNameRaw) AllName {
+			return v.ToPlain()
+		}).Value(),
+	}
 }
 
 type AllNameRaw struct {
@@ -62,12 +131,47 @@ type AllNameRaw struct {
 	Last  estype.Field[string] `json:"last"`
 }
 
+func (r AllNameRaw) MarshalJSON() ([]byte, error) {
+	return estype.MarshalFieldsJSON(r)
+}
+
+func (t AllNameRaw) ToPlain() AllName {
+	return AllName{
+		First: t.First.Value(),
+		Last:  t.Last.Value(),
+	}
+}
+
 type AllObjectRaw struct {
 	Age  estype.Field[int32]            `json:"age"`
 	Name estype.Field[AllObjectNameRaw] `json:"name"`
 }
 
+func (r AllObjectRaw) MarshalJSON() ([]byte, error) {
+	return estype.MarshalFieldsJSON(r)
+}
+
+func (t AllObjectRaw) ToPlain() AllObject {
+	return AllObject{
+		Age: t.Age.Value(),
+		Name: estype.MapField(t.Name, func(v AllObjectNameRaw) AllObjectName {
+			return v.ToPlain()
+		}).Value(),
+	}
+}
+
 type AllObjectNameRaw struct {
 	First estype.Field[string] `json:"first"`
 	Last  estype.Field[string] `json:"last"`
+}
+
+func (r AllObjectNameRaw) MarshalJSON() ([]byte, error) {
+	return estype.MarshalFieldsJSON(r)
+}
+
+func (t AllObjectNameRaw) ToPlain() AllObjectName {
+	return AllObjectName{
+		First: t.First.Value(),
+		Last:  t.Last.Value(),
+	}
 }

@@ -49,13 +49,15 @@ Code generator. It generates go code from an es mapping.
   - The high level type is a plain go struct type, which is similar to what you define every day. That probably can not be unmarshalled from / marshalled into a json to be stored in the Elasticsearch.
   - The raw type is strictly compliant to Elasticsearch json format. All fields can be `undefined`, `null`, T or an array of T.
     - Which is achieved in help of `estype.Field[T]`
-- [ ] Generate raw level types marshaller code.
-- [ ] Generate high level / raw conversion code.
+- [x] Generate raw level types marshaller code.
+- [x] Generate high level / raw conversion code.
+- [ ] Test using a real Elasticsearch instance.
 
 #### Optionally we would do
 
 - [ ] Remove overlapping type definition.
   - If two type definitions are exactly same, then use same type.
+  - Evaluating that 2 defs are semantically same is hard without ast parser. Maybe we should do it in post-process.
 
 ### mapping
 

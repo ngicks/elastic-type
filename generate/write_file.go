@@ -1,6 +1,7 @@
 package generate
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -52,15 +53,16 @@ func buildFormatCommand(commands [][]string) applyFormat {
 	}
 }
 
+var ErrNoFormatterAvailable = errors.New(
+	"no formatter available. " +
+		"There must be at least an available formatters combination",
+)
+
 func WriteFile(highLevelTyPath, rawTyePath string, highLevelTy, rawTy []GeneratedType, packageName string) error {
 	initializeFormatterCommands()
 
 	if len(formatCommands) == 0 {
-		return fmt.Errorf(
-			"no formatter available. "+
-				"There must be at least an available formatters combination. %v",
-			possibleFormatters,
-		)
+		return fmt.Errorf("%w: %v", ErrNoFormatterAvailable, possibleFormatters)
 	}
 
 	highImports := extractImports(highLevelTy)

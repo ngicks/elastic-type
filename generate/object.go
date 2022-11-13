@@ -14,8 +14,9 @@ import (
 )
 
 type tyNameWithOption struct {
-	TyName string
-	Option concreteFieldOption
+	TyName   string
+	Option   concreteFieldOption
+	HasChild bool
 }
 
 type concreteFieldOption struct {
@@ -92,12 +93,14 @@ func object(
 			subRawTy[0].Option = overlaidOption
 
 			highLevelFields[name] = tyNameWithOption{
-				TyName: subHighLevelTy[0].TyName,
-				Option: fieldOptToConcrete(overlaidOption),
+				TyName:   subHighLevelTy[0].TyName,
+				Option:   fieldOptToConcrete(overlaidOption),
+				HasChild: true,
 			}
 			rawFields[name] = tyNameWithOption{
-				TyName: subRawTy[0].TyName,
-				Option: fieldOptToConcrete(overlaidOption),
+				TyName:   subRawTy[0].TyName,
+				Option:   fieldOptToConcrete(overlaidOption),
+				HasChild: true,
 			}
 
 		} else {
@@ -146,8 +149,9 @@ func object(
 	}
 
 	thisType := GeneratedType{
-		TyName: tyName,
-		TyDef:  buf.String(),
+		TyName:  tyName,
+		TyDef:   buf.String(),
+		Imports: estypeImport,
 	}
 
 	return append([]GeneratedType{thisType}, subHighLevelTypes...),
@@ -169,20 +173,47 @@ func Object(
 		// What should we do it when Dynamic is "runtime"?
 		// TODO: research what will happen then.
 		tyName := capitalize(globalOpt.TypeNameGenerator.Gen(fieldNames))
+
+		buf := bytes.NewBuffer(make([]byte, 0))
+		err := objectRawMapTemplate.Execute(
+			buf,
+			struct {
+				TyName    string
+				RawTyName string
+			}{
+				TyName:    tyName,
+				RawTyName: tyName + "Raw",
+			},
+		)
+		if err != nil {
+			panic(err)
+		}
+
 		return []GeneratedType{
 				{
 					TyName: tyName,
-					TyDef:  fmt.Sprintf("type %s map[string]any", tyName),
+					TyDef:  fmt.Sprintf("type %s map[string][]any", tyName),
 				},
 			}, []GeneratedType{
 				{
 					TyName: tyName + "Raw",
-					TyDef:  fmt.Sprintf("type %s map[string]any", tyName+"Raw"),
+					TyDef:  buf.String(),
 				},
 			}, nil
 	}
 	return object(*p.Properties, globalOpt, opts, fieldNames, newDynamic)
 }
+
+var objectRawMapTemplate = template.Must(template.New("objectRawMapTemplate").Parse(`
+type {{.RawTyName}} map[string]estype.Field[any]
+
+func (t {{.RawTyName}}) ToPlain() {{.TyName}} {
+	out := {{.TyName}}{}
+	for k, v := range t {
+		out[k] = v.ValueZero()
+	}
+	return out
+}`))
 
 var caseDelimiter = regexp.MustCompile("[_-]")
 
@@ -231,6 +262,36 @@ type {{.TyName}}Raw struct {
 	` ` + estype.StructTag + `:"` + estype.TagSingle + `"{{ end -}}` + "`" +
 	`
 {{end}}}
+
+func (r {{.TyName}}Raw) MarshalJSON() ([]byte, error) {
+	return estype.MarshalFieldsJSON(r)
+}
+
+func (t {{.TyName}}Raw) ToPlain() {{.TyName}} {
+	return {{.TyName}}{
+{{range $propName, $typeNameOpt := .HighLevelFields}}` +
+	// field name: value methods
+	`    {{toPascalCase $propName}}: 
+	{{- if $typeNameOpt.HasChild -}}
+		estype.MapField(t.{{toPascalCase $propName}}, func(v {{with $rawField := index $.RawFields $propName }}{{$rawField.TyName}}{{end}}) {{$typeNameOpt.TyName}} {
+			return v.ToPlain()
+		})
+	{{- else -}}
+		t.{{toPascalCase $propName}}
+	{{- end -}}.` +
+	`{{- if $typeNameOpt.Option.IsSingle -}}
+		{{- if $typeNameOpt.Option.IsRequired -}}ValueSingleZero()
+		{{- else -}}ValueSingle()
+		{{- end -}}
+	{{- else -}}
+		{{- if $typeNameOpt.Option.IsRequired -}}ValueZero()
+		{{- else -}}Value()
+		{{- end -}}
+	{{- end }},` +
+	`
+{{end}}
+	}
+}
 `))
 
 var objectTemplate = template.Must(template.New("objectTemplate").Funcs(funcMap).Parse(`

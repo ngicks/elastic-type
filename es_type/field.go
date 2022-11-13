@@ -47,7 +47,14 @@ type Field[T any] struct {
 	ShouldRetainArray bool
 }
 
-func NewField[T any](v []T, shouldRetainArray bool) Field[T] {
+func NewField[T any](v *[]T, shouldRetainArray bool) Field[T] {
+	return Field[T]{
+		inner:             v,
+		ShouldRetainArray: shouldRetainArray,
+	}
+}
+
+func NewFieldSlice[T any](v []T, shouldRetainArray bool) Field[T] {
 	return Field[T]{
 		inner:             &v,
 		ShouldRetainArray: shouldRetainArray,
@@ -102,6 +109,18 @@ func (f Field[T]) Value() *[]T {
 	return f.inner
 }
 
+// ValueZero gets the inner value of f or zero value for T.
+// A returned value must be non-nil []T.
+// If the inner value is non-empty, it returns that value.
+// Otherwise, returns newly created zero-length []T.
+func (f Field[T]) ValueZero() []T {
+	v := f.Value()
+	if v == nil || len(*v) == 0 {
+		return []T{}
+	}
+	return *v
+}
+
 func (f Field[T]) ValueSingle() *T {
 	if f.inner == nil {
 		return nil
@@ -110,6 +129,18 @@ func (f Field[T]) ValueSingle() *T {
 		return &(*f.inner)[0]
 	}
 	return nil
+}
+
+// ValueSingleZero() gets the inner value of f or zero value for T.
+// If the inner value non-empty, it returns that value.
+// Otherwise, returns zero value of T.
+func (f Field[T]) ValueSingleZero() T {
+	if v := f.ValueSingle(); v != nil {
+		return *v
+	} else {
+		var zero T
+		return zero
+	}
 }
 
 // ValueAny returns inner value in any type.
@@ -178,4 +209,22 @@ func (b *Field[T]) UnmarshalJSON(data []byte) error {
 	}
 	b.SetSingleValue(single)
 	return nil
+}
+
+func MapField[T, U any](field Field[T], mapper func(v T) U) Field[U] {
+	var f Field[U]
+	if field.IsUndefined() {
+		return f
+	}
+	if field.IsNull() {
+		f.SetNull()
+		return f
+	}
+
+	var newVal []U
+	for _, v := range field.Unwrap() {
+		newVal = append(newVal, mapper(v))
+	}
+	f.SetValue(newVal)
+	return f
 }

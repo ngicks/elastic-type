@@ -35,6 +35,13 @@ func toAnyMap(v any) map[string]any {
 	return anyMap
 }
 
+func getOne(v map[string]map[string]any) map[string]any {
+	for _, v := range v {
+		return v
+	}
+	return nil
+}
+
 func skipIfEsNotReachable(t *testing.T, esURL url.URL, preferFail bool) {
 	// We need to send a fetch request to some of Elasticsearch specific paths
 	// to ensure that there is a reachable instance.
@@ -190,4 +197,85 @@ func getMapping(esURL url.URL, indexName string) ([]byte, error) {
 		return nil, err
 	}
 	return bodyBin, nil
+}
+
+type CommonResponse struct {
+	Index_       string `json:"_index"`
+	Id_          string `json:"_id"`
+	Version_     int    `json:"_version"`
+	SeqNo_       int    `json:"_seq_no"`
+	PrimaryTerm_ int    `json:"_primary_term"`
+}
+
+type IndexResult struct {
+	CommonResponse
+	Result  string `json:"result"`
+	Shards_ Shards `json:"_shards"`
+}
+
+type Shards struct {
+	Total      int `json:"total"`
+	Successful int `json:"successful"`
+	Failed     int `json:"failed"`
+}
+
+type FetchDocResult struct {
+	CommonResponse
+	Found   bool `json:"found"`
+	Source_ any  `json:"_source"`
+}
+
+func postDoc(esURL url.URL, indexName string, doc any) (IndexResult, error) {
+	esURL.Path = ""
+	docURL := *esURL.JoinPath(indexName, "_doc")
+
+	bin, err := json.Marshal(doc)
+	if err != nil {
+		return IndexResult{}, err
+	}
+	res, err := jsonRequest(http.MethodPost, docURL.String(), bytes.NewReader(bin))
+	if err != nil {
+		return IndexResult{}, err
+	}
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return IndexResult{}, err
+	}
+	defer res.Body.Close()
+
+	var result IndexResult
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return IndexResult{}, err
+	}
+
+	if result.Result != "created" {
+		return IndexResult{}, fmt.Errorf("%s", string(body))
+	}
+
+	return result, nil
+}
+
+func getDoc(esURL url.URL, indexName, docId string) (doc FetchDocResult, err error) {
+	esURL.Path = ""
+	docURL := *esURL.JoinPath(indexName, "_doc", docId)
+
+	res, err := jsonRequest(http.MethodGet, docURL.String(), nil)
+	if err != nil {
+		return
+	}
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+	res.Body.Close()
+
+	var result FetchDocResult
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return
+	}
+	return result, nil
 }

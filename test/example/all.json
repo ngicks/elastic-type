@@ -46,10 +46,6 @@
           "index": true,
           "null_value": null,
           "on_script_error": "fail",
-          "script": {
-            "source": "emit(new Date().getTime())",
-            "lang": "painless"
-          },
           "store": false,
           "meta": {
             "metric_type": "gauge"

@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 	"text/template"
 
 	estype "github.com/ngicks/elastic-type/es_type"
 	"github.com/ngicks/elastic-type/mapping"
+	"github.com/ngicks/type-param-common/iterator"
 )
 
 type tyNameWithOption struct {
@@ -47,7 +49,14 @@ func object(
 
 	tyName := globalOpt.TypeNameGenerator.Gen(fieldNames)
 
-	for name, param := range props {
+	// for stable iteration.
+	iter := iterator.FromMap(props, func(keys []string) []string {
+		sort.Strings(keys)
+		return keys
+	})
+
+	for _, tuple := range iter.Collect() {
+		name, param := tuple.Former, tuple.Latter
 		fieldOption := opts[name]
 		overlaidOption := globalOpt.Overlay(param, fieldOption)
 

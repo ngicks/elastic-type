@@ -56,24 +56,33 @@ type All struct {
 	Wildcard        *[]string                       `json:"wildcard"`
 }
 
-type AllObject struct {
-	Age  *[]int32   `json:"age"`
-	Name *[]AllName `json:"name"`
+// AllDate represents elasticsearch date.
+type AllDate time.Time
+
+func (t AllDate) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.String())
 }
 
-type AllName struct {
-	First *[]string `json:"first"`
-	Last  *[]string `json:"last"`
+var parserAllDate = flextime.NewFlextime(
+	typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02 15:04:05`)).
+		AddLayout(typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02`))),
+)
+
+func (t *AllDate) UnmarshalJSON(data []byte) error {
+	tt, err := estype.UnmarshalEsTime(
+		data,
+		parserAllDate.Parse,
+		time.UnixMilli,
+	)
+	if err != nil {
+		return err
+	}
+	*t = AllDate(tt)
+	return nil
 }
 
-type AllNested struct {
-	Age  *[]int32         `json:"age"`
-	Name *[]AllNestedName `json:"name"`
-}
-
-type AllNestedName struct {
-	First *[]string `json:"first"`
-	Last  *[]string `json:"last"`
+func (t AllDate) String() string {
+	return time.Time(t).Format(`2006-01-02 15:04:05`)
 }
 
 // AllDateNano represents elasticsearch date.
@@ -105,31 +114,22 @@ func (t AllDateNano) String() string {
 	return time.Time(t).Format(`2006-01-02T15:04:05.999999999Z07:00`)
 }
 
-// AllDate represents elasticsearch date.
-type AllDate time.Time
-
-func (t AllDate) MarshalJSON() ([]byte, error) {
-	return json.Marshal(t.String())
+type AllNested struct {
+	Age  *[]int32   `json:"age"`
+	Name *[]AllName `json:"name"`
 }
 
-var parserAllDate = flextime.NewFlextime(
-	typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02 15:04:05`)).
-		AddLayout(typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02`))),
-)
-
-func (t *AllDate) UnmarshalJSON(data []byte) error {
-	tt, err := estype.UnmarshalEsTime(
-		data,
-		parserAllDate.Parse,
-		time.UnixMilli,
-	)
-	if err != nil {
-		return err
-	}
-	*t = AllDate(tt)
-	return nil
+type AllName struct {
+	First *[]string `json:"first"`
+	Last  *[]string `json:"last"`
 }
 
-func (t AllDate) String() string {
-	return time.Time(t).Format(`2006-01-02 15:04:05`)
+type AllObject struct {
+	Age  *[]int32         `json:"age"`
+	Name *[]AllObjectName `json:"name"`
+}
+
+type AllObjectName struct {
+	First *[]string `json:"first"`
+	Last  *[]string `json:"last"`
 }

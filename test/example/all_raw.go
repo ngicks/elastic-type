@@ -52,7 +52,7 @@ type AllRaw struct {
 	Wildcard        estype.Field[string]                       `json:"wildcard"`
 }
 
-type AllObjectRaw struct {
+type AllNestedRaw struct {
 	Age  estype.Field[int32]      `json:"age"`
 	Name estype.Field[AllNameRaw] `json:"name"`
 }
@@ -62,12 +62,12 @@ type AllNameRaw struct {
 	Last  estype.Field[string] `json:"last"`
 }
 
-type AllNestedRaw struct {
+type AllObjectRaw struct {
 	Age  estype.Field[int32]            `json:"age"`
-	Name estype.Field[AllNestedNameRaw] `json:"name"`
+	Name estype.Field[AllObjectNameRaw] `json:"name"`
 }
 
-type AllNestedNameRaw struct {
+type AllObjectNameRaw struct {
 	First estype.Field[string] `json:"first"`
 	Last  estype.Field[string] `json:"last"`
 }

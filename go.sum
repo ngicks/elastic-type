@@ -18,8 +18,8 @@ github.com/ngicks/flextime v0.0.3 h1:iowloIT4IuyQjN8sYSminj4k/GUYFCu3a7wtisq9uWE
 github.com/ngicks/flextime v0.0.3/go.mod h1:BivhVLRhw2hAFLlejGIvez8Ph50K6xvHlQWRcdSsLkk=
 github.com/ngicks/gommon/pkg/randstr v0.0.0-20221106082638-0fa7a3f83454 h1:XL8J6B956R6FdU88IWmIxBtHAIOyZudej2yqddHW3Os=
 github.com/ngicks/gommon/pkg/randstr v0.0.0-20221106082638-0fa7a3f83454/go.mod h1:ujxuukei+NJt0Qo3YE9P2d/ILgta1NE/GS9DEW87BGo=
-github.com/ngicks/type-param-common v0.0.15 h1:zQM3mABaWt1wQc683mS+12FbQlYR6iOtVQRHBnLdLDM=
-github.com/ngicks/type-param-common v0.0.15/go.mod h1:0G7u69ThuvB3wRVxPYeO8U5sOghr8xFalZPquIm7KJI=
+github.com/ngicks/type-param-common v0.0.17 h1:8F1NIfOPGQZj0iC3tabzR8YPXLT2TmcsfY7hBB2WBUc=
+github.com/ngicks/type-param-common v0.0.17/go.mod h1:0G7u69ThuvB3wRVxPYeO8U5sOghr8xFalZPquIm7KJI=
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

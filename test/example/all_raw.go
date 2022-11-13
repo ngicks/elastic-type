@@ -9,7 +9,7 @@ import (
 type AllRaw struct {
 	Agg             estype.Field[estype.AggregateMetricDouble] `json:"agg"`
 	Alias           estype.Field[any]                          `json:"alias"`
-	Blob            estype.Field[estype.Binary]                `json:"blob"`
+	Blob            estype.Field[[]byte]                       `json:"blob"`
 	Bool            estype.Field[estype.Boolean]               `json:"bool"`
 	Byte            estype.Field[int8]                         `json:"byte"`
 	Comp            estype.Field[string]                       `json:"comp"`

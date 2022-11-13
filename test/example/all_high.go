@@ -13,7 +13,7 @@ import (
 type All struct {
 	Agg             *[]estype.AggregateMetricDouble `json:"agg"`
 	Alias           *[]any                          `json:"alias"`
-	Blob            *[]estype.Binary                `json:"blob"`
+	Blob            *[][]byte                       `json:"blob"`
 	Bool            *[]estype.Boolean               `json:"bool"`
 	Byte            *[]int8                         `json:"byte"`
 	Comp            *[]string                       `json:"comp"`

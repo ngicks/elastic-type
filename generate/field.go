@@ -69,7 +69,7 @@ func Field(
 		return gen, nil
 	case mapping.DenseVector:
 		return GeneratedType{
-			TyName: "float64",
+			TyName: "[]float64",
 		}, nil
 	case mapping.Flattened:
 		return GeneratedType{

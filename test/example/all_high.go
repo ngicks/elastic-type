@@ -21,7 +21,7 @@ type All struct {
 	Date            *AllDate                      `json:"date"`
 	DateNano        *AllDateNano                  `json:"dateNano"`
 	DateRange       *map[string]interface{}       `json:"date_range"`
-	DenseVector     *float64                      `json:"dense_vector"`
+	DenseVector     *[]float64                    `json:"dense_vector"`
 	Double          *float64                      `json:"double"`
 	DoubleRange     *map[string]interface{}       `json:"double_range"`
 	Flattened       *map[string]interface{}       `json:"flattened"`

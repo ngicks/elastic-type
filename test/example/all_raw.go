@@ -17,7 +17,7 @@ type AllRaw struct {
 	Date            estype.Field[AllDate]                      `json:"date" esjson:"single"`
 	DateNano        estype.Field[AllDateNano]                  `json:"dateNano" esjson:"single"`
 	DateRange       estype.Field[map[string]interface{}]       `json:"date_range" esjson:"single"`
-	DenseVector     estype.Field[float64]                      `json:"dense_vector" esjson:"single"`
+	DenseVector     estype.Field[[]float64]                    `json:"dense_vector" esjson:"single"`
 	Double          estype.Field[float64]                      `json:"double" esjson:"single"`
 	DoubleRange     estype.Field[map[string]interface{}]       `json:"double_range" esjson:"single"`
 	Flattened       estype.Field[map[string]interface{}]       `json:"flattened" esjson:"single"`

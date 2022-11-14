@@ -203,8 +203,14 @@ func (f Field[T]) MarshalJSON() ([]byte, error) {
 
 func (b *Field[T]) UnmarshalJSON(data []byte) error {
 	data = bytes.Trim(data, " ")
+	var storedErr error
 	if data[0] == '[' {
-		return json.Unmarshal(data, b.inner)
+		err := json.Unmarshal(data, b.inner)
+		if err == nil {
+			return nil
+		}
+		// in case of T = []U (e.g. dense_vector.)
+		storedErr = err
 	}
 
 	if string(data) == "null" {
@@ -215,7 +221,11 @@ func (b *Field[T]) UnmarshalJSON(data []byte) error {
 	var single T
 	err := json.Unmarshal(data, &single)
 	if err != nil {
-		return err
+		if storedErr != nil {
+			return storedErr
+		} else {
+			return err
+		}
 	}
 	b.SetSingleValue(single)
 	return nil

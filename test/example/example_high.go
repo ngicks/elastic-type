@@ -19,7 +19,7 @@ func (t Example) ToRaw() ExampleRaw {
 	return ExampleRaw{
 		Blob: estype.NewFieldSlice(t.Blob, false),
 		Bool: estype.NewFieldSinglePointer(t.Bool, false),
-		Date: estype.NewFieldSingleValue(t.Date, false),
+		Date: estype.NewFieldSingleValue(t.Date),
 	}
 }
 

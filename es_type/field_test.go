@@ -42,10 +42,7 @@ func TestFieldMarshal(t *testing.T) {
 
 	bin, err = json.Marshal(f)
 	require.NoError(err)
-	require.Equal([]byte(`{"a":["foo","bar"],"b":true}`), bin)
-
-	f.A.ShouldRetainArray = true
-	f.B.ShouldRetainArray = true
+	require.Equal([]byte(`{"a":["foo","bar"],"b":[true]}`), bin)
 
 	bin, err = json.Marshal(f)
 	require.NoError(err)

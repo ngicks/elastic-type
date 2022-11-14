@@ -11,10 +11,10 @@ type ObjectWOverlap struct {
 
 func (t ObjectWOverlap) ToRaw() ObjectWOverlapRaw {
 	return ObjectWOverlapRaw{
-		Manager: estype.MapField(estype.NewField(t.Manager, false), func(v ObjectWOverlapManager) ObjectWOverlapManagerRaw {
+		Manager: estype.MapField(estype.NewField(t.Manager), func(v ObjectWOverlapManager) ObjectWOverlapManagerRaw {
 			return v.ToRaw()
 		}),
-		Subordinate: estype.MapField(estype.NewField(t.Subordinate, false), func(v ObjectWOverlapSubordinate) ObjectWOverlapSubordinateRaw {
+		Subordinate: estype.MapField(estype.NewField(t.Subordinate), func(v ObjectWOverlapSubordinate) ObjectWOverlapSubordinateRaw {
 			return v.ToRaw()
 		}),
 	}
@@ -27,8 +27,8 @@ type ObjectWOverlapManager struct {
 
 func (t ObjectWOverlapManager) ToRaw() ObjectWOverlapManagerRaw {
 	return ObjectWOverlapManagerRaw{
-		Age: estype.NewField(t.Age, false),
-		Name: estype.MapField(estype.NewField(t.Name, false), func(v ObjectWOverlapName) ObjectWOverlapNameRaw {
+		Age: estype.NewField(t.Age),
+		Name: estype.MapField(estype.NewField(t.Name), func(v ObjectWOverlapName) ObjectWOverlapNameRaw {
 			return v.ToRaw()
 		}),
 	}
@@ -41,8 +41,8 @@ type ObjectWOverlapName struct {
 
 func (t ObjectWOverlapName) ToRaw() ObjectWOverlapNameRaw {
 	return ObjectWOverlapNameRaw{
-		First: estype.NewField(t.First, false),
-		Last:  estype.NewField(t.Last, false),
+		First: estype.NewField(t.First),
+		Last:  estype.NewField(t.Last),
 	}
 }
 
@@ -53,8 +53,8 @@ type ObjectWOverlapSubordinate struct {
 
 func (t ObjectWOverlapSubordinate) ToRaw() ObjectWOverlapSubordinateRaw {
 	return ObjectWOverlapSubordinateRaw{
-		Age: estype.NewField(t.Age, false),
-		Name: estype.MapField(estype.NewField(t.Name, false), func(v ObjectWOverlapSubordinateName) ObjectWOverlapSubordinateNameRaw {
+		Age: estype.NewField(t.Age),
+		Name: estype.MapField(estype.NewField(t.Name), func(v ObjectWOverlapSubordinateName) ObjectWOverlapSubordinateNameRaw {
 			return v.ToRaw()
 		}),
 	}
@@ -67,7 +67,7 @@ type ObjectWOverlapSubordinateName struct {
 
 func (t ObjectWOverlapSubordinateName) ToRaw() ObjectWOverlapSubordinateNameRaw {
 	return ObjectWOverlapSubordinateNameRaw{
-		First: estype.NewField(t.First, false),
-		Last:  estype.NewField(t.Last, false),
+		First: estype.NewField(t.First),
+		Last:  estype.NewField(t.Last),
 	}
 }

@@ -39,34 +39,34 @@ func TestMarshalFieldsJSON_happy_path(t *testing.T) {
 		},
 		{
 			SampleFields{
-				A: estype.NewFieldSingleValue("foo", true),
-				B: estype.NewFieldSingleValue(123, true),
-				C: estype.NewFieldSingleValue([]byte("baz"), true),
-				D: estype.NewFieldSingleValue[estype.BooleanStr](true, true),
+				A: estype.NewFieldSingleValue("foo"),
+				B: estype.NewFieldSingleValue(123),
+				C: estype.NewFieldSingleValue([]byte("baz")),
+				D: estype.NewFieldSingleValue[estype.BooleanStr](true),
 			},
 			[]byte(`{"A":["foo"],"B":123,"c":["YmF6"],"d":"true"}`),
 		},
 		// contains nested
 		{
 			SampleFields{
-				A: estype.NewFieldSingleValue("bar", true),
+				A: estype.NewFieldSingleValue("bar"),
 				Nested: estype.NewFieldSingleValue(NestedSampleFields{
-					A: estype.NewFieldSingleValue("baz", false),
-					B: estype.NewFieldSingleValue(95, false),
-				}, false),
+					A: estype.NewFieldSingleValue("baz"),
+					B: estype.NewFieldSingleValue(95),
+				}),
 			},
 			[]byte(`{"A":["bar"],"Nested":{"A":["baz"],"B":95}}`),
 		},
 		// contains null
 		{
 			SampleFields{
-				A: estype.NewFieldSingleValue("foo", true),
-				B: estype.NewFieldNull[int](false),
-				D: estype.NewFieldNull[estype.BooleanStr](true),
+				A: estype.NewFieldSingleValue("foo"),
+				B: estype.NewFieldNull[int](),
+				D: estype.NewFieldNull[estype.BooleanStr](),
 				Nested: estype.NewFieldSingleValue(NestedSampleFields{
-					A: estype.NewFieldNull[string](false),
-					B: estype.NewFieldSingleValue(95, false),
-				}, false),
+					A: estype.NewFieldNull[string](),
+					B: estype.NewFieldSingleValue(95),
+				}),
 			},
 			[]byte(`{"A":["foo"],"B":null,"d":null,"Nested":{"A":null,"B":95}}`),
 		},

@@ -43,45 +43,50 @@ func UnwrapValue[T any](val *[]T) []T {
 // see: https://www.elastic.co/guide/en/elasticsearch/reference/8.4/array.html
 type Field[T any] struct {
 	inner *[]T
-	// If true, it marshals into an array even when its inner value slice is of single element.
-	ShouldRetainArray bool
 }
 
-func NewField[T any](v *[]T, shouldRetainArray bool) Field[T] {
+func NewField[T any](v *[]T) Field[T] {
 	return Field[T]{
-		inner:             v,
-		ShouldRetainArray: shouldRetainArray,
+		inner: v,
 	}
 }
 
-func NewFieldSlice[T any](v []T, shouldRetainArray bool) Field[T] {
-	return Field[T]{
-		inner:             &v,
-		ShouldRetainArray: shouldRetainArray,
-	}
-}
-
-func NewFieldSinglePointer[T any](v *T, shouldRetainArray bool) Field[T] {
-	if v != nil {
-		return Field[T]{
-			inner:             &[]T{*v},
-			ShouldRetainArray: shouldRetainArray,
+func NewFieldSlice[T any](v []T, nilIsNull bool) Field[T] {
+	if v == nil {
+		if nilIsNull {
+			return NewFieldNull[T]()
+		} else {
+			var f Field[T]
+			return f
 		}
 	}
-	return NewFieldNull[T](shouldRetainArray)
-}
-
-func NewFieldSingleValue[T any](v T, shouldRetainArray bool) Field[T] {
 	return Field[T]{
-		inner:             &[]T{v},
-		ShouldRetainArray: shouldRetainArray,
+		inner: &v,
 	}
 }
 
-func NewFieldNull[T any](shouldRetainArray bool) Field[T] {
-	f := Field[T]{
-		ShouldRetainArray: shouldRetainArray,
+func NewFieldSinglePointer[T any](v *T, nilIsNull bool) Field[T] {
+	if v == nil {
+		if nilIsNull {
+			return NewFieldNull[T]()
+		} else {
+			var f Field[T]
+			return f
+		}
 	}
+	return Field[T]{
+		inner: &[]T{*v},
+	}
+}
+
+func NewFieldSingleValue[T any](v T) Field[T] {
+	return Field[T]{
+		inner: &[]T{v},
+	}
+}
+
+func NewFieldNull[T any]() Field[T] {
+	f := Field[T]{}
 	f.SetNull()
 	return f
 }
@@ -186,17 +191,12 @@ func (f Field[T]) UnwrapSingle() T {
 }
 
 // MarshalJSON encodes f into a json format.
-//
-// If f only has a single element and ShouldRetainArray is false, T will be marshalled.
-// It marshalls as []T otherwise.
+// It always marshalls as []T.
 //
 // For most cases, a struct that only contains Field[T] should be marshalled through MarshalFieldsJSON.
 func (f Field[T]) MarshalJSON() ([]byte, error) {
 	if f.IsUndefined() || f.IsNull() {
 		return []byte("null"), nil
-	}
-	if len(*f.inner) == 1 && !f.ShouldRetainArray {
-		return json.Marshal(f.UnwrapSingle())
 	}
 	return json.Marshal(*f.inner)
 }

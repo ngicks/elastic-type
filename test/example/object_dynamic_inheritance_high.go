@@ -11,10 +11,10 @@ type ObjectDynamicInheritance struct {
 
 func (t ObjectDynamicInheritance) ToRaw() ObjectDynamicInheritanceRaw {
 	return ObjectDynamicInheritanceRaw{
-		Manager: estype.MapField(estype.NewField(t.Manager, false), func(v ObjectDynamicInheritanceManager) ObjectDynamicInheritanceManagerRaw {
+		Manager: estype.MapField(estype.NewField(t.Manager), func(v ObjectDynamicInheritanceManager) ObjectDynamicInheritanceManagerRaw {
 			return v.ToRaw()
 		}),
-		Player: estype.MapField(estype.NewField(t.Player, false), func(v ObjectDynamicInheritancePlayer) ObjectDynamicInheritancePlayerRaw {
+		Player: estype.MapField(estype.NewField(t.Player), func(v ObjectDynamicInheritancePlayer) ObjectDynamicInheritancePlayerRaw {
 			return v.ToRaw()
 		}),
 	}
@@ -27,8 +27,8 @@ type ObjectDynamicInheritanceManager struct {
 
 func (t ObjectDynamicInheritanceManager) ToRaw() ObjectDynamicInheritanceManagerRaw {
 	return ObjectDynamicInheritanceManagerRaw{
-		Age: estype.NewField(t.Age, false),
-		Name: estype.MapField(estype.NewField(t.Name, false), func(v ObjectDynamicInheritanceName) ObjectDynamicInheritanceNameRaw {
+		Age: estype.NewField(t.Age),
+		Name: estype.MapField(estype.NewField(t.Name), func(v ObjectDynamicInheritanceName) ObjectDynamicInheritanceNameRaw {
 			return v.ToRaw()
 		}),
 	}
@@ -41,8 +41,8 @@ type ObjectDynamicInheritanceName struct {
 
 func (t ObjectDynamicInheritanceName) ToRaw() ObjectDynamicInheritanceNameRaw {
 	return ObjectDynamicInheritanceNameRaw{
-		First: estype.NewField(t.First, false),
-		Last:  estype.NewField(t.Last, false),
+		First: estype.NewField(t.First),
+		Last:  estype.NewField(t.Last),
 	}
 }
 

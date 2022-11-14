@@ -10,7 +10,7 @@ type ObjectExample struct {
 
 func (t ObjectExample) ToRaw() ObjectExampleRaw {
 	return ObjectExampleRaw{
-		Manager: estype.MapField(estype.NewField(t.Manager, false), func(v ObjectExampleManager) ObjectExampleManagerRaw {
+		Manager: estype.MapField(estype.NewField(t.Manager), func(v ObjectExampleManager) ObjectExampleManagerRaw {
 			return v.ToRaw()
 		}),
 	}
@@ -23,8 +23,8 @@ type ObjectExampleManager struct {
 
 func (t ObjectExampleManager) ToRaw() ObjectExampleManagerRaw {
 	return ObjectExampleManagerRaw{
-		Age: estype.NewFieldSingleValue(t.Age, false),
-		Name: estype.MapField(estype.NewFieldSingleValue(t.Name, false), func(v ObjectExampleName) ObjectExampleNameRaw {
+		Age: estype.NewFieldSingleValue(t.Age),
+		Name: estype.MapField(estype.NewFieldSingleValue(t.Name), func(v ObjectExampleName) ObjectExampleNameRaw {
 			return v.ToRaw()
 		}),
 	}
@@ -37,7 +37,7 @@ type ObjectExampleName struct {
 
 func (t ObjectExampleName) ToRaw() ObjectExampleNameRaw {
 	return ObjectExampleNameRaw{
-		First: estype.NewFieldSingleValue(t.First, false),
+		First: estype.NewFieldSingleValue(t.First),
 		Last:  estype.NewFieldSlice(t.Last, false),
 	}
 }

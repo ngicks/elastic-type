@@ -325,12 +325,12 @@ func (t {{.TyName}}) ToRaw() {{.TyName}}Raw {
 		estype.MapField(
 	{{- end -}}	` +
 	`{{- if $typeNameOpt.Option.IsSingle -}}
-		{{- if $typeNameOpt.Option.IsRequired -}}estype.NewFieldSingleValue(t.{{toPascalCase $propName}}, false) {{/* T */}}
+		{{- if $typeNameOpt.Option.IsRequired -}}estype.NewFieldSingleValue(t.{{toPascalCase $propName}}) {{/* T */}}
 		{{- else -}}estype.NewFieldSinglePointer(t.{{toPascalCase $propName}}, false) {{/* *T */}}
 		{{- end -}}
 	{{- else -}}
 		{{- if $typeNameOpt.Option.IsRequired -}}estype.NewFieldSlice(t.{{toPascalCase $propName}}, false) {{/* []T */}}
-		{{- else -}}estype.NewField(t.{{toPascalCase $propName}}, false) {{/* *[]T */}}
+		{{- else -}}estype.NewField(t.{{toPascalCase $propName}}) {{/* *[]T */}}
 		{{- end -}}
 	{{- end }}` + `			
 	{{- if $typeNameOpt.HasChild -}}, func(v {{with $rawField := index $.HighLevelFields $propName }}{{$rawField.TyName}}{{end}}) {{$typeNameOpt.TyName}} {

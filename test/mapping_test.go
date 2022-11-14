@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/ngicks/elastic-type/mapping"
+	"github.com/ngicks/elastic-type/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,10 +20,11 @@ func TestMapping(t *testing.T) {
 	// Then we can decode and encode the mapping through our type,
 	// make sure our type does not loose any field of it.
 	skipIfEsNotReachable(t, *ELASTICSEARCH_URL, false)
-	indexName := must(createRandomIndex(*ELASTICSEARCH_URL, allMappings))
-	defer deleteIndex(*ELASTICSEARCH_URL, indexName)
+	helper := must(createRandomIndex[any](client, test.AllMappings))
+	t.Log(helper.IndexName)
+	defer helper.Delete()
 
-	bin := must(getMapping(*ELASTICSEARCH_URL, indexName))
+	bin := must(helper.GetMapping())
 
 	var mappingOfOurDefinedType mapping.MappingSettings
 	// error should not happen

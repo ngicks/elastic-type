@@ -2,7 +2,11 @@ package test_test
 
 import (
 	"testing"
+	"time"
 
+	estype "github.com/ngicks/elastic-type/es_type"
+	"github.com/ngicks/elastic-type/test"
+	"github.com/ngicks/elastic-type/test/example"
 	"github.com/stretchr/testify/require"
 )
 
@@ -10,16 +14,17 @@ func TestGenerate_all(t *testing.T) {
 	require := require.New(t)
 
 	skipIfEsNotReachable(t, *ELASTICSEARCH_URL, false)
-	indexName := must(createRandomIndex(*ELASTICSEARCH_URL, allMappings))
-	defer deleteIndex(*ELASTICSEARCH_URL, indexName)
+	helper := must(createRandomIndex[example.AllRaw](client, test.AllMappings))
+	defer helper.Delete()
 
-	res, err := postDoc(*ELASTICSEARCH_URL, indexName, map[string]any{
-		"date": "2022-11-14 23:22:12",
+	now := time.Now()
+
+	id, err := helper.PostDoc(example.AllRaw{
+		Date: estype.NewFieldSingleValue(example.AllDate(now), false),
 	})
-	t.Logf("%+v", res)
 	require.NoError(err)
 
-	fetchedDoc, err := getDoc(*ELASTICSEARCH_URL, indexName, res.Id_)
+	fetchedDoc, err := helper.GetDoc(id)
 	t.Logf("%+v", fetchedDoc.Source_)
 	require.NoError(err)
 }

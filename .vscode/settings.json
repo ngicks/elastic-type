@@ -8,6 +8,7 @@
     "builtinformat",
     "Conditionf",
     "Deque",
+    "esapi",
     "esfield",
     "esjson",
     "estype",

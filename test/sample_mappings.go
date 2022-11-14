@@ -1,4 +1,4 @@
-package test_test
+package test
 
 import (
 	_ "embed"
@@ -18,11 +18,11 @@ var (
 )
 
 var (
-	allMappings               []byte
-	objectInheritanceMappings []byte
-	objectWOverlapMappings    []byte
-	objectMappings            []byte
-	testSettings              = map[string]any{
+	AllMappings               []byte
+	ObjectInheritanceMappings []byte
+	ObjectWOverlapMappings    []byte
+	ObjectMappings            []byte
+	TestSettings              = map[string]any{
 		"number_of_replicas": 0, // This prevents es from being yellow after creation of index. Only needed if es is single-node.
 	}
 )
@@ -33,10 +33,10 @@ func init() {
 		B *[]byte
 	}
 	bins := []Tuple{
-		{allJSONBin, &allMappings},
-		{A: objectInheritanceJSONBin, B: &objectInheritanceMappings},
-		{A: objectWOverlapJSONBin, B: &objectWOverlapMappings},
-		{A: objectJSONBin, B: &objectMappings},
+		{allJSONBin, &AllMappings},
+		{A: objectInheritanceJSONBin, B: &ObjectInheritanceMappings},
+		{A: objectWOverlapJSONBin, B: &ObjectWOverlapMappings},
+		{A: objectJSONBin, B: &ObjectMappings},
 	}
 	for _, tuple := range bins {
 		var mm map[string]map[string]any
@@ -48,7 +48,7 @@ func init() {
 		}
 
 		indexSettings := map[string]any{
-			"settings": testSettings,
+			"settings": TestSettings,
 			"mappings": getOne(mm)["mappings"],
 		}
 
@@ -57,4 +57,11 @@ func init() {
 			panic(err)
 		}
 	}
+}
+
+func getOne(v map[string]map[string]any) map[string]any {
+	for _, v := range v {
+		return v
+	}
+	return nil
 }

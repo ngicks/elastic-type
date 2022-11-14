@@ -5,20 +5,31 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"net/url"
 	"os"
 	"testing"
 
+	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/ngicks/gommon/pkg/randstr"
 	typeparamcommon "github.com/ngicks/type-param-common"
-	"github.com/ngicks/type-param-common/slice"
 )
 
-var ELASTICSEARCH_URL *url.URL
+var (
+	ELASTICSEARCH_URL *url.URL
+	client            *elasticsearch.Client
+)
 
 func init() {
 	ELASTICSEARCH_URL, _ = url.Parse(os.Getenv("ELASTICSEARCH_URL"))
+
+	var err error
+	// doc says NewDefaultClient reads ELASTICSEARCH_URL env var.
+	client, err = elasticsearch.NewClient(elasticsearch.Config{
+		Addresses: []string{ELASTICSEARCH_URL.String()},
+	})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func must[T any](v T, err error) T {
@@ -35,19 +46,10 @@ func toAnyMap(v any) map[string]any {
 	return anyMap
 }
 
-func getOne(v map[string]map[string]any) map[string]any {
-	for _, v := range v {
-		return v
-	}
-	return nil
-}
-
 func skipIfEsNotReachable(t *testing.T, esURL url.URL, preferFail bool) {
 	// We need to send a fetch request to some of Elasticsearch specific paths
 	// to ensure that there is a reachable instance.
 	// "_cluster/health" is just one of those paths. It could be replaced with one of any else es specific paths.
-	esURL.Path = ""
-	esURL = *esURL.JoinPath("_cluster", "health")
 
 	skipOrFail := func(format string, args ...interface{}) {
 		if preferFail {
@@ -57,7 +59,7 @@ func skipIfEsNotReachable(t *testing.T, esURL url.URL, preferFail bool) {
 		}
 	}
 
-	res, err := http.Get(esURL.String())
+	res, err := client.Cluster.Health()
 	if err != nil {
 		skipOrFail("request to Elasticsearch failed: %v", err)
 	}
@@ -109,94 +111,54 @@ func skipIfEsNotReachable(t *testing.T, esURL url.URL, preferFail bool) {
 	}
 }
 
-func jsonRequest(method, url string, body io.Reader) (*http.Response, error) {
-	req, err := http.NewRequest(method, url, body)
-	if err != nil {
-		return nil, err
-	}
-	if slice.Has([]string{http.MethodPatch, http.MethodPost, http.MethodPut}, method) {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	return http.DefaultClient.Do(req)
+type EsTestHelper[T any] struct {
+	Client    *elasticsearch.Client
+	IndexName string
 }
 
-func createRandomIndex(esURL url.URL, settings []byte) (indexName string, err error) {
+func createRandomIndex[T any](client *elasticsearch.Client, settings []byte) (*EsTestHelper[T], error) {
 	randomIndexName, err := randstr.New(randstr.Hex()).String()
 	if err != nil {
-		panic(err)
-	}
-
-	esURL.Path = ""
-	esURL = *esURL.JoinPath(randomIndexName)
-
-	res, err := jsonRequest(http.MethodPut, esURL.String(), bytes.NewReader(settings))
-	if err != nil {
-		return "", err
-	}
-
-	bodyBin, err := io.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		return "", err
-	}
-
-	if res.StatusCode > 300 {
-		return "", fmt.Errorf(
-			"error response: status = %d, body = %s",
-			res.StatusCode,
-			string(bodyBin),
-		)
-	}
-
-	body := map[string]any{}
-	err = json.Unmarshal(bodyBin, &body)
-	if err != nil {
-		return "", err
-	}
-
-	ack, ok := body["acknowledged"]
-	if !ok {
-		return "", fmt.Errorf(
-			"error response: status = %d, body = %s",
-			res.StatusCode,
-			string(bodyBin),
-		)
-	}
-	ackBool, ok := ack.(bool)
-	if !ok || !ackBool {
-		return "", fmt.Errorf(
-			"error response: status = %d, body = %s",
-			res.StatusCode,
-			string(bodyBin),
-		)
-	}
-
-	return randomIndexName, nil
-}
-
-func deleteIndex(esURL url.URL, indexName string) error {
-	esURL.Path = ""
-	esURL = *esURL.JoinPath(indexName)
-	_, err := jsonRequest(http.MethodDelete, esURL.String(), nil)
-	return err
-}
-
-func getMapping(esURL url.URL, indexName string) ([]byte, error) {
-	esURL.Path = ""
-	mappingsURL := *esURL.JoinPath(indexName, "_mappings")
-
-	res, err := jsonRequest(http.MethodGet, mappingsURL.String(), nil)
-	if err != nil {
 		return nil, err
 	}
 
-	bodyBin, err := io.ReadAll(res.Body)
-	res.Body.Close()
+	opt := client.Indices.Create.WithBody(bytes.NewReader(settings))
+	res, err := client.Indices.Create(randomIndexName, opt)
+	if err != nil {
+		return nil, err
+	} else if res.IsError() {
+		return nil, fmt.Errorf("%s", res.String())
+	}
 
+	return &EsTestHelper[T]{
+		Client:    client,
+		IndexName: randomIndexName,
+	}, nil
+}
+
+func (h *EsTestHelper[T]) Delete() error {
+	res, err := client.Indices.Delete([]string{h.IndexName})
+	if err != nil {
+		return err
+	} else if res.IsError() {
+		return fmt.Errorf("%s", res.String())
+	}
+	return nil
+}
+
+func (h *EsTestHelper[T]) GetMapping() ([]byte, error) {
+	res, err := h.Client.Indices.GetMapping()
+	if err != nil {
+		return nil, err
+	} else if res.IsError() {
+		return nil, fmt.Errorf("%s", res.String())
+	}
+	bin, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
-	return bodyBin, nil
+	defer res.Body.Close()
+	return bin, nil
 }
 
 type CommonResponse struct {
@@ -219,63 +181,45 @@ type Shards struct {
 	Failed     int `json:"failed"`
 }
 
-type FetchDocResult struct {
+type FetchDocResult[T any] struct {
 	CommonResponse
 	Found   bool `json:"found"`
-	Source_ any  `json:"_source"`
+	Source_ T    `json:"_source"`
 }
 
-func postDoc(esURL url.URL, indexName string, doc any) (IndexResult, error) {
-	esURL.Path = ""
-	docURL := *esURL.JoinPath(indexName, "_doc")
-
+func (h *EsTestHelper[T]) PostDoc(doc T) (docId string, err error) {
 	bin, err := json.Marshal(doc)
 	if err != nil {
-		return IndexResult{}, err
-	}
-	res, err := jsonRequest(http.MethodPost, docURL.String(), bytes.NewReader(bin))
-	if err != nil {
-		return IndexResult{}, err
+		return "", err
 	}
 
-	body, err := io.ReadAll(res.Body)
+	res, err := h.Client.Index(h.IndexName, bytes.NewReader(bin))
 	if err != nil {
-		return IndexResult{}, err
+		return "", err
+	} else if res.IsError() {
+		return "", fmt.Errorf("%s", res.String())
 	}
-	defer res.Body.Close()
 
 	var result IndexResult
-	err = json.Unmarshal(body, &result)
+	err = json.NewDecoder(res.Body).Decode(&result)
 	if err != nil {
-		return IndexResult{}, err
+		return "", err
 	}
 
-	if result.Result != "created" {
-		return IndexResult{}, fmt.Errorf("%s", string(body))
-	}
-
-	return result, nil
+	return result.Id_, nil
 }
 
-func getDoc(esURL url.URL, indexName, docId string) (doc FetchDocResult, err error) {
-	esURL.Path = ""
-	docURL := *esURL.JoinPath(indexName, "_doc", docId)
-
-	res, err := jsonRequest(http.MethodGet, docURL.String(), nil)
+func (h *EsTestHelper[T]) GetDoc(id string) (doc FetchDocResult[T], err error) {
+	res, err := h.Client.Get(h.IndexName, id)
 	if err != nil {
-		return
+		return FetchDocResult[T]{}, err
+	} else if res.IsError() {
+		return FetchDocResult[T]{}, fmt.Errorf("%s", res.String())
 	}
 
-	body, err := io.ReadAll(res.Body)
+	err = json.NewDecoder(res.Body).Decode(&doc)
 	if err != nil {
-		return
+		return FetchDocResult[T]{}, err
 	}
-	res.Body.Close()
-
-	var result FetchDocResult
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		return
-	}
-	return result, nil
+	return doc, nil
 }

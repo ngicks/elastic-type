@@ -1,8 +1,173 @@
 # elastic-type
 
-Type generator that generates Go types from [Elasticsearch](https://www.elastic.co/guide/en/elastic-stack/index.html) mapping.
+A type generator that generates Go types from [Elasticsearch](https://www.elastic.co/guide/en/elastic-stack/index.html) mappings.
 
-Also helper types.
+The goal of `elastic-type` is to make it easy to generate Go types from externally-maintained json data, and decode Elasticsearch `_source`s and consume it like plain Go structs.
+
+## Target Elasticsearch version
+
+It is tested only against Elasticsearch 8.4.
+
+See [test.compose.yml](test.compose.yml).
+
+## Overview
+
+It generates 2 types from Elasticsearch mappings.
+
+Raw one and high-level one, with interconversion methods.
+
+Raw one is pretty straightforward. As its name suggests, it only exist to lossless-ly decode json data stored inside Elasticsearch instances.
+
+High-level one is like a plain Go struct which you define everyday. It only contains T or []T field. You will not be aware of those 4 variants, which is mentioned earlier, with this type.
+
+### Installation
+
+You can use exposed functions. `Generate` is a main entry point for code generation. And `WriteFile` is a write-file helper for generated types.
+
+Or for your convenience, install and use the executable:
+
+```
+go install github.com/ngicks/elastic-type/cmd/generate-es-type@latest
+```
+
+Below, Example uses this executable.
+
+### Example
+
+It takes an Elasticsearch mapping as an input, and 2 additional options. For the format of options, refer to type definitions of MapOption and GlobalOption.
+
+Use raw types to unmarshal json directly, call ToPlain on it to get high-level type structs.
+
+```bash
+generate-es-type -prefix-with-index-name -i ./example.json -out-high ./example_high.go -out-raw ./example_raw.go -global-option ./example_global_option.json -map-option ./example_map_option.json
+```
+
+```json
+// example.json
+// This is what you fetch from <es_origin>/<index_name>/_mappings
+{
+  "example": {
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "blob": {
+          "type": "binary"
+        },
+        "bool": {
+          "type": "boolean"
+        },
+        "date": {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        }
+      }
+    }
+  }
+}
+// example_global_option.json
+{
+  "IsSingle": true,
+  "TypeOption": {
+    "date": {
+      "IsRequired": true,
+      "IsSingle": true
+    }
+  }
+}
+// example_map_option.json
+{
+  "blob": {
+    "IsRequired": true,
+    "IsSingle": false
+  }
+}
+```
+
+It generates:
+
+```go
+package example
+
+import (
+	"encoding/json"
+	"time"
+
+	estype "github.com/ngicks/elastic-type/es_type"
+	"github.com/ngicks/flextime"
+	typeparamcommon "github.com/ngicks/type-param-common"
+)
+
+type Example struct {
+	Blob [][]byte        `json:"blob"`
+	Bool *estype.Boolean `json:"bool"`
+	Date ExampleDate     `json:"date"`
+}
+
+func (t Example) ToRaw() ExampleRaw {
+	return ExampleRaw{
+		Blob: estype.NewFieldSlice(t.Blob, false),
+		Bool: estype.NewFieldSinglePointer(t.Bool, false),
+		Date: estype.NewFieldSingleValue(t.Date, false),
+	}
+}
+
+// ExampleDate represents elasticsearch date.
+type ExampleDate time.Time
+
+func (t ExampleDate) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.String())
+}
+
+var parserExampleDate = flextime.NewFlextime(
+	typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02 15:04:05`)).
+		AddLayout(typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02`))),
+)
+
+func (t *ExampleDate) UnmarshalJSON(data []byte) error {
+	tt, err := estype.UnmarshalEsTime(
+		data,
+		parserExampleDate.Parse,
+		time.UnixMilli,
+	)
+	if err != nil {
+		return err
+	}
+	*t = ExampleDate(tt)
+	return nil
+}
+
+func (t ExampleDate) String() string {
+	return time.Time(t).Format(`2006-01-02 15:04:05`)
+}
+```
+
+and
+
+```go
+package example
+
+import (
+	estype "github.com/ngicks/elastic-type/es_type"
+)
+
+type ExampleRaw struct {
+	Blob estype.Field[[]byte]         `json:"blob"`
+	Bool estype.Field[estype.Boolean] `json:"bool" esjson:"single"`
+	Date estype.Field[ExampleDate]    `json:"date" esjson:"single"`
+}
+
+func (r ExampleRaw) MarshalJSON() ([]byte, error) {
+	return estype.MarshalFieldsJSON(r)
+}
+
+func (t ExampleRaw) ToPlain() Example {
+	return Example{
+		Blob: t.Blob.ValueZero(),
+		Bool: t.Bool.ValueSingle(),
+		Date: t.Date.ValueSingleZero(),
+	}
+}
+```
 
 ## packages
 
@@ -19,9 +184,13 @@ For example:
   - This is really helpful when you define a script or an ingest pipeline, as you can store simply a long value for date.
     - Namely, `new Date().getTime()`
 - The geopoint type allows 6 different notations to store.
-  - The doc says it is `historical reasons`.
+  - The doc says it is for `historical reasons`.
+
+Those types, which can be unmarshalled from various notations, needs user-defined UnmarshalJSON method. Every types defined in `es_type` has one.
 
 #### MVPs
+
+Seemingly these types need special unmarshallers.
 
 - [x] Marshalling/Unmarshalling helper (Field[T any])
 - [x] binary
@@ -41,7 +210,7 @@ For example:
 
 ### generate
 
-Code generator. It generates go code from an es mapping.
+Code generator. It generates go code from an Elasticsearch mapping.
 
 #### MVPs
 

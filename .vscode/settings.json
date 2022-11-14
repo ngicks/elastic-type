@@ -33,7 +33,10 @@
     "typeparamcommon",
     "unexported",
     "Uninstantiated",
+    "unmarshal",
     "Unmarshalled",
+    "unmarshaller",
+    "unmarshallers",
     "Unmarshalling",
     "unmarshals"
   ],

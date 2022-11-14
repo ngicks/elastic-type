@@ -15,8 +15,8 @@ var (
 	input   = flag.String(
 		"i",
 		"--",
-		"input filename. set -- if you want to read from stdin. "+
-			"A content of the file must be what you can fetch from "+
+		"input filename. set -- if you want to read from stdin.\n"+
+			"Contents of the file must be what you can fetch from\n"+
 			"<elasticsearch origin>/<index_name>/_mappings",
 	)
 	outHigh = flag.String(

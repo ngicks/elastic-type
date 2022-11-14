@@ -1,0 +1,19 @@
+{
+  "example": {
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "blob": {
+          "type": "binary"
+        },
+        "bool": {
+          "type": "boolean"
+        },
+        "date": {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "IsSingle": true,
+  "TypeOption": {
+    "date": {
+      "IsRequired": true,
+      "IsSingle": true
+    }
+  }
+}

@@ -22,10 +22,6 @@
           "doc_values": true,
           "index": true,
           "null_value": null,
-          "on_script_error": "continue",
-          "script": {
-            "source": "emit(false)"
-          },
           "store": false,
           "meta": {}
         },
@@ -45,7 +41,6 @@
           "ignore_malformed": false,
           "index": true,
           "null_value": null,
-          "on_script_error": "fail",
           "store": false,
           "meta": {
             "metric_type": "gauge"
@@ -59,11 +54,6 @@
           "ignore_malformed": false,
           "index": true,
           "null_value": null,
-          "on_script_error": "fail",
-          "script": {
-            "source": "emit(new Date().getTime())",
-            "lang": "painless"
-          },
           "store": false,
           "meta": {
             "metric_type": "gauge"

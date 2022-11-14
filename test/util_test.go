@@ -217,7 +217,12 @@ func (h *EsTestHelper[T]) GetDoc(id string) (doc FetchDocResult[T], err error) {
 		return FetchDocResult[T]{}, fmt.Errorf("%s", res.String())
 	}
 
-	err = json.NewDecoder(res.Body).Decode(&doc)
+	bin, err := io.ReadAll(res.Body)
+	if err != nil {
+		return FetchDocResult[T]{}, err
+	}
+	defer res.Body.Close()
+	err = json.Unmarshal(bin, &doc)
 	if err != nil {
 		return FetchDocResult[T]{}, err
 	}

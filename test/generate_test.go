@@ -35,7 +35,12 @@ func TestGenerate_all(t *testing.T) {
 
 	t.Run("store and retrieve to exact same data", func(t *testing.T) {
 		allPlain := example.All{
-			Agg:         tpc.Escape(estype.AggregateMetricDouble{}),
+			Agg: tpc.Escape(estype.AggregateMetricDouble{
+				Min:        123,
+				Max:        1270853,
+				Sum:        503,
+				ValueCount: 2178,
+			}),
 			Blob:        tpc.Escape([]byte(`foobarbaz`)),
 			Bool:        tpc.Escape(estype.Boolean(true)),
 			Byte:        tpc.Escape(int8(12)),

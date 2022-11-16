@@ -2,7 +2,14 @@
 
 A type generator that generates Go types from [Elasticsearch](https://www.elastic.co/guide/en/elastic-stack/index.html) mappings.
 
-The goal of `elastic-type` is to make it easy to generate Go types from externally-maintained json data, and decode Elasticsearch `_source`s and consume it like plain Go structs.
+## Ambition
+
+The goal of `elastic-type` is to make it easy to
+
+- [x] Generate Go types from externally-maintained json data.
+- [x] Decode Elasticsearch `_source`s and consume it like plain Go structs.
+  - Use generated type with [typed API!](https://github.com/elastic/go-elasticsearch/blob/e75332f0d382e54cd9ae2dfb3a0ef863759ad2b0/typedapi/types/document.go#L28)
+- [ ] Generate strongly typed DSL-builder helpers.
 
 ## Target Elasticsearch version
 
@@ -10,7 +17,11 @@ It is tested only against Elasticsearch 8.4.
 
 See [test.compose.yml](test.compose.yml).
 
-## Overview
+CI settings could be used to test against many Elasticsearch versions. This is not yet planned.
+
+## Overview: Current State
+
+### Type generation
 
 It generates 2 types from Elasticsearch mappings.
 
@@ -18,7 +29,15 @@ Raw one and high-level one, with interconversion methods.
 
 Raw one is pretty straightforward. As its name suggests, it only exist to lossless-ly decode json data stored inside Elasticsearch instances.
 
-High-level one is like a plain Go struct which you define everyday. It only contains T or []T field. You will not be aware of those 4 variants, which is mentioned earlier, with this type.
+Elasticsearch allows its json format to be _elastic_, where you can store keys with value of `T`, [T[] (, null[] or a nested T[] like [1, 2, 3 [4, 5]] which will be treated as flatted in the search context.)](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/array.html), `undefined` or `null`.
+
+The raw type wraps all its field type, which is defined in your mappings.json, with estype.Field[T] to marshal / unmarshal most of (not all) those variants.
+
+High-level one is like a plain Go struct which you define everyday. It only contains T, []T fields if your application defines them to be required, or \*T, \*[]T if they are optional. At least you will not be aware of the variants, which is mentioned earlier, with this type.
+
+### Search DSL Helper
+
+Planned. Not coming too soon.
 
 ### Installation
 
@@ -225,15 +244,17 @@ Code generator. It generates go code from an Elasticsearch mapping.
 #### Optionally we would do
 
 - [ ] Remove overlapping type definition.
-  - If two type definitions are exactly same, then use same type.
+  - If two or more type definitions are exactly same, generate only one type and use it.
   - Evaluating that 2 defs are semantically same is hard without ast parser. Maybe we should do it in post-process.
 
 ### mapping
 
-Type definitions for Elasticsearch mappings.
+~~Type definitions for Elasticsearch mappings.~~
 
-Used to parse mapping.
+~~Used to parse mapping.~~
 
-#### MVPs
+#### ~~MVPs~~
 
-- [x] Cover all mappings.
+- [x] ~~Cover all mappings.~~
+  - The official client had had mapping types before I started making this😭.
+- [ ] Use [go-elasticsearch](https://github.dev/elastic/go-elasticsearch/tree/main/typedapi/types)

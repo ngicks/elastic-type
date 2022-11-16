@@ -69,6 +69,7 @@ func Field(
 		return gen, nil
 	case mapping.DenseVector:
 		return GeneratedType{
+			// TODO: read dim and use an array instead of a slice?
 			TyName: "[]float64",
 		}, nil
 	case mapping.Flattened:
@@ -126,7 +127,7 @@ func Field(
 			TyName: "string",
 		}, nil
 	case mapping.ConstantKeyword:
-		// This field should not be stored?
+		// The field can be stored if and only if value is same as specified in param.
 		return GeneratedType{
 			TyName: "string",
 		}, nil

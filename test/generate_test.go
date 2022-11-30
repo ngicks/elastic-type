@@ -16,6 +16,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var randGen *randstr.Generator = randstr.New(randstr.Hex())
+
+func randomByte() []byte {
+	return tpc.Must(randGen.Bytes())
+}
+
+func randomStr() string {
+	return tpc.Must(randstr.New(randstr.Hex()).String())
+}
+
 func TestGenerate_all(t *testing.T) {
 	require := require.New(t)
 
@@ -23,13 +33,6 @@ func TestGenerate_all(t *testing.T) {
 	helper := must(createRandomIndex[example.AllRaw](client, test.AllMappings))
 	defer helper.Delete()
 
-	randomStr := func() string {
-		str, err := randstr.New(randstr.Hex()).String()
-		if err != nil {
-			panic(err)
-		}
-		return str
-	}
 	nowNano := time.Now()
 	nowSec := time.Unix(nowNano.Unix(), 0)
 
@@ -162,5 +165,35 @@ func TestGenerate_all(t *testing.T) {
 		require.True(time.Time(*allPlain.Date).Equal(time.Time(*fetchedPlain.Date)))
 		require.True(time.Time(*allPlain.DateNano).Equal(time.Time(*fetchedPlain.DateNano)))
 		require.Equal(allPlain.IpAddr.String(), fetchedPlain.IpAddr.String())
+	})
+}
+
+func TestGenerate_example_with_custom_date(t *testing.T) {
+	require := require.New(t)
+
+	skipIfEsNotReachable(t, *ELASTICSEARCH_URL, false)
+	helper := must(createRandomIndex[example.ExampleRaw](client, test.ExampleMappings))
+	defer helper.Delete()
+
+	nowNano := time.Now()
+	nowSec := time.Unix(nowNano.Unix(), 0)
+
+	t.Run("store and retrieve to exact same data", func(t *testing.T) {
+		plain := example.Example{
+			Blob: [][]byte{randomByte()},
+			Bool: tpc.Escape(estype.Boolean(true)),
+			Date: example.ExampleDate(nowSec),
+		}
+		id, err := helper.PostDoc(plain.ToRaw())
+		require.NoError(err)
+
+		fetchedDoc, err := helper.GetDoc(id)
+		require.NoErrorf(err, "%s", err)
+
+		fetchedPlain := fetchedDoc.Source_.ToPlain()
+
+		require.Empty(cmp.Diff(plain.Blob, fetchedPlain.Blob))
+		require.Empty(cmp.Diff(plain.Bool, fetchedPlain.Bool))
+		require.True(time.Time(plain.Date).Equal(time.Time(fetchedPlain.Date)))
 	})
 }

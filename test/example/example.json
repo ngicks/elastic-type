@@ -11,7 +11,7 @@
         },
         "date": {
           "type": "date",
-          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+          "format": "yyyy-MM-dd'TT'HH:mm:ss||yyyy-MM-dd||epoch_millis"
         }
       }
     }

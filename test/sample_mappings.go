@@ -7,8 +7,12 @@ import (
 
 var (
 	// TODO: all.json must be expanded to fill all values.
+	// Currently it has fields for every type but not filled in every possible option.
+	//
 	//go:embed example/all.json
 	allJSONBin []byte
+	//go:embed example/example.json
+	exampleJSONBin []byte
 	//go:embed example/object_dynamic_inheritance.json
 	objectInheritanceJSONBin []byte
 	//go:embed example/object_w_overlap.json
@@ -19,6 +23,7 @@ var (
 
 var (
 	AllMappings               []byte
+	ExampleMappings           []byte
 	ObjectInheritanceMappings []byte
 	ObjectWOverlapMappings    []byte
 	ObjectMappings            []byte
@@ -34,6 +39,7 @@ func init() {
 	}
 	bins := []Tuple{
 		{allJSONBin, &AllMappings},
+		{exampleJSONBin, &ExampleMappings},
 		{A: objectInheritanceJSONBin, B: &ObjectInheritanceMappings},
 		{A: objectWOverlapJSONBin, B: &ObjectWOverlapMappings},
 		{A: objectJSONBin, B: &ObjectMappings},

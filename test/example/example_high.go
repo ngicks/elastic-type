@@ -31,7 +31,7 @@ func (t ExampleDate) MarshalJSON() ([]byte, error) {
 }
 
 var parserExampleDate = flextime.NewFlextime(
-	typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02 15:04:05`)).
+	typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02TT15:04:05`)).
 		AddLayout(typeparamcommon.Must(flextime.NewLayoutSet(`2006-01-02`))),
 )
 
@@ -49,5 +49,5 @@ func (t *ExampleDate) UnmarshalJSON(data []byte) error {
 }
 
 func (t ExampleDate) String() string {
-	return time.Time(t).Format(`2006-01-02 15:04:05`)
+	return time.Time(t).Format(`2006-01-02TT15:04:05`)
 }

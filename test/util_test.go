@@ -2,12 +2,14 @@ package test_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/url"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/ngicks/gommon/pkg/randstr"
@@ -59,7 +61,10 @@ func skipIfEsNotReachable(t *testing.T, esURL url.URL, preferFail bool) {
 		}
 	}
 
-	res, err := client.Cluster.Health()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	res, err := client.Cluster.Health(client.Cluster.Health.WithContext(ctx))
 	if err != nil {
 		skipOrFail("request to Elasticsearch failed: %v", err)
 	}

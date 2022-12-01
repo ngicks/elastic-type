@@ -178,7 +178,7 @@ func TestGenerate_example_with_custom_date(t *testing.T) {
 	nowNano := time.Now()
 	nowSec := time.Unix(nowNano.Unix(), 0)
 
-	t.Run("store and retrieve to exact same data", func(t *testing.T) {
+	t.Run("store / retrieve to be the exact same data", func(t *testing.T) {
 		plain := example.Example{
 			Blob: [][]byte{randomByte()},
 			Bool: tpc.Escape(estype.Boolean(true)),

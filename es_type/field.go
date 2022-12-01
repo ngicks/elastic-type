@@ -7,12 +7,12 @@ import (
 
 const (
 	StructTag = "esjson"
-	// If set to struct tag (`esjson:"single"`),
-	// marshal into always single value, even if the field has many values.
+	// If a struct fields has this tag set (as `esjson:"single"`),
+	// it will always marshal into single value, even if the field has many values.
 	TagSingle = "single"
 )
 
-// IsEmpty determines if field would be treated as empty in Elastichsearch.
+// IsEmpty determines if f would be treated as null in Elasticsearch.
 // In its search context, null field is one of null, undefined (nonexistent), or an empty array.
 func IsEmpty[T any](val *[]T) bool {
 	if val == nil || len(*val) == 0 {
@@ -112,6 +112,12 @@ func (f *Field[T]) SetUndefined() {
 	f.inner = nil
 }
 
+// SetEmpty sets the empty []T to f.
+func (f *Field[T]) SetEmpty() {
+	sl := make([]T, 0)
+	f.inner = &sl
+}
+
 func (f *Field[T]) SetValue(value []T) {
 	f.inner = &value
 }
@@ -124,7 +130,7 @@ func (f Field[T]) Value() *[]T {
 	return f.inner
 }
 
-// ValueZero gets the inner value of f or zero value for T.
+// ValueZero gets the inner value of f, or zero value for T.
 // A returned value must be non-nil []T.
 // If the inner value is non-empty, it returns that value.
 // Otherwise, returns newly created zero-length []T.
@@ -205,6 +211,7 @@ func (b *Field[T]) UnmarshalJSON(data []byte) error {
 	data = bytes.Trim(data, " ")
 	var storedErr error
 	if data[0] == '[' {
+		b.SetEmpty()
 		err := json.Unmarshal(data, b.inner)
 		if err == nil {
 			return nil

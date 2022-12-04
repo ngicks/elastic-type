@@ -84,8 +84,8 @@ func DateUnchecked(params DateGenerationParam) GeneratedType {
 	}
 }
 
-// DateTest generates test for a type which is result of generate.Date().
-// tyNamePrefix must be same of passed to generate.Date().
+// DateTest generates test for a type that is result of generate.Date().
+// tyName must be same of passed to generate.Date().
 // pkgName must be package name containing that generated type.
 func DateTest(tyName string, pkgName string) GeneratedType {
 	buf := bytes.NewBuffer(make([]byte, 0))
@@ -106,13 +106,24 @@ func DateTest(tyName string, pkgName string) GeneratedType {
 	}
 }
 
+// ParseFormatsString returns a parsed time layout set with number formats (`epoch_millis` || `epoch_second`) removed.
+// formats must be separated by `||`.
+//
+// hasNumFormats is true if the formats has epoch_millis or epoch_seconds.
+// isMillis is true if and only if hasNumFormats is true and one of formats if epoch_millis.
 func ParseFormatsString(formats string) (layouts *flextime.LayoutSet, hasNumFormat, isMillis bool, err error) {
 	formatsSl := strings.Split(formats, "||")
 	return ParseFormats(formatsSl)
 }
 
+// ParseFormats returns a parsed time layout set with number formats (`epoch_millis` || `epoch_second`) removed.
+//
+// hasNumFormats is true if the formats has epoch_millis or epoch_seconds.
+// isMillis is true if and only if hasNumFormats is true and one of formats if epoch_millis.
 func ParseFormats(formats []string) (layouts *flextime.LayoutSet, hasNumFormat, isMillis bool, err error) {
-	strFormats, hasNumFormat, isMillis, _ := excludeNumFormats(formats)
+	// TODO: Expand strFormats to be [][2]string or whatever, and allow non built-in format to have `[]`.
+	// Currently `[]`s in user-defined formats are interpreted as optional parts.
+	strFormats, hasNumFormat, isMillis, _ := toTimeTokenFormat(formats)
 
 	first, rest := strFormats[0], strFormats[1:]
 
@@ -130,7 +141,13 @@ func ParseFormats(formats []string) (layouts *flextime.LayoutSet, hasNumFormat, 
 	return layoutSet, hasNumFormat, isMillis, nil
 }
 
-func excludeNumFormats(formats []string) (strFormats []string, hasNumFormat, isMillis, hasDupe bool) {
+// toTimeTokenFormat returns formats of `yyyy-mm-dd`-styled time token,
+// by converting all built-in time formats (like "strict_date_optional_time") into time tokens.
+//
+// hasNumFormats is true if the formats has epoch_millis or epoch_seconds.
+// isMillis is true if and only if hasNumFormats is true and one of formats if epoch_millis.
+// hasDupe indicates format overlapping when true.
+func toTimeTokenFormat(formats []string) (strFormats []string, hasNumFormat, isMillis, hasDupe bool) {
 	strFormats = make([]string, 0)
 	formatSet := set.New[string]()
 	for _, format := range formats {

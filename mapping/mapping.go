@@ -50,6 +50,10 @@ func (p Property) IsObject() bool {
 	return p.Type == Object || p.Type == ""
 }
 
+func (p Property) IsObjectLike() bool {
+	return p.IsObject() || p.Type == Nested
+}
+
 func (p Property) MarshalJSON() ([]byte, error) {
 	return json.Marshal(p.Param)
 }

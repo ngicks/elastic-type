@@ -36,7 +36,7 @@ func Generate(
 	tyName string,
 	globalOpt GlobalOption,
 	opts MapOption,
-) (highLevelTy, rawTy []GeneratedType, err error) {
+) (highLevelTy, rawTy, testDef []GeneratedType, err error) {
 	if opts == nil {
 		opts = MapOption{}
 	}

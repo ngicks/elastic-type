@@ -98,6 +98,11 @@ func DateTest(tyName string, pkgName string) GeneratedType {
 	return GeneratedType{
 		TyName: tyName,
 		TyDef:  buf.String(),
+		Imports: []string{
+			`"encoding/json"`,
+			`"testing"`,
+			`"time"`,
+		},
 	}
 }
 
@@ -194,7 +199,6 @@ func (t {{.TyName}}) MarshalJSON() ([]byte, error) {
 
 }
 
-
 var parser{{.TyName}} = flextime.NewFlextime(
 {{range $index, $format := .StrFormats}}
 	{{- if eq $index 0 }}	typeparamcommon.Must(flextime.NewLayoutSet(` + "`" + `{{$format}}` + "`" + `))
@@ -246,15 +250,16 @@ type DateTestTmplParam struct {
 }
 
 var dateTestTmpl = template.Must(template.New("n").Parse(`
+func Fuzz{{.TyName}}(f *testing.F) {
 	f.Add(int64(1666282966123), int64(218964089023))
 	f.Fuzz(func(t *testing.T, milliSec int64, nanoSec int64) {
-		tt := {{.PackageName}}.{{.TyName}}(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
+		tt := {{if .PackageName}}{{$.PackageName}}.{{end}}{{.TyName}}(time.UnixMilli(milliSec).Add(time.Duration(nanoSec)))
 
 		bin, err := json.Marshal(tt)
 		if err != nil {
 			t.Fatalf("marshal error: %v", err)
 		}
-		var unmarshalled {{.PackageName}}.{{.TyName}}
+		var unmarshalled {{if .PackageName}}{{$.PackageName}}.{{end}}{{.TyName}}
 		err = json.Unmarshal(bin, &unmarshalled)
 		if err != nil {
 			t.Fatalf("unmarshal error: %v", err)

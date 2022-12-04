@@ -12,7 +12,7 @@ func Nested(
 	opts MapOption,
 	fieldNames []string,
 	dynamicContext mapping.Dynamic,
-) (highLevelTy, rawTy []GeneratedType, err error) {
+) (highLevelTy, rawTy, testDef []GeneratedType, err error) {
 	newDynamic := mapping.OverlayDynamic(dynamicContext, p.Dynamic)
 
 	// Ignore dynamic == "runtime" or dynamic == "false"
@@ -23,12 +23,15 @@ func Nested(
 					TyName: tyName,
 					TyDef:  fmt.Sprintf("type %s map[string]any", tyName),
 				},
-			}, []GeneratedType{
+			},
+			[]GeneratedType{
 				{
 					TyName: tyName + "Raw",
 					TyDef:  fmt.Sprintf("type %s map[string]any", tyName+"Raw"),
 				},
-			}, nil
+			},
+			[]GeneratedType{},
+			nil
 	}
 	return object(*p.Properties, globalOpt, opts, fieldNames, newDynamic)
 }

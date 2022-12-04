@@ -29,6 +29,11 @@ var (
 		"",
 		"output filename to write raw types. panic if empty.",
 	)
+	outTest = flag.String(
+		"out-test",
+		"",
+		"output filename to write tests for types. currently it only generates for date type.",
+	)
 	mapOptPath = flag.String(
 		"map-option",
 		"",
@@ -97,7 +102,7 @@ func main() {
 		}
 	}
 
-	high, raw, err := generate.Generate(
+	highLevelTy, rawTy, testDef, err := generate.Generate(
 		mappings,
 		indexName,
 		globalOpt,
@@ -107,7 +112,15 @@ func main() {
 		panic(err)
 	}
 
-	err = generate.WriteFile(*outHigh, *outRaw, high, raw, *pkgName)
+	err = generate.WriteFile(
+		*outHigh,
+		*outRaw,
+		*outTest,
+		highLevelTy,
+		rawTy,
+		testDef,
+		*pkgName,
+	)
 	if err != nil {
 		panic(err)
 	}
@@ -132,5 +145,5 @@ func getFirst(s mapping.MappingSettings) (indexName string, mappings mapping.Map
 	for k, v := range s {
 		return k, *v.Mappings
 	}
-	panic("nah")
+	panic("empty mappings settings")
 }

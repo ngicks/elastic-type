@@ -42,8 +42,8 @@ func object(
 	opts MapOption,
 	fieldNames []string,
 	dynamicContext mapping.Dynamic,
-) (highLevelTy, rawTy []GeneratedType, err error) {
-	var subHighLevelTypes, subRawTypes []GeneratedType
+) (highLevelTy, rawTy, testDef []GeneratedType, err error) {
+	var subHighLevelTypes, subRawTypes, subTestDefs []GeneratedType
 	highLevelFields := map[string]tyNameWithOption{}
 	rawFields := map[string]tyNameWithOption{}
 
@@ -60,12 +60,12 @@ func object(
 		fieldOption := opts[name]
 		overlaidOption := globalOpt.Overlay(param, fieldOption)
 
-		if param.IsObject() || param.Type == mapping.Nested {
-			var subHighLevelTy, subRawTy []GeneratedType
+		if param.IsObjectLike() {
+			var subHighLevelTy, subRawTy, subTestDef []GeneratedType
 			var err error
 
 			if param.IsObject() {
-				subHighLevelTy, subRawTy, err = Object(
+				subHighLevelTy, subRawTy, subTestDef, err = Object(
 					*param.Param.(*mapping.ObjectParams),
 					globalOpt,
 					fieldOption.ChildOption,
@@ -73,7 +73,7 @@ func object(
 					dynamicContext,
 				)
 			} else {
-				subHighLevelTy, subRawTy, err = Nested(
+				subHighLevelTy, subRawTy, subTestDef, err = Nested(
 					*param.Param.(*mapping.NestedParams),
 					globalOpt,
 					fieldOption.ChildOption,
@@ -82,11 +82,12 @@ func object(
 				)
 			}
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, nil, err
 			}
 
 			subHighLevelTypes = append(subHighLevelTypes, subHighLevelTy...)
 			subRawTypes = append(subRawTypes, subRawTy...)
+			subTestDefs = append(subTestDefs, subTestDef...)
 
 			subHighLevelTy[0].Option = overlaidOption
 			subRawTy[0].Option = overlaidOption
@@ -103,11 +104,11 @@ func object(
 			}
 
 		} else {
-			gen, err := Field(param, append(fieldNames, name), globalOpt, fieldOption)
+			gen, testDef, err := Field(param, append(fieldNames, name), globalOpt, fieldOption)
 			gen.Option = overlaidOption
 
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, nil, err
 			}
 
 			highLevelFields[name] = tyNameWithOption{
@@ -121,6 +122,7 @@ func object(
 
 			subHighLevelTypes = append(subHighLevelTypes, gen)
 			subRawTypes = append(subRawTypes, GeneratedType{Imports: gen.Imports})
+			subTestDefs = append(subTestDefs, testDef)
 		}
 	}
 
@@ -155,6 +157,7 @@ func object(
 
 	return append([]GeneratedType{thisType}, subHighLevelTypes...),
 		append([]GeneratedType{thisTypeRaw}, subRawTypes...),
+		subTestDefs,
 		nil
 }
 
@@ -164,7 +167,7 @@ func Object(
 	opts MapOption,
 	fieldNames []string,
 	dynamicContext mapping.Dynamic,
-) (highLevelTy, rawTy []GeneratedType, err error) {
+) (highLevelTy, rawTy, testDef []GeneratedType, err error) {
 	newDynamic := mapping.OverlayDynamic(dynamicContext, p.Dynamic)
 
 	// only when dynamic == true. ignore other cases (e.g. "runtime", false)
@@ -198,12 +201,15 @@ func Object(
 					TyName: tyName,
 					TyDef:  highDef.String(),
 				},
-			}, []GeneratedType{
+			},
+			[]GeneratedType{
 				{
 					TyName: tyName + "Raw",
 					TyDef:  rawDef.String(),
 				},
-			}, nil
+			},
+			[]GeneratedType{},
+			nil
 	}
 	return object(*p.Properties, globalOpt, opts, fieldNames, newDynamic)
 }

@@ -27,6 +27,8 @@ func initializeFormatterCommands() {
 		return
 	}
 
+	formatCommands = []applyFormat{}
+
 	for _, commands := range possibleFormatters {
 		systemHasAll := false
 		for _, command := range commands {
@@ -58,61 +60,59 @@ var ErrNoFormatterAvailable = errors.New(
 		"There must be at least an available formatters combination",
 )
 
-func WriteFile(highLevelTyPath, rawTyePath string, highLevelTy, rawTy []GeneratedType, packageName string) error {
+func WriteFile(
+	highLevelTyPath, rawTyePath, testDefPath string,
+	highLevelTy, rawTy, testDef []GeneratedType,
+	packageName string,
+) error {
 	initializeFormatterCommands()
 
 	if len(formatCommands) == 0 {
-		return fmt.Errorf("%w: %v", ErrNoFormatterAvailable, possibleFormatters)
+		fmt.Fprintf(os.Stderr, "WARNING: No formatter available.\n"+
+			"Code-generation result may not be correctly formatted:\n"+
+			"The system is expected to have the command combination that is one of\n"+
+			"%v",
+			possibleFormatters,
+		)
 	}
 
-	highImports := extractImports(highLevelTy)
-	highDef := extractDef(highLevelTy)
+	var formatter func(srcPath string) error
+	if len(formatCommands) > 0 {
+		formatter = formatCommands[0]
+	} else {
+		formatter = func(srcPath string) error {
+			return nil
+		}
+	}
 
-	rawImports := extractImports(rawTy)
-	rawDef := extractDef(rawTy)
+	for _, spec := range []struct {
+		outPath string
+		ty      []GeneratedType
+	}{
+		{highLevelTyPath, highLevelTy},
+		{rawTyePath, rawTy},
+		{testDefPath, testDef},
+	} {
+		if spec.outPath == "" {
+			continue
+		}
 
-	writeFile := func(outPath, imports, def string) error {
-		var file *os.File
+		imports := extractImports(spec.ty)
+		def := extractDef(spec.ty)
+
+		if def == "" {
+			continue
+		}
+
 		var err error
-		file, err = os.Create(outPath)
+		err = writeFile(spec.outPath, imports, def, packageName)
 		if err != nil {
 			return err
 		}
-		defer file.Close()
-
-		_, err = io.Copy(file, strings.NewReader(fmt.Sprintf("package %s\n\n", packageName)))
+		err = formatter(spec.outPath)
 		if err != nil {
 			return err
 		}
-		_, err = io.Copy(file, strings.NewReader(fmt.Sprintf("import (\n%s\n)", imports)))
-		if err != nil {
-			return err
-		}
-		_, err = io.Copy(file, strings.NewReader(def))
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-
-	var err error
-	err = writeFile(highLevelTyPath, highImports, highDef)
-	if err != nil {
-		return err
-	}
-	err = writeFile(rawTyePath, rawImports, rawDef)
-	if err != nil {
-		return err
-	}
-
-	formatter := formatCommands[0]
-	err = formatter(highLevelTyPath)
-	if err != nil {
-		return err
-	}
-	err = formatter(rawTyePath)
-	if err != nil {
-		return err
 	}
 
 	return nil
@@ -151,5 +151,33 @@ func extractDef(ty []GeneratedType) string {
 		},
 	).Exclude(func(s string) bool { return s == "" }).Collect()
 
+	if strings.Join(defs, "") == "" {
+		return ""
+	}
+
 	return strings.Join(defs, "\n")
+}
+
+func writeFile(outPath, imports, def, packageName string) error {
+	var file *os.File
+	var err error
+	file, err = os.Create(outPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = io.Copy(file, strings.NewReader(fmt.Sprintf("package %s\n\n", packageName)))
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(file, strings.NewReader(fmt.Sprintf("import (\n%s\n)", imports)))
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(file, strings.NewReader(def))
+	if err != nil {
+		return err
+	}
+	return nil
 }

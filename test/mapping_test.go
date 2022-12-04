@@ -42,6 +42,6 @@ func TestMapping(t *testing.T) {
 		cmp.Diff(storedMapping, anyMapEncodedThroughOurType),
 	)
 
-	// Note that, I do not why. and I do not know it is documented.
-	// But it fills doc_values field if type is "search_as_you_type".
+	// Note that, I do not know why, nor if it is documented.
+	// But Elasticsearch fills doc_values field if type is "search_as_you_type".
 }

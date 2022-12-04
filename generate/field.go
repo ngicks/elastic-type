@@ -3,6 +3,7 @@ package generate
 import (
 	"fmt"
 
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	"github.com/ngicks/elastic-type/mapping"
 	"github.com/ngicks/type-param-common/slice"
 )
@@ -31,7 +32,7 @@ func Field(
 
 	switch prop.Type {
 	case mapping.AggregateMetricDouble:
-		gen := AggregateMetricDoubleParams(*prop.Param.(*mapping.AggregateMetricDoubleParams))
+		gen := AggregateMetricDoubleParams(*prop.Param.(*types.AggregateMetricDoubleProperty))
 		return gen, GeneratedType{}, nil
 	case mapping.Boolean:
 		var tyName string
@@ -49,7 +50,7 @@ func Field(
 			nil
 	case mapping.Date, mapping.DateNanoseconds:
 		gen, err := DateFromParam(
-			*prop.Param.(*mapping.DateParams),
+			*prop.Param.(*types.DateProperty),
 			globalOpt.TypeNameGenerator.Gen(fieldNames),
 			opt.PreferredTimeMarshallingFormat,
 			opt.PreferTimeEpochMarshalling.True(),

@@ -8,6 +8,7 @@
     "builtinformat",
     "Conditionf",
     "Deque",
+    "dynamicmapping",
     "esapi",
     "esfield",
     "esjson",

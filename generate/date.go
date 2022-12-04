@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"strings"
 
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	builtinformat "github.com/ngicks/elastic-type/es_type/builtin_format"
 	"github.com/ngicks/elastic-type/mapping"
 	"github.com/ngicks/flextime"
@@ -14,14 +15,14 @@ import (
 )
 
 func DateFromParam(
-	prop mapping.DateParams,
+	prop types.DateProperty,
 	tyName string,
 	marshallingFormat string,
 	preferEpochMarshalling bool,
 ) (GeneratedType, error) {
 	if prop.Format == nil {
 		var tyName string
-		if prop.Type == mapping.Date {
+		if prop.Type == string(mapping.Date) {
 			// must be sync with ../es_type/date_built-in.go
 			tyName = estypePrefix + "StrictDateOptionalTimeEpochMillis"
 		} else {

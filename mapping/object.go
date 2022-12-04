@@ -1,20 +1,9 @@
 package mapping
 
-// https://www.elastic.co/guide/en/elasticsearch/reference/8.4/object.html#object-params
-type ObjectParams struct {
-	// Type is type of this property. Automatically filled if zero.
-	Type EsType `json:"type,omitempty"`
-	// Dynamic can be bool(true/false/"true"/"false"), "runtime" or "strict".
-	// Defaults to true.
-	Dynamic Dynamic `json:"dynamic,omitempty"`
-	// Defaults to true.
-	Enabled *bool `json:"enabled,omitempty"`
-	// Defaults to true.
-	Subobjects *bool       `json:"subobjects,omitempty"`
-	Properties *Properties `json:"properties,omitempty"`
-}
+import "github.com/elastic/go-elasticsearch/v8/typedapi/types"
 
-func (p *ObjectParams) FillType() {
-	// The field is treated as object if type does not exist in property setting.
-	// Leave it blank if it is.
+// https://www.elastic.co/guide/en/elasticsearch/reference/8.4/object.html#object-params
+type ObjectProperty struct {
+	types.ObjectProperty
+	Properties *Properties `json:"properties,omitempty"`
 }

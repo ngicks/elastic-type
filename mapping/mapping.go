@@ -1,19 +1,23 @@
 package mapping
 
 import (
-	"bytes"
 	"encoding/json"
+
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/dynamicmapping"
 )
 
 // IndexSettings is main body for [Create index API.](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/indices-create-index.html)
 type IndexSettings struct {
-	// Aliases is irrelevant for this package's goal.
-	// But allowing it to be stored in here is maybe useful for some user.
-	Aliases any `json:"aliases,omitempty"`
-	// Settings is irrelevant for this package's goal.
-	// But allowing it to be stored in here is maybe useful for some user.
-	Settings any       `json:"settings,omitempty"`
-	Mappings *Mappings `json:"mappings,omitempty"`
+	types.IndexState
+	Mappings *TypeMapping `json:"mappings,omitempty"`
+}
+
+// TypeMapping is main body for [updating mapping](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/explicit-mapping.html#add-field-mapping),
+// or a part of [Create index API](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/indices-create-index.html).
+type TypeMapping struct {
+	types.TypeMapping
+	Properties *Properties `json:"properties,omitempty"`
 }
 
 // MappingSettings is response body of GET /<index_name>/_mapping.
@@ -21,25 +25,7 @@ type IndexSettings struct {
 // Map may only contain <index_name> as a key, and the contained IndexSettings may only have Mappings.
 type MappingSettings map[string]IndexSettings
 
-// Mappings is main body for [updating mapping](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/explicit-mapping.html#add-field-mapping),
-// or a part of [Create index API](https://www.elastic.co/guide/en/elasticsearch/reference/8.4/indices-create-index.html).
-//
-// seeing these documents reveals that mappings key is actually the object field mapping type.
-//   - https://www.elastic.co/guide/en/elasticsearch/reference/8.4/dynamic.html
-//   - https://www.elastic.co/guide/en/elasticsearch/reference/8.4/enabled.html
-//   - https://www.elastic.co/guide/en/elasticsearch/reference/8.4/subobjects.html
-//   - https://www.elastic.co/guide/en/elasticsearch/reference/8.4/properties.html
-type Mappings = ObjectParams
-
 type Properties map[string]Property
-
-func (p *Properties) FillType() {
-	for _, v := range *p {
-		if filler, ok := v.Param.(FillTyper); ok {
-			filler.FillType()
-		}
-	}
-}
 
 type Property struct {
 	Type  EsType
@@ -79,91 +65,97 @@ func (p *Property) UnmarshalJSON(data []byte) error {
 	default:
 		p.Type = Object
 
-		var o ObjectParams
+		var o ObjectProperty
 		p.Param = &o
 	case AggregateMetricDouble:
-		var o AggregateMetricDoubleParams
+		var o types.AggregateMetricDoubleProperty
 		p.Param = &o
 	case Alias:
-		var o AliasParams
+		var o types.FieldAliasProperty
 		p.Param = &o
 	case Binary:
-		var o BinaryParams
+		var o types.BinaryProperty
 		p.Param = &o
 	case Boolean:
-		var o BooleanParams
+		var o types.BooleanProperty
 		p.Param = &o
 	case Completion:
-		var o CompletionParams
+		var o types.CompletionProperty
 		p.Param = &o
 	case Date, DateNanoseconds:
-		var o DateParams
+		var o types.DateProperty
 		p.Param = &o
 	case DenseVector:
-		var o DenseVectorParams
+		var o types.DenseVectorProperty
 		p.Param = &o
 	case Flattened:
-		var o FlattenedParams
+		var o types.FlattenedProperty
 		p.Param = &o
 	case Geopoint:
-		var o GeopointParams
+		var o types.GeoPointProperty
 		p.Param = &o
 	case Geoshape:
-		var o GeoshapeParams
+		var o types.GeoShapeProperty
 		p.Param = &o
 	case Histogram:
-		var o HistogramParams
+		var o types.HistogramProperty
 		p.Param = &o
 	case IP:
-		var o IPParams
+		var o types.IpProperty
 		p.Param = &o
 	case Join:
-		var o JoinParams
+		var o types.JoinProperty
 		p.Param = &o
 	case Nested:
-		var o NestedParams
+		var o NestedProperty
 		p.Param = &o
 	case Percolator:
-		var o PercolatorParams
+		var o types.PercolatorProperty
 		p.Param = &o
 	case Point:
-		var o PointParams
+		var o types.PointProperty
 		p.Param = &o
 	case RankFeature, RankFeatures:
-		var o RankFeatureParams
+		var o types.RankFeatureProperty
 		p.Param = &o
 	case SearchAsYouType:
-		var o SearchAsYouTypeParams
+		var o types.SearchAsYouTypeProperty
 		p.Param = &o
 	case Shape:
-		var o ShapeParams
+		var o types.ShapeProperty
 		p.Param = &o
 	case TokenCount:
-		var o TokenCountParams
+		var o types.TokenCountProperty
 		p.Param = &o
 	case Version:
-		var o VersionParams
+		var o types.VersionProperty
 		p.Param = &o
 	case Keyword:
-		var o KeywordParams
+		var o types.KeywordProperty
 		p.Param = &o
 	case ConstantKeyword:
-		var o ConstantKeywordParams
+		var o types.ConstantKeywordProperty
 		p.Param = &o
 	case Wildcard:
-		var o WildcardParams
+		var o types.WildcardProperty
 		p.Param = &o
 	case Text:
-		var o TextParams
+		var o types.TextProperty
 		p.Param = &o
 	case Long, Integer, Short, Byte, Double, Float, HalfFloat, UnsignedLong:
-		var o NumericParams
+		var o types.NumberPropertyBase
 		p.Param = &o
 	case ScaledFloat:
-		var o ScaledFloatParams
+		var o types.ScaledFloatNumberProperty
 		p.Param = &o
-	case IntegerRange, FloatRange, LongRange, DoubleRange, DateRange, IpRange:
-		var o RangeParams
+	case IntegerRange, FloatRange, LongRange, DoubleRange:
+		var o types.RangePropertyBase
+		p.Param = &o
+	case DateRange:
+		var o types.DateRangeProperty
+		p.Param = &o
+	case IpRange:
+		var o types.IpRangeProperty
 		p.Param = &o
 	}
 
@@ -174,69 +166,35 @@ func (p *Property) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type FillTyper interface {
-	// FillType fills Type field if it is zero value.
-	FillType()
+var possibleDynamic = [...]dynamicmapping.DynamicMapping{
+	dynamicmapping.Strict,
+	dynamicmapping.Runtime,
+	dynamicmapping.True,
+	dynamicmapping.False,
 }
 
-type onScriptError string
+var emptyDynamic = dynamicmapping.DynamicMapping{}
 
-const (
-	Continue onScriptError = "continue"
-	Fail     onScriptError = "fail"
-)
+func IsEmptyDynamic(d dynamicmapping.DynamicMapping) bool {
+	return emptyDynamic == d
+}
 
-type Dynamic = json.RawMessage
-
-func IsValidDynamic(d Dynamic) bool {
-	if d == nil {
-		// defaults to true.
-		return true
-	}
-
-	for _, dynamic := range validDynamic {
-		if dynamic == nil {
-			// bytes.Equal is just a string(a) == string(a).
-			// We now enforce that nil is not []byte(``)
-			continue
-		}
-		if bytes.Equal(d, dynamic) {
+func IsValidDynamic(d dynamicmapping.DynamicMapping) bool {
+	for _, v := range possibleDynamic {
+		if v == d {
 			return true
 		}
 	}
+
 	return false
 }
 
-func OverlayDynamic(left, right Dynamic) Dynamic {
-	if len(right) != 0 && IsValidDynamic(right) {
+func OverlayDynamic(left, right dynamicmapping.DynamicMapping) dynamicmapping.DynamicMapping {
+	if IsValidDynamic(right) {
 		return right
 	}
 	if IsValidDynamic(left) {
 		return left
 	}
-	return Empty
-}
-
-func DynamicIsTrue(d Dynamic) bool {
-	return string([]byte(d)) == string(TrueBool) || string([]byte(d)) == string(TrueStr)
-}
-
-var (
-	Empty     Dynamic = nil
-	TrueBool  Dynamic = []byte(`true`)
-	FalseBool Dynamic = []byte(`false`)
-	TrueStr   Dynamic = []byte(`"true"`)
-	FalseStr  Dynamic = []byte(`"false"`)
-	Runtime   Dynamic = []byte(`"runtime"`)
-	Strict    Dynamic = []byte(`"script"`)
-)
-
-var validDynamic = []Dynamic{
-	Empty,
-	TrueBool,
-	FalseBool,
-	TrueStr,
-	FalseStr,
-	Runtime,
-	Strict,
+	return emptyDynamic
 }

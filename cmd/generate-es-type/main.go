@@ -141,7 +141,7 @@ func decode(filename string, v any) {
 	}
 }
 
-func getFirst(s mapping.MappingSettings) (indexName string, mappings mapping.Mappings) {
+func getFirst(s mapping.MappingSettings) (indexName string, mappings mapping.TypeMapping) {
 	for k, v := range s {
 		return k, *v.Mappings
 	}

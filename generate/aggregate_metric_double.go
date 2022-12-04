@@ -1,21 +1,21 @@
 package generate
 
 import (
-	"github.com/ngicks/elastic-type/mapping"
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 )
 
-func AggregateMetricDoubleParams(agg mapping.AggregateMetricDoubleParams) GeneratedType {
+func AggregateMetricDoubleParams(agg types.AggregateMetricDoubleProperty) GeneratedType {
 	var min, max, sum, valueCount bool
 
 	for _, v := range agg.Metrics {
 		switch v {
-		case mapping.Min:
+		case "min":
 			min = true
-		case mapping.Max:
+		case "max":
 			max = true
-		case mapping.Sum:
+		case "sum":
 			sum = true
-		case mapping.ValueCount:
+		case "value_count":
 			valueCount = true
 		}
 	}

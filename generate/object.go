@@ -7,6 +7,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/dynamicmapping"
 	estype "github.com/ngicks/elastic-type/es_type"
 	"github.com/ngicks/elastic-type/mapping"
 	"github.com/ngicks/type-param-common/iterator"
@@ -41,7 +42,7 @@ func object(
 	globalOpt GlobalOption,
 	opts MapOption,
 	fieldNames []string,
-	dynamicContext mapping.Dynamic,
+	dynamicContext *dynamicmapping.DynamicMapping,
 ) (highLevelTy, rawTy, testDef []GeneratedType, err error) {
 	var subHighLevelTypes, subRawTypes, subTestDefs []GeneratedType
 	highLevelFields := map[string]tyNameWithOption{}
@@ -66,7 +67,7 @@ func object(
 
 			if param.IsObject() {
 				subHighLevelTy, subRawTy, subTestDef, err = Object(
-					*param.Param.(*mapping.ObjectParams),
+					*param.Param.(*mapping.ObjectProperty),
 					globalOpt,
 					fieldOption.ChildOption,
 					append(fieldNames, name),
@@ -74,7 +75,7 @@ func object(
 				)
 			} else {
 				subHighLevelTy, subRawTy, subTestDef, err = Nested(
-					*param.Param.(*mapping.NestedParams),
+					*param.Param.(*mapping.NestedProperty),
 					globalOpt,
 					fieldOption.ChildOption,
 					append(fieldNames, name),
@@ -162,11 +163,11 @@ func object(
 }
 
 func Object(
-	p mapping.ObjectParams,
+	p mapping.ObjectProperty,
 	globalOpt GlobalOption,
 	opts MapOption,
 	fieldNames []string,
-	dynamicContext mapping.Dynamic,
+	dynamicContext dynamicmapping.DynamicMapping,
 ) (highLevelTy, rawTy, testDef []GeneratedType, err error) {
 	newDynamic := mapping.OverlayDynamic(dynamicContext, p.Dynamic)
 

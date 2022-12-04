@@ -32,7 +32,7 @@ type GeneratedType struct {
 //
 // Always len(highLevenTy) == len(rawTy).
 func Generate(
-	mapping mapping.Mappings,
+	mapping mapping.TypeMapping,
 	tyName string,
 	globalOpt GlobalOption,
 	opts MapOption,

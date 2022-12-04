@@ -37,20 +37,35 @@ func UnwrapValue[T any](val *[]T) []T {
 	return *val
 }
 
-// Field is an Elasticsearch field helper type.
-// A Field value can be null, undefined, T or an array of T.
-// It also can be a nested array but is not supported by this struct.
+// Field is a helper type to store an Elasticsearch JSON field.
+// Field supports only undefined, null, T and T[],
+// while Elasticsearch allows it to be one of undefined, null, null[], (null | T)[], T, T[] or T[][].
 // see: https://www.elastic.co/guide/en/elasticsearch/reference/8.4/array.html
 type Field[T any] struct {
 	inner *[]T
 }
 
-func NewField[T any](v *[]T) Field[T] {
+// NewFieldUnsafe returns a new Field.
+// This does not clone v.
+func NewFieldUnsafe[T any](v *[]T) Field[T] {
 	return Field[T]{
 		inner: v,
 	}
 }
 
+// NewField returns a new Field.
+// The returned Field does not points to the data that v does.
+// Instead Field will use cloned content of v if not nil.
+func NewField[T any](v *[]T) Field[T] {
+	if v == nil {
+		var zero Field[T]
+		return zero
+	}
+	return NewFieldSlice(*v, true)
+}
+
+// NewFieldSlice returns a new Field.
+// The returned Field uses cloned v.
 func NewFieldSlice[T any](v []T, nilIsNull bool) Field[T] {
 	if v == nil {
 		if nilIsNull {
@@ -60,8 +75,11 @@ func NewFieldSlice[T any](v []T, nilIsNull bool) Field[T] {
 			return f
 		}
 	}
+
+	cloned := make([]T, len(v))
+	copy(cloned, v)
 	return Field[T]{
-		inner: &v,
+		inner: &cloned,
 	}
 }
 
@@ -74,6 +92,7 @@ func NewFieldSinglePointer[T any](v *T, nilIsNull bool) Field[T] {
 			return f
 		}
 	}
+
 	return Field[T]{
 		inner: &[]T{*v},
 	}
@@ -118,8 +137,11 @@ func (f *Field[T]) SetEmpty() {
 	f.inner = &sl
 }
 
+// SetValue sets cloned value.
 func (f *Field[T]) SetValue(value []T) {
-	f.inner = &value
+	cloned := make([]T, len(value))
+	copy(cloned, value)
+	f.inner = &cloned
 }
 
 func (f *Field[T]) SetSingleValue(value T) {
@@ -152,7 +174,7 @@ func (f Field[T]) ValueSingle() *T {
 	return nil
 }
 
-// ValueSingleZero() gets the inner value of f or zero value for T.
+// ValueSingleZero gets the inner value of f, or falls back to zero value for T.
 // If the inner value non-empty, it returns that value.
 // Otherwise, returns zero value of T.
 func (f Field[T]) ValueSingleZero() T {
@@ -167,16 +189,17 @@ func (f Field[T]) ValueSingleZero() T {
 // ValueAny returns inner value in any type.
 // This can be used without any instantiation.
 //
-// If mustSingle is true, value can be a single T,
-// or if mustSingle is true and the inner value is empty []T,
-// return zero value of T.
-func (f Field[T]) ValueAny(mustSingle bool) any {
+// ValueAny returns nil if f is null or undefined.
+// For other cases:
+//   - If single is true, it returns either single T or zero value of T if and only if inner value is zero length.
+//   - If single is false, it returns []T. It could be length of zero.
+func (f Field[T]) ValueAny(single bool) any {
 	if f.IsUndefined() || f.IsNull() {
 		return nil
 	}
 
 	val := f.Unwrap()
-	if mustSingle {
+	if single {
 		if len(val) == 0 {
 			var zero T
 			return zero
@@ -199,7 +222,7 @@ func (f Field[T]) UnwrapSingle() T {
 // MarshalJSON encodes f into a json format.
 // It always marshalls as []T.
 //
-// For most cases, a struct that only contains Field[T] should be marshalled through MarshalFieldsJSON.
+// For most cases, a struct that contains Field[T] should be marshalled through MarshalFieldsJSON.
 func (f Field[T]) MarshalJSON() ([]byte, error) {
 	if f.IsUndefined() || f.IsNull() {
 		return []byte("null"), nil
@@ -216,7 +239,7 @@ func (b *Field[T]) UnmarshalJSON(data []byte) error {
 		if err == nil {
 			return nil
 		}
-		// in case of T = []U (e.g. dense_vector.)
+		// in case of T = []U (e.g. dense_vector is []float64.)
 		storedErr = err
 	}
 
@@ -238,6 +261,7 @@ func (b *Field[T]) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// MapField returns a new Field[T] whose values are elements of field mapped through mapper.
 func MapField[T, U any](field Field[T], mapper func(v T) U) Field[U] {
 	var f Field[U]
 	if field.IsUndefined() {

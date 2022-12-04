@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	estype "github.com/ngicks/elastic-type/es_type"
+	tpc "github.com/ngicks/type-param-common"
 	"github.com/stretchr/testify/require"
 )
 
@@ -161,4 +162,34 @@ func TestFieldUtilities(t *testing.T) {
 	)
 	require.Equal("baz", f.A.UnwrapSingle())
 	require.False(f.A.IsEmpty())
+}
+
+func TestField_New_function_clones_value(t *testing.T) {
+	require := require.New(t)
+
+	{
+		value := tpc.Escape([]string{"foo"})
+		field := estype.NewFieldUnsafe(value)
+		(*value)[0] = "foofoo"
+		*value = append(*value, "bar")
+		require.Empty(cmp.Diff(field.Unwrap(), []string{"foofoo", "bar"}))
+	}
+	{
+		value := tpc.Escape([]string{"foo"})
+		field := estype.NewField(value)
+		*value = append(*value, "bar")
+		require.Empty(cmp.Diff(field.Unwrap(), []string{"foo"}))
+	}
+	{
+		value := []string{"foo"}
+		field := estype.NewFieldSlice(value, false)
+		value[0] = "foofoo"
+		require.Empty(cmp.Diff(field.Unwrap(), []string{"foo"}))
+	}
+	{
+		value := tpc.Escape("foo")
+		field := estype.NewFieldSinglePointer(value, false)
+		*value = "foofoo"
+		require.Empty(cmp.Diff(field.Unwrap(), []string{"foo"}))
+	}
 }

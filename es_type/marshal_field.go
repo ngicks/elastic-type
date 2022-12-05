@@ -20,17 +20,18 @@ type UninstantiatedField interface {
 }
 
 // MarshalFieldsJSON encodes v into JSON.
-// All fields of v must be Field[T any].
-// If a field is set as null, outputs []byte(`null`), if set as undefined, it skips the field.
+// Some or all fields of v are expected to be Field[T any].
+// There's no point using this function if v has no Field[T],
+// only being a bit more expensive.
+//
+// It outputs `null` for null Field, skips for an undefined Field.
 //
 // v must:
 //   - be a struct type
 //   - have no unexported fields
-//   - have only Field[T] fields.
 //
 // If v:
 //   - is not struct, returns ErrIncorrectType.
-//   - has any fields whose type is not Field, returns ErrIncorrectType.
 //   - has any unexported field, then its behavior is undefined.
 //
 // MarshalFieldsJSON retrieves underlying values of Field type by calling ValueAny.
@@ -47,37 +48,43 @@ func MarshalFieldsJSON(v any) ([]byte, error) {
 	}
 
 	for i := 0; i < rv.NumField(); i++ {
-		value, ok := rv.Field(i).Interface().(UninstantiatedField)
-		if !ok {
-			return nil, ErrIncorrectType
-		}
-
-		if value.IsUndefined() {
-			// skip this field.
-			continue
-		}
+		valueInterface := rv.Field(i).Interface()
+		value, ok := valueInterface.(UninstantiatedField)
 
 		field := rt.Field(i)
-
 		name := getFieldName(field)
-		out = append(out, []byte(`"`+name+`":`)...)
 
-		if value.IsNull() {
-			out = append(out, []byte("null,")...)
-			continue
+		if !ok {
+			encoded, err := json.Marshal(valueInterface)
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, []byte(`"`+name+`":`)...)
+			out = append(out, encoded...)
+		} else {
+			if value.IsUndefined() {
+				// skip this field.
+				continue
+			}
+
+			out = append(out, []byte(`"`+name+`":`)...)
+			if value.IsNull() {
+				out = append(out, []byte("null,")...)
+				continue
+			}
+
+			esFieldTags := getTag(field.Tag, StructTag)
+			mustSingle := slice.Has(esFieldTags, TagSingle)
+
+			val := value.ValueAny(mustSingle)
+
+			encoded, err := json.Marshal(val)
+			if err != nil {
+				return nil, err
+			}
+
+			out = append(out, encoded...)
 		}
-
-		esFieldTags := getTag(field.Tag, StructTag)
-		mustSingle := slice.Has(esFieldTags, TagSingle)
-
-		val := value.ValueAny(mustSingle)
-
-		encoded, err := json.Marshal(val)
-		if err != nil {
-			return nil, err
-		}
-
-		out = append(out, encoded...)
 		out = append(out, ',')
 	}
 

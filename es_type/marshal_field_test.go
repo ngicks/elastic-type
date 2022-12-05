@@ -1,6 +1,8 @@
 package estype_test
 
 import (
+	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -82,10 +84,58 @@ func TestMarshalFieldsJSON_happy_path(t *testing.T) {
 	}
 }
 
-func TestMarshalFieldsJSON_err_if_input_contains_non_Field(t *testing.T) {
-	t.Skip("not implemented")
+type SampleWithNonField struct {
+	A estype.Field[string]
+	B struct {
+		C string
+		D int
+	}
+}
+
+func TestMarshalFieldsJSON_contains_non_Field(t *testing.T) {
+	require := require.New(t)
+
+	input := SampleWithNonField{
+		A: estype.NewFieldSingleValue("foo"),
+		B: struct {
+			C string
+			D int
+		}{
+			C: "foo",
+			D: 123,
+		},
+	}
+
+	jsonEncoded, err := estype.MarshalFieldsJSON(input)
+	require.NoError(err)
+	require.Empty(cmp.Diff(
+		[]byte(`{"A":["foo"],"B":{"C":"foo","D":123}}`),
+		jsonEncoded,
+	))
+}
+
+var sampleError = errors.New("error")
+
+type Erroneous string
+
+func (e Erroneous) MarshalJSON() ([]byte, error) {
+	return nil, fmt.Errorf("%w", sampleError)
+}
+
+type SampleWithError struct {
+	A estype.Field[string]
+	B Erroneous
 }
 
 func TestMarshalFieldsJSON_err_of_marshaling_inner_value(t *testing.T) {
-	t.Skip("not implemented")
+	require := require.New(t)
+
+	input := SampleWithError{
+		A: estype.NewFieldNull[string](),
+		B: Erroneous("bar"),
+	}
+
+	_, err := estype.MarshalFieldsJSON(input)
+
+	require.ErrorIs(err, sampleError)
 }

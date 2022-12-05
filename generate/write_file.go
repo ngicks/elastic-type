@@ -30,10 +30,13 @@ func initializeFormatterCommands() {
 	formatCommands = []applyFormat{}
 
 	for _, commands := range possibleFormatters {
-		systemHasAll := false
+		systemHasAll := true
 		for _, command := range commands {
 			_, err := exec.LookPath(command[0])
-			systemHasAll = err == nil
+			if err != nil {
+				systemHasAll = false
+				break
+			}
 		}
 		if systemHasAll {
 			formatCommands = append(formatCommands, buildFormatCommand(commands))

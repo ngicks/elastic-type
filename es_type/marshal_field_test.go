@@ -114,12 +114,12 @@ func TestMarshalFieldsJSON_contains_non_Field(t *testing.T) {
 	))
 }
 
-var sampleError = errors.New("error")
+var errSample = errors.New("error")
 
 type Erroneous string
 
 func (e Erroneous) MarshalJSON() ([]byte, error) {
-	return nil, fmt.Errorf("%w", sampleError)
+	return nil, fmt.Errorf("%w", errSample)
 }
 
 type SampleWithError struct {
@@ -137,5 +137,5 @@ func TestMarshalFieldsJSON_err_of_marshaling_inner_value(t *testing.T) {
 
 	_, err := estype.MarshalFieldsJSON(input)
 
-	require.ErrorIs(err, sampleError)
+	require.ErrorIs(err, errSample)
 }

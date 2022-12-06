@@ -86,11 +86,9 @@ func TestBooleanInvalidInput(t *testing.T) {
 	testBooleanUnmarshal(t, testBoolStr)
 
 	var err error
-	var syntaxError *json.SyntaxError
+	var invalidTypeErr *estype.InvalidTypeError
 	err = testBool.A.UnmarshalJSON([]byte(`dawju9813`))
-	require.ErrorAs(t, err, &syntaxError)
-	err = testBoolStr.A.UnmarshalJSON([]byte(`dawju9813`))
-	require.ErrorAs(t, err, &syntaxError)
+	require.ErrorAs(t, err, &invalidTypeErr)
 }
 
 func testBooleanUnmarshal[T any](t *testing.T, testBool T) {
@@ -105,10 +103,6 @@ func testBooleanUnmarshal[T any](t *testing.T, testBool T) {
 		// checking just that it does not panic
 		require.Condition(t, func() bool { return strings.HasPrefix(err.Error(), "invalid") })
 	}
-
-	err := json.Unmarshal([]byte(`{"A": kc;a123}`), &testBool)
-	var syntaxError *json.SyntaxError
-	require.ErrorAs(t, err, &syntaxError)
 }
 
 func TestBooleanString(t *testing.T) {

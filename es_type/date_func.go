@@ -1,7 +1,6 @@
 package estype
 
 import (
-	"encoding/json"
 	"strconv"
 	"strings"
 	"time"
@@ -26,19 +25,13 @@ func UnmarshalEsTime(data []byte, strParser StrParser, numParser NumParser, type
 		return numParser(num), nil
 	}
 
-	var v any
-	err = json.Unmarshal(data, &v)
-	if err != nil {
-		return time.Time{}, err
-	}
-
 	var typeName string
 	if len(typeNames) >= 1 {
 		typeName = typeNames[0]
 	}
 	return time.Time{}, &InvalidTypeError{
-		Type:            typeName,
-		SupposedTValues: []any{"time formatted as string", "unix epoch number that convertible to int64"},
-		InputValue:      v,
+		Type:         typeName,
+		SupposedToBe: []any{"time formatted as string", "unix epoch number that convertible to int64"},
+		InputValue:   data,
 	}
 }

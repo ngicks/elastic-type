@@ -72,15 +72,9 @@ func unmarshalEsBoolean(data []byte) (bool, error) {
 		return false, nil
 	}
 
-	var v any
-	err := json.Unmarshal(data, &v)
-	if err != nil {
-		return false, err
-	}
-
 	return false, &InvalidTypeError{
-		Type:            "Boolean",
-		SupposedTValues: []any{true, false, "true", "false"},
-		InputValue:      v,
+		Type:         "Boolean",
+		SupposedToBe: []any{true, false, "true", "false"},
+		InputValue:   data,
 	}
 }
